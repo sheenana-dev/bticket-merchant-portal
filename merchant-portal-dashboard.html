@@ -1,0 +1,1123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>B-Ticket — Merchant Portal: Dashboard & My Coupons</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: #0f1110; color: #fff;
+    display: flex; flex-direction: column; align-items: center;
+    padding: 40px 20px; gap: 60px; min-height: 100vh;
+  }
+  h1 { font-size: 28px; font-weight: 700; text-align: center; }
+  .subtitle { color: #888; font-size: 14px; text-align: center; max-width: 700px; line-height: 1.6; }
+  h2 {
+    color: #888; font-size: 13px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 2px;
+    margin-bottom: 20px; text-align: center;
+  }
+
+  /* ---- Browser frame ---- */
+  .browser-frame {
+    width: 100%; max-width: 1200px;
+    border-radius: 12px; overflow: hidden;
+    box-shadow: 0 25px 80px rgba(0,0,0,0.5), 0 0 0 1px #333;
+    background: #fff;
+  }
+  .browser-bar {
+    background: #2d2a2a; padding: 10px 16px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .browser-dots { display: flex; gap: 6px; }
+  .browser-dots div {
+    width: 12px; height: 12px; border-radius: 50%;
+  }
+  .browser-dots .red { background: #ff5f57; }
+  .browser-dots .yellow { background: #ffbd2e; }
+  .browser-dots .green { background: #56A66F; }
+  .browser-url {
+    flex: 1; background: #2a2525; border-radius: 6px;
+    padding: 6px 12px; font-size: 12px; color: #888;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .browser-url .lock { color: #56A66F; font-size: 11px; }
+
+  /* ---- Portal layout ---- */
+  .portal-layout {
+    display: flex; min-height: 900px;
+  }
+
+  /* ---- Sidebar ---- */
+  .sidebar {
+    width: 240px; background: #221F1F; color: #fff;
+    display: flex; flex-direction: column; padding: 0; flex-shrink: 0;
+  }
+  .sidebar-logo {
+    display: flex; align-items: center; gap: 10px;
+    padding: 20px 20px 24px; border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+  .logo-box {
+    width: 34px; height: 34px; background: #205C50; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800; font-size: 16px; color: #fff;
+  }
+  .logo-text { font-size: 15px; font-weight: 700; color: #fff; }
+  .logo-sub { font-size: 9px; color: #205C50; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
+
+  .sidebar-section-label {
+    padding: 16px 14px 8px;
+    font-size: 10px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 1.5px; color: #555;
+  }
+  .sidebar-nav { list-style: none; padding: 0; }
+  .sidebar-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 20px; font-size: 13px; color: #888;
+    cursor: pointer; border-left: 3px solid transparent;
+    transition: all 0.15s;
+  }
+  .sidebar-item:hover { color: #fff; background: #2d2928; }
+  .sidebar-item.active {
+    color: #fff; background: #2d2928;
+    border-left-color: #205C50;
+  }
+  .sidebar-item .icon { font-size: 16px; width: 20px; text-align: center; }
+
+  .sidebar-footer {
+    margin-top: auto; padding: 16px 20px;
+    border-top: 1px solid rgba(255,255,255,0.06);
+    display: flex; align-items: center; gap: 10px;
+  }
+  .avatar-circle {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: linear-gradient(135deg, #205C50, #4a7a5d);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700; color: #fff; flex-shrink: 0;
+  }
+  .avatar-info { font-size: 12px; }
+  .avatar-info .name { font-weight: 600; color: #ccc; }
+  .avatar-info .status { font-size: 10px; color: #205C50; display: flex; align-items: center; gap: 4px; }
+  .status-dot { width: 6px; height: 6px; border-radius: 50%; background: #205C50; display: inline-block; }
+
+  /* ---- Main content ---- */
+  .main-content {
+    flex: 1; background: #f5f6f8; display: flex; flex-direction: column;
+    min-width: 0; overflow-y: auto;
+  }
+
+  /* ---- Top bar ---- */
+  .top-bar {
+    padding: 20px 32px; background: #fff;
+    border-bottom: 1px solid #e8e8ee;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .top-bar-left {}
+  .top-bar-greeting {
+    font-size: 22px; font-weight: 700; color: #221F1F;
+  }
+  .top-bar-sub { font-size: 13px; color: #999; margin-top: 2px; }
+  .top-bar-right { display: flex; align-items: center; gap: 14px; }
+
+  .notif-bell {
+    position: relative; width: 36px; height: 36px;
+    border-radius: 8px; border: 1px solid #e0e0e0;
+    background: #fff; display: flex; align-items: center; justify-content: center;
+    cursor: pointer; font-size: 18px;
+  }
+  .notif-badge {
+    position: absolute; top: -4px; right: -4px;
+    width: 18px; height: 18px; border-radius: 50%;
+    background: #EE4036; color: #fff; font-size: 9px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    border: 2px solid #fff;
+  }
+
+  .btn {
+    padding: 10px 20px; border-radius: 8px; font-size: 13px;
+    font-weight: 600; cursor: pointer; border: none;
+    font-family: inherit; display: flex; align-items: center; gap: 6px;
+    transition: all 0.15s;
+  }
+  .btn-primary {
+    background: #205C50; color: #fff; border: 1px solid #205C50;
+  }
+  .btn-primary:hover { background: #5a8a6c; }
+
+  /* ---- Dashboard area ---- */
+  .dashboard-area {
+    padding: 24px 32px; flex: 1;
+  }
+
+  /* Stats row */
+  .stats-row {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px;
+    margin-bottom: 24px;
+  }
+  .stat-card {
+    background: #fff; border-radius: 12px; padding: 20px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+    display: flex; flex-direction: column; gap: 8px;
+    position: relative; overflow: hidden;
+  }
+  .stat-header {
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .stat-label {
+    font-size: 12px; font-weight: 600; color: #888;
+    text-transform: uppercase; letter-spacing: 0.5px;
+  }
+  .stat-icon {
+    width: 36px; height: 36px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+  }
+  .stat-icon.green { background: rgba(107,155,125,0.12); }
+  .stat-icon.blue { background: rgba(59,130,246,0.1); }
+  .stat-icon.pink { background: rgba(236,72,153,0.1); }
+  .stat-icon.purple { background: rgba(139,92,246,0.1); }
+  .stat-number {
+    font-size: 32px; font-weight: 800; color: #221F1F;
+    line-height: 1;
+  }
+  .stat-trend {
+    font-size: 11px; font-weight: 600; display: flex; align-items: center; gap: 4px;
+  }
+  .stat-trend.up { color: #16a34a; }
+  .stat-trend.down { color: #dc2626; }
+  .stat-sub { font-size: 12px; color: #999; }
+  .stat-sparkline {
+    display: flex; align-items: flex-end; gap: 2px; height: 24px; margin-top: 4px;
+  }
+  .spark-bar {
+    width: 6px; border-radius: 2px; background: rgba(107,155,125,0.3);
+  }
+  .spark-bar.active { background: #205C50; }
+
+  /* Two column layout */
+  .dashboard-cols {
+    display: grid; grid-template-columns: 60fr 40fr; gap: 20px;
+  }
+
+  /* Cards */
+  .card {
+    background: #fff; border-radius: 12px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+    margin-bottom: 20px; overflow: hidden;
+  }
+  .card-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 18px 20px 14px;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  .card-title {
+    font-size: 15px; font-weight: 700; color: #221F1F;
+  }
+  .card-link {
+    font-size: 12px; font-weight: 600; color: #205C50;
+    cursor: pointer; text-decoration: none;
+  }
+  .card-link:hover { text-decoration: underline; }
+
+  /* Active coupons table */
+  .coupon-list-item {
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px 20px;
+    border-bottom: 1px solid #f5f5f5;
+    transition: background 0.1s;
+  }
+  .coupon-list-item:hover { background: #fafafa; }
+  .coupon-list-item:last-child { border-bottom: none; }
+  .coupon-thumb {
+    width: 36px; height: 36px; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; flex-shrink: 0;
+  }
+  .coupon-list-info { flex: 1; min-width: 0; }
+  .coupon-list-name {
+    font-size: 13px; font-weight: 600; color: #221F1F;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .coupon-list-status {
+    display: flex; align-items: center; gap: 5px;
+    font-size: 11px; color: #888; margin-top: 2px;
+  }
+  .status-dot-sm {
+    width: 6px; height: 6px; border-radius: 50%;
+  }
+  .status-dot-sm.green { background: #16a34a; }
+  .status-dot-sm.orange { background: #f59e0b; }
+  .coupon-list-stats {
+    text-align: right; flex-shrink: 0;
+  }
+  .coupon-today {
+    font-size: 12px; font-weight: 600; color: #221F1F;
+  }
+  .coupon-cap {
+    font-size: 11px; color: #999; margin-top: 1px;
+  }
+
+  /* Recent redemptions */
+  .redemption-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 20px;
+    transition: background 0.1s;
+  }
+  .redemption-item:nth-child(even) { background: #fafbfc; }
+  .redemption-item:hover { background: #f5f5f5; }
+  .redemption-avatar {
+    width: 28px; height: 28px; border-radius: 50%;
+    background: #e8e8ee; display: flex; align-items: center; justify-content: center;
+    font-size: 10px; font-weight: 700; color: #888; flex-shrink: 0;
+  }
+  .redemption-info { flex: 1; min-width: 0; }
+  .redemption-text {
+    font-size: 12px; color: #555; line-height: 1.4;
+  }
+  .redemption-text strong { color: #221F1F; font-weight: 600; }
+  .redemption-meta {
+    font-size: 11px; color: #bbb; margin-top: 1px;
+  }
+  .redemption-time {
+    font-size: 11px; color: #bbb; flex-shrink: 0; white-space: nowrap;
+  }
+
+  /* Insights card */
+  .insight-section {
+    padding: 16px 20px;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  .insight-section:last-child { border-bottom: none; }
+  .insight-label {
+    font-size: 11px; font-weight: 700; color: #888;
+    text-transform: uppercase; letter-spacing: 0.5px;
+    margin-bottom: 8px; display: flex; align-items: center; gap: 6px;
+  }
+  .insight-value {
+    font-size: 14px; font-weight: 700; color: #221F1F;
+    margin-bottom: 2px;
+  }
+  .insight-desc {
+    font-size: 12px; color: #888; line-height: 1.5;
+  }
+  .insight-bar {
+    height: 6px; border-radius: 3px; background: #e8e8ee;
+    margin-top: 8px; overflow: hidden;
+  }
+  .insight-bar-fill {
+    height: 100%; border-radius: 3px; background: #205C50;
+  }
+  .insight-tip {
+    font-size: 12px; color: #666; line-height: 1.6;
+    font-style: italic;
+  }
+
+  /* Branch performance */
+  .branch-item {
+    display: flex; align-items: center; gap: 12px;
+    padding: 10px 20px;
+  }
+  .branch-name {
+    font-size: 13px; font-weight: 600; color: #221F1F;
+    width: 140px; flex-shrink: 0;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .branch-bar-wrap {
+    flex: 1; height: 10px; background: #e8e8ee; border-radius: 5px;
+    overflow: hidden;
+  }
+  .branch-bar-fill {
+    height: 100%; border-radius: 5px; background: #205C50;
+    transition: width 0.3s;
+  }
+  .branch-count {
+    font-size: 12px; font-weight: 600; color: #888;
+    width: 90px; text-align: right; flex-shrink: 0;
+  }
+
+  /* ===== SCREEN 2: MY COUPONS ===== */
+  .filter-bar {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 16px 32px; background: #fff; border-bottom: 1px solid #e8e8ee;
+    flex-wrap: wrap; gap: 12px;
+  }
+  .filter-tabs {
+    display: flex; gap: 4px;
+  }
+  .filter-tab {
+    padding: 7px 14px; border-radius: 8px; font-size: 12px;
+    font-weight: 600; color: #888; cursor: pointer;
+    border: 1px solid #e0e0e0; background: #fff;
+    transition: all 0.15s;
+  }
+  .filter-tab:hover { background: #f5f5f5; }
+  .filter-tab.active {
+    background: #221F1F; color: #fff; border-color: #221F1F;
+  }
+  .filter-right {
+    display: flex; gap: 10px; align-items: center;
+  }
+  .search-input {
+    padding: 8px 12px 8px 32px; border: 1px solid #e0e0e0;
+    border-radius: 8px; font-size: 12px; font-family: inherit;
+    color: #333; background: #fff; width: 200px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23999' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: 10px center;
+  }
+  .sort-dropdown {
+    padding: 8px 28px 8px 12px; border: 1px solid #e0e0e0;
+    border-radius: 8px; font-size: 12px; font-family: inherit;
+    color: #555; background: #fff; cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L5 5L9 1' stroke='%23999' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+  }
+
+  /* Coupons table */
+  .coupons-table-area {
+    padding: 24px 32px;
+  }
+  .coupons-table {
+    background: #fff; border-radius: 12px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+    overflow: hidden;
+  }
+  .table-header {
+    display: grid;
+    grid-template-columns: 52px 1fr 90px 80px 180px 100px 160px;
+    gap: 8px; padding: 12px 20px;
+    background: #fafafa; border-bottom: 1px solid #eee;
+    font-size: 11px; font-weight: 700; color: #888;
+    text-transform: uppercase; letter-spacing: 0.5px;
+    align-items: center;
+  }
+  .table-row {
+    display: grid;
+    grid-template-columns: 52px 1fr 90px 80px 180px 100px 160px;
+    gap: 8px; padding: 14px 20px;
+    border-bottom: 1px solid #f5f5f5;
+    align-items: center;
+    transition: background 0.1s;
+  }
+  .table-row:hover { background: #fafbfc; }
+  .table-row:last-child { border-bottom: none; }
+
+  .table-img {
+    width: 40px; height: 40px; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px;
+  }
+  .table-coupon-name {
+    font-size: 13px; font-weight: 600; color: #221F1F;
+  }
+  .table-coupon-sub {
+    font-size: 11px; color: #999; margin-top: 1px;
+  }
+
+  .badge {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 3px 10px; border-radius: 10px;
+    font-size: 11px; font-weight: 600;
+  }
+  .badge-green { background: #e8f2ee; color: #56A66F; }
+  .badge-orange { background: #fff3e0; color: #F9A250; }
+  .badge-gray { background: #f0f0f0; color: #888; }
+  .badge-yellow { background: #fff8e1; color: #f57f17; }
+  .badge-red { background: #fdecea; color: #EE4036; }
+
+  .pill {
+    display: inline-block; padding: 2px 8px;
+    border-radius: 6px; font-size: 10px; font-weight: 700;
+  }
+  .pill-green { background: #e8f2ee; color: #56A66F; }
+  .pill-blue { background: #e0f5fb; color: #50C9EF; }
+  .pill-purple { background: #f3e5f5; color: #7b1fa2; }
+  .pill-gray { color: #999; }
+
+  .table-perf {
+    font-size: 12px; color: #555;
+  }
+  .table-perf-sub {
+    font-size: 11px; color: #999; margin-top: 2px;
+  }
+  .perf-bar {
+    height: 4px; background: #e8e8ee; border-radius: 2px;
+    margin-top: 4px; overflow: hidden; width: 100%;
+  }
+  .perf-bar-fill {
+    height: 100%; border-radius: 2px; background: #205C50;
+  }
+
+  .table-date {
+    font-size: 12px; color: #555;
+  }
+  .table-date.expired { color: #EE4036; }
+
+  .table-actions {
+    display: flex; gap: 8px; align-items: center; font-size: 12px;
+  }
+  .action-btn {
+    display: flex; align-items: center; gap: 3px;
+    font-size: 11px; color: #888; cursor: pointer;
+    padding: 4px 8px; border-radius: 6px;
+    transition: all 0.1s; white-space: nowrap;
+    border: none; background: none; font-family: inherit;
+  }
+  .action-btn:hover { background: #f0f0f0; color: #555; }
+
+  /* Table footer */
+  .table-footer {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 20px; background: #fafafa;
+    border-top: 1px solid #eee;
+  }
+  .table-footer-text {
+    font-size: 12px; color: #888;
+  }
+  .pagination {
+    display: flex; gap: 4px;
+  }
+  .page-btn {
+    width: 32px; height: 32px; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 600; color: #555;
+    border: 1px solid #e0e0e0; background: #fff; cursor: pointer;
+    transition: all 0.1s;
+  }
+  .page-btn:hover { background: #f0f0f0; }
+  .page-btn.active { background: #221F1F; color: #fff; border-color: #221F1F; }
+  .page-btn.next {
+    width: auto; padding: 0 12px; gap: 4px;
+    display: flex; align-items: center;
+  }
+
+  /* Empty state */
+  .empty-state-card {
+    border: 2px dashed #d0d5dc; border-radius: 12px;
+    padding: 48px 32px; text-align: center;
+    margin-top: 24px; background: #fff;
+  }
+  .empty-state-icon { font-size: 64px; margin-bottom: 16px; }
+  .empty-state-title {
+    font-size: 18px; font-weight: 700; color: #221F1F;
+    margin-bottom: 6px;
+  }
+  .empty-state-desc {
+    font-size: 13px; color: #888; margin-bottom: 20px;
+    line-height: 1.5;
+  }
+  .btn-primary-lg {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 12px 24px; border-radius: 10px;
+    background: #205C50; color: #fff; border: none;
+    font-size: 14px; font-weight: 700; cursor: pointer;
+    font-family: inherit;
+  }
+  .btn-primary-lg:hover { background: #5a8a6c; }
+
+  /* Perf bar muted */
+  .perf-muted { opacity: 0.4; }
+</style>
+</head>
+<body>
+
+<!-- ====== PAGE TITLE ====== -->
+<h1>Merchant Portal — Dashboard & My Coupons</h1>
+<p class="subtitle">The merchant's daily command center: check coupon performance, view recent redemptions, and manage all coupons from one place.</p>
+
+<!-- ============================== -->
+<!-- SCREEN 1: MERCHANT DASHBOARD   -->
+<!-- ============================== -->
+<h2>Screen 1 — Merchant Dashboard</h2>
+
+<div class="browser-frame">
+  <div class="browser-bar">
+    <div class="browser-dots"><div class="red"></div><div class="yellow"></div><div class="green"></div></div>
+    <div class="browser-url">
+      <span class="lock">&#x1F512;</span>
+      merchant.b-ticket.ph/dashboard
+    </div>
+  </div>
+
+  <div class="portal-layout">
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+      <div class="sidebar-logo">
+        <div class="logo-box">B</div>
+        <div>
+          <div class="logo-text">B-Ticket</div>
+          <div class="logo-sub">Merchant Portal</div>
+        </div>
+      </div>
+
+      <div class="sidebar-section-label">Main</div>
+      <ul class="sidebar-nav">
+        <li class="sidebar-item active"><span class="icon">&#x1F4CA;</span> Dashboard</li>
+        <li class="sidebar-item"><span class="icon">&#x1F3AB;</span> My Coupons</li>
+        <li class="sidebar-item"><span class="icon">&#x1F4C8;</span> Analytics</li>
+      </ul>
+
+      <div class="sidebar-section-label">Business</div>
+      <ul class="sidebar-nav">
+        <li class="sidebar-item"><span class="icon">&#x1F3E2;</span> Business Profile</li>
+        <li class="sidebar-item"><span class="icon">&#x1F4CD;</span> Branches</li>
+        <li class="sidebar-item"><span class="icon">&#x1F4F7;</span> Photos</li>
+      </ul>
+
+      <div class="sidebar-section-label">Account</div>
+      <ul class="sidebar-nav">
+        <li class="sidebar-item"><span class="icon">&#x2699;&#xFE0F;</span> Settings</li>
+      </ul>
+
+      <div class="sidebar-footer">
+        <div class="avatar-circle">MT</div>
+        <div class="avatar-info">
+          <div class="name">Maple Tree BGC</div>
+          <div class="status"><span class="status-dot"></span> Active</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="main-content">
+      <!-- Top Bar -->
+      <div class="top-bar">
+        <div class="top-bar-left">
+          <div>
+            <div class="top-bar-greeting">Good morning, Maple Tree BGC &#x1F44B;</div>
+            <div class="top-bar-sub">Here's how your coupons are performing today</div>
+          </div>
+        </div>
+        <div class="top-bar-right">
+          <div class="notif-bell">
+            &#x1F514;
+            <div class="notif-badge">3</div>
+          </div>
+          <button class="btn btn-primary">+ Create Coupon</button>
+        </div>
+      </div>
+
+      <!-- Dashboard Area -->
+      <div class="dashboard-area">
+        <!-- Stats Row -->
+        <div class="stats-row">
+          <!-- Card 1: Today's Redemptions -->
+          <div class="stat-card">
+            <div class="stat-header">
+              <div class="stat-label">Today's Redemptions</div>
+              <div class="stat-icon green">&#x1F3AB;</div>
+            </div>
+            <div class="stat-number">24</div>
+            <div class="stat-trend up">
+              <span>&#x2191;</span> 12% vs yesterday
+            </div>
+            <div class="stat-sparkline">
+              <div class="spark-bar" style="height: 8px;"></div>
+              <div class="spark-bar" style="height: 12px;"></div>
+              <div class="spark-bar" style="height: 10px;"></div>
+              <div class="spark-bar" style="height: 16px;"></div>
+              <div class="spark-bar" style="height: 14px;"></div>
+              <div class="spark-bar" style="height: 20px;"></div>
+              <div class="spark-bar active" style="height: 24px;"></div>
+            </div>
+          </div>
+
+          <!-- Card 2: Active Coupons -->
+          <div class="stat-card">
+            <div class="stat-header">
+              <div class="stat-label">Active Coupons</div>
+              <div class="stat-icon blue">&#x1F4CB;</div>
+            </div>
+            <div class="stat-number">8</div>
+            <div class="stat-sub">of 8 total</div>
+          </div>
+
+          <!-- Card 3: Saves This Week -->
+          <div class="stat-card">
+            <div class="stat-header">
+              <div class="stat-label">Saves This Week</div>
+              <div class="stat-icon pink">&#x2764;&#xFE0F;</div>
+            </div>
+            <div class="stat-number">156</div>
+            <div class="stat-trend up">
+              <span>&#x2191;</span> 8% vs last week
+            </div>
+          </div>
+
+          <!-- Card 4: Views This Week -->
+          <div class="stat-card">
+            <div class="stat-header">
+              <div class="stat-label">Views This Week</div>
+              <div class="stat-icon purple">&#x1F441;</div>
+            </div>
+            <div class="stat-number">1,247</div>
+            <div class="stat-trend down">
+              <span>&#x2193;</span> 3% vs last week
+            </div>
+          </div>
+        </div>
+
+        <!-- Two Column Layout -->
+        <div class="dashboard-cols">
+          <!-- LEFT COLUMN (60%) -->
+          <div class="left-col">
+            <!-- Active Coupons Card -->
+            <div class="card">
+              <div class="card-header">
+                <div class="card-title">Active Coupons</div>
+                <a class="card-link">View All &#x2192;</a>
+              </div>
+              <div>
+                <div class="coupon-list-item">
+                  <div class="coupon-thumb" style="background: linear-gradient(135deg, #8B4513, #A0522D);">&#x1F969;</div>
+                  <div class="coupon-list-info">
+                    <div class="coupon-list-name">50% OFF Hanger Steak</div>
+                    <div class="coupon-list-status">
+                      <span class="status-dot-sm green"></span> Active
+                    </div>
+                  </div>
+                  <div class="coupon-list-stats">
+                    <div class="coupon-today">8 redemptions</div>
+                    <div class="coupon-cap">22/30 left</div>
+                  </div>
+                </div>
+
+                <div class="coupon-list-item">
+                  <div class="coupon-thumb" style="background: linear-gradient(135deg, #d4a574, #e8c4a0);">&#x1F363;</div>
+                  <div class="coupon-list-info">
+                    <div class="coupon-list-name">Buy 1 Get 1 California Maki</div>
+                    <div class="coupon-list-status">
+                      <span class="status-dot-sm green"></span> Active
+                    </div>
+                  </div>
+                  <div class="coupon-list-stats">
+                    <div class="coupon-today">5 redemptions</div>
+                    <div class="coupon-cap">25/30 left</div>
+                  </div>
+                </div>
+
+                <div class="coupon-list-item">
+                  <div class="coupon-thumb" style="background: linear-gradient(135deg, #795548, #a1887f);">&#x2615;</div>
+                  <div class="coupon-list-info">
+                    <div class="coupon-list-name">Free Iced Latte</div>
+                    <div class="coupon-list-status">
+                      <span class="status-dot-sm orange"></span> Paused
+                    </div>
+                  </div>
+                  <div class="coupon-list-stats">
+                    <div class="coupon-today" style="color: #bbb;">—</div>
+                    <div class="coupon-cap">—</div>
+                  </div>
+                </div>
+
+                <div class="coupon-list-item">
+                  <div class="coupon-thumb" style="background: linear-gradient(135deg, #F9A250, #ff8a65);">&#x1F355;</div>
+                  <div class="coupon-list-info">
+                    <div class="coupon-list-name">&#x20B1;200 Off Large Pizza</div>
+                    <div class="coupon-list-status">
+                      <span class="status-dot-sm green"></span> Active
+                    </div>
+                  </div>
+                  <div class="coupon-list-stats">
+                    <div class="coupon-today">6 redemptions</div>
+                    <div class="coupon-cap">24/30 left</div>
+                  </div>
+                </div>
+
+                <div class="coupon-list-item">
+                  <div class="coupon-thumb" style="background: linear-gradient(135deg, #56A66F, #66bb6a);">&#x1F37D;&#xFE0F;</div>
+                  <div class="coupon-list-info">
+                    <div class="coupon-list-name">30% Off Full Course</div>
+                    <div class="coupon-list-status">
+                      <span class="status-dot-sm green"></span> Active
+                    </div>
+                  </div>
+                  <div class="coupon-list-stats">
+                    <div class="coupon-today">3 redemptions</div>
+                    <div class="coupon-cap">27/30 left</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Recent Redemptions Card -->
+            <div class="card">
+              <div class="card-header">
+                <div class="card-title">Recent Redemptions</div>
+                <a class="card-link">View All &#x2192;</a>
+              </div>
+              <div>
+                <div class="redemption-item">
+                  <div class="redemption-avatar">JD</div>
+                  <div class="redemption-info">
+                    <div class="redemption-text"><strong>J***n D.</strong> redeemed <strong>50% OFF Hanger Steak</strong></div>
+                    <div class="redemption-meta">Highstreet BGC</div>
+                  </div>
+                  <div class="redemption-time">5 min ago</div>
+                </div>
+
+                <div class="redemption-item">
+                  <div class="redemption-avatar">MS</div>
+                  <div class="redemption-info">
+                    <div class="redemption-text"><strong>M***a S.</strong> redeemed <strong>Buy 1 Get 1 Maki</strong></div>
+                    <div class="redemption-meta">Greenbelt</div>
+                  </div>
+                  <div class="redemption-time">12 min ago</div>
+                </div>
+
+                <div class="redemption-item">
+                  <div class="redemption-avatar">CR</div>
+                  <div class="redemption-info">
+                    <div class="redemption-text"><strong>C***s R.</strong> redeemed <strong>&#x20B1;200 Off Pizza</strong></div>
+                    <div class="redemption-meta">Highstreet BGC</div>
+                  </div>
+                  <div class="redemption-time">23 min ago</div>
+                </div>
+
+                <div class="redemption-item">
+                  <div class="redemption-avatar">AL</div>
+                  <div class="redemption-info">
+                    <div class="redemption-text"><strong>A***e L.</strong> redeemed <strong>50% OFF Hanger Steak</strong></div>
+                    <div class="redemption-meta">SM Megamall</div>
+                  </div>
+                  <div class="redemption-time">45 min ago</div>
+                </div>
+
+                <div class="redemption-item">
+                  <div class="redemption-avatar">RT</div>
+                  <div class="redemption-info">
+                    <div class="redemption-text"><strong>R***l T.</strong> redeemed <strong>30% Off Full Course</strong></div>
+                    <div class="redemption-meta">Highstreet BGC</div>
+                  </div>
+                  <div class="redemption-time">1 hour ago</div>
+                </div>
+
+                <div class="redemption-item">
+                  <div class="redemption-avatar">KM</div>
+                  <div class="redemption-info">
+                    <div class="redemption-text"><strong>K***n M.</strong> redeemed <strong>Buy 1 Get 1 Maki</strong></div>
+                    <div class="redemption-meta">Greenbelt</div>
+                  </div>
+                  <div class="redemption-time">2 hours ago</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- RIGHT COLUMN (40%) -->
+          <div class="right-col">
+            <!-- Quick Insights Card -->
+            <div class="card">
+              <div class="card-header">
+                <div class="card-title">Insights</div>
+              </div>
+
+              <div class="insight-section">
+                <div class="insight-label">&#x1F3C6; Best Performer This Week</div>
+                <div class="insight-value">50% OFF Hanger Steak</div>
+                <div class="insight-desc">142 redemptions &middot; 3,400 views</div>
+                <div class="insight-bar">
+                  <div class="insight-bar-fill" style="width: 92%;"></div>
+                </div>
+              </div>
+
+              <div class="insight-section">
+                <div class="insight-label">&#x1F4A1; Tip of the Day</div>
+                <div class="insight-tip">Coupons available during weekday lunch hours (11AM-2PM) see 2x more redemptions than dinner-only coupons.</div>
+              </div>
+
+              <div class="insight-section">
+                <div class="insight-label">&#x1F4CA; Weekly Summary</div>
+                <a class="card-link" style="font-size: 13px;">View your full analytics report &#x2192;</a>
+              </div>
+            </div>
+
+            <!-- Branches Performance Card -->
+            <div class="card">
+              <div class="card-header">
+                <div class="card-title">Branch Performance (Today)</div>
+              </div>
+              <div style="padding: 8px 0;">
+                <div class="branch-item">
+                  <div class="branch-name">Highstreet BGC</div>
+                  <div class="branch-bar-wrap">
+                    <div class="branch-bar-fill" style="width: 100%;"></div>
+                  </div>
+                  <div class="branch-count">14 redemptions</div>
+                </div>
+                <div class="branch-item">
+                  <div class="branch-name">Greenbelt Makati</div>
+                  <div class="branch-bar-wrap">
+                    <div class="branch-bar-fill" style="width: 50%;"></div>
+                  </div>
+                  <div class="branch-count">7 redemptions</div>
+                </div>
+                <div class="branch-item">
+                  <div class="branch-name">SM Megamall</div>
+                  <div class="branch-bar-wrap">
+                    <div class="branch-bar-fill" style="width: 21%;"></div>
+                  </div>
+                  <div class="branch-count">3 redemptions</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================== -->
+<!-- SCREEN 2: MY COUPONS LIST      -->
+<!-- ============================== -->
+<h2>Screen 2 — My Coupons List</h2>
+
+<div class="browser-frame">
+  <div class="browser-bar">
+    <div class="browser-dots"><div class="red"></div><div class="yellow"></div><div class="green"></div></div>
+    <div class="browser-url">
+      <span class="lock">&#x1F512;</span>
+      merchant.b-ticket.ph/coupons
+    </div>
+  </div>
+
+  <div class="portal-layout" style="min-height: 1050px;">
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+      <div class="sidebar-logo">
+        <div class="logo-box">B</div>
+        <div>
+          <div class="logo-text">B-Ticket</div>
+          <div class="logo-sub">Merchant Portal</div>
+        </div>
+      </div>
+
+      <div class="sidebar-section-label">Main</div>
+      <ul class="sidebar-nav">
+        <li class="sidebar-item"><span class="icon">&#x1F4CA;</span> Dashboard</li>
+        <li class="sidebar-item active"><span class="icon">&#x1F3AB;</span> My Coupons</li>
+        <li class="sidebar-item"><span class="icon">&#x1F4C8;</span> Analytics</li>
+      </ul>
+
+      <div class="sidebar-section-label">Business</div>
+      <ul class="sidebar-nav">
+        <li class="sidebar-item"><span class="icon">&#x1F3E2;</span> Business Profile</li>
+        <li class="sidebar-item"><span class="icon">&#x1F4CD;</span> Branches</li>
+        <li class="sidebar-item"><span class="icon">&#x1F4F7;</span> Photos</li>
+      </ul>
+
+      <div class="sidebar-section-label">Account</div>
+      <ul class="sidebar-nav">
+        <li class="sidebar-item"><span class="icon">&#x2699;&#xFE0F;</span> Settings</li>
+      </ul>
+
+      <div class="sidebar-footer">
+        <div class="avatar-circle">MT</div>
+        <div class="avatar-info">
+          <div class="name">Maple Tree BGC</div>
+          <div class="status"><span class="status-dot"></span> Active</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="main-content">
+      <!-- Top Bar -->
+      <div class="top-bar">
+        <div class="top-bar-left">
+          <div>
+            <div class="top-bar-greeting" style="font-size: 20px;">My Coupons</div>
+            <div class="top-bar-sub">Manage all your coupons</div>
+          </div>
+        </div>
+        <div class="top-bar-right">
+          <button class="btn btn-primary">+ Create New Coupon</button>
+        </div>
+      </div>
+
+      <!-- Filter Bar -->
+      <div class="filter-bar">
+        <div class="filter-tabs">
+          <div class="filter-tab active">All (12)</div>
+          <div class="filter-tab">Active (8)</div>
+          <div class="filter-tab">Paused (1)</div>
+          <div class="filter-tab">Draft (1)</div>
+          <div class="filter-tab">Pending (1)</div>
+          <div class="filter-tab">Expired (1)</div>
+        </div>
+        <div class="filter-right">
+          <input class="search-input" type="text" placeholder="Search coupons...">
+          <select class="sort-dropdown">
+            <option>Sort by: Newest</option>
+            <option>Sort by: Most Redeemed</option>
+            <option>Sort by: Expiring Soon</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Coupons Table -->
+      <div class="coupons-table-area">
+        <div class="coupons-table">
+          <!-- Table Header -->
+          <div class="table-header">
+            <div></div>
+            <div>Coupon Details</div>
+            <div>Status</div>
+            <div>Frequency</div>
+            <div>Performance</div>
+            <div>Valid Until</div>
+            <div>Actions</div>
+          </div>
+
+          <!-- Row 1 -->
+          <div class="table-row">
+            <div class="table-img" style="background: linear-gradient(135deg, #8B4513, #A0522D);">&#x1F969;</div>
+            <div>
+              <div class="table-coupon-name">50% OFF Hanger Steak</div>
+              <div class="table-coupon-sub">Maple Tree &middot; All branches</div>
+            </div>
+            <div><span class="badge badge-green">Active</span></div>
+            <div><span class="pill pill-green">Daily</span></div>
+            <div>
+              <div class="table-perf">142 redeemed &middot; 8 today</div>
+              <div class="perf-bar"><div class="perf-bar-fill" style="width: 73%;"></div></div>
+              <div class="table-perf-sub">22/30 daily cap left</div>
+            </div>
+            <div class="table-date">Aug 30, 2026</div>
+            <div class="table-actions">
+              <button class="action-btn">&#x23F8; Pause</button>
+              <button class="action-btn">&#x270F;&#xFE0F; Edit</button>
+              <button class="action-btn">&#x22EE;</button>
+            </div>
+          </div>
+
+          <!-- Row 2 -->
+          <div class="table-row">
+            <div class="table-img" style="background: linear-gradient(135deg, #d4a574, #e8c4a0);">&#x1F363;</div>
+            <div>
+              <div class="table-coupon-name">Buy 1 Get 1 California Maki</div>
+              <div class="table-coupon-sub">Sushi Corner &middot; Makati</div>
+            </div>
+            <div><span class="badge badge-green">Active</span></div>
+            <div><span class="pill pill-blue">Weekly</span></div>
+            <div>
+              <div class="table-perf">89 redeemed &middot; 5 today</div>
+              <div class="perf-bar"><div class="perf-bar-fill" style="width: 83%;"></div></div>
+              <div class="table-perf-sub">25/30 daily cap left</div>
+            </div>
+            <div class="table-date">Jul 15, 2026</div>
+            <div class="table-actions">
+              <button class="action-btn">&#x23F8; Pause</button>
+              <button class="action-btn">&#x270F;&#xFE0F; Edit</button>
+              <button class="action-btn">&#x22EE;</button>
+            </div>
+          </div>
+
+          <!-- Row 3 -->
+          <div class="table-row">
+            <div class="table-img" style="background: linear-gradient(135deg, #795548, #a1887f);">&#x2615;</div>
+            <div>
+              <div class="table-coupon-name">Free Iced Latte</div>
+              <div class="table-coupon-sub">Maple Tree &middot; BGC only</div>
+            </div>
+            <div><span class="badge badge-orange">Paused</span></div>
+            <div><span class="pill pill-green">Daily</span></div>
+            <div class="perf-muted">
+              <div class="table-perf" style="color: #bbb;">234 total &middot; — today</div>
+            </div>
+            <div class="table-date">Jun 30, 2026</div>
+            <div class="table-actions">
+              <button class="action-btn">&#x25B6;&#xFE0F; Resume</button>
+              <button class="action-btn">&#x270F;&#xFE0F; Edit</button>
+              <button class="action-btn">&#x22EE;</button>
+            </div>
+          </div>
+
+          <!-- Row 4 -->
+          <div class="table-row">
+            <div class="table-img" style="background: linear-gradient(135deg, #F9A250, #ff8a65);">&#x1F355;</div>
+            <div>
+              <div class="table-coupon-name">&#x20B1;200 Off Large Pizza</div>
+              <div class="table-coupon-sub">Maple Tree &middot; All branches</div>
+            </div>
+            <div><span class="badge badge-gray">Draft</span></div>
+            <div><span class="pill pill-gray">—</span></div>
+            <div>
+              <div class="table-perf" style="color: #bbb;">—</div>
+            </div>
+            <div class="table-date" style="color: #bbb;">Not set</div>
+            <div class="table-actions">
+              <button class="action-btn">&#x270F;&#xFE0F; Continue editing</button>
+              <button class="action-btn">&#x1F5D1; Delete</button>
+            </div>
+          </div>
+
+          <!-- Row 5 -->
+          <div class="table-row">
+            <div class="table-img" style="background: linear-gradient(135deg, #4caf50, #81c784);">&#x1F486;</div>
+            <div>
+              <div class="table-coupon-name">30% Off Full Body Massage</div>
+              <div class="table-coupon-sub">Maple Tree &middot; Greenbelt</div>
+            </div>
+            <div><span class="badge badge-yellow">Pending Approval</span></div>
+            <div><span class="pill pill-purple">Monthly</span></div>
+            <div>
+              <div class="table-perf" style="color: #bbb;">—</div>
+            </div>
+            <div class="table-date">Sep 1, 2026</div>
+            <div class="table-actions">
+              <button class="action-btn">&#x1F441; Preview</button>
+              <button class="action-btn">&#x270F;&#xFE0F; Edit</button>
+            </div>
+          </div>
+
+          <!-- Row 6 -->
+          <div class="table-row">
+            <div class="table-img" style="background: linear-gradient(135deg, #e91e63, #f48fb1);">&#x1F9C1;</div>
+            <div>
+              <div class="table-coupon-name">Free Birthday Cake Slice</div>
+              <div class="table-coupon-sub">Maple Tree &middot; All branches</div>
+            </div>
+            <div><span class="badge badge-red">Expired</span></div>
+            <div><span class="pill pill-gray">One-time</span></div>
+            <div>
+              <div class="table-perf">567 total redeemed</div>
+            </div>
+            <div class="table-date expired">Feb 28, 2026</div>
+            <div class="table-actions">
+              <button class="action-btn">&#x1F504; Duplicate</button>
+              <button class="action-btn">&#x1F5D1; Delete</button>
+            </div>
+          </div>
+
+          <!-- Table Footer -->
+          <div class="table-footer">
+            <div class="table-footer-text">Showing 6 of 12 coupons</div>
+            <div class="pagination">
+              <div class="page-btn active">1</div>
+              <div class="page-btn">2</div>
+              <div class="page-btn next">Next &#x2192;</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Empty State -->
+        <div class="empty-state-card">
+          <div class="empty-state-icon">&#x1F3AB;</div>
+          <div class="empty-state-title">No coupons yet</div>
+          <div class="empty-state-desc">Create your first coupon and start attracting customers today.</div>
+          <button class="btn-primary-lg">+ Create Your First Coupon</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

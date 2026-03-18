@@ -1,0 +1,1029 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>B-Ticket — My Vouchers Redesign</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: #111118;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 40px 20px;
+    gap: 60px;
+    min-height: 100vh;
+  }
+
+  h1 { color: #fff; font-size: 28px; font-weight: 700; text-align: center; }
+  .subtitle { color: #888; font-size: 14px; text-align: center; max-width: 520px; line-height: 1.6; }
+  h2 {
+    color: #888; font-size: 13px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 2px;
+    margin-bottom: 20px; text-align: center;
+  }
+
+  .comparison {
+    display: flex; gap: 40px; flex-wrap: wrap;
+    justify-content: center; align-items: flex-start;
+  }
+
+  /* ---- Phone frame ---- */
+  .phone-frame {
+    width: 375px; background: #f5f5f5;
+    border-radius: 44px; overflow: hidden;
+    box-shadow: 0 25px 80px rgba(0,0,0,0.5), 0 0 0 2px #333;
+  }
+  .status-bar {
+    height: 54px; background: #fff;
+    display: flex; align-items: flex-end;
+    justify-content: center; padding-bottom: 8px;
+    position: relative;
+  }
+  .status-bar .time { font-size: 15px; font-weight: 600; color: #000; }
+  .dynamic-island {
+    position: absolute; top: 12px; left: 50%; transform: translateX(-50%);
+    width: 120px; height: 34px; background: #000; border-radius: 20px;
+  }
+  .home-indicator {
+    display: flex; justify-content: center;
+    padding: 10px 0 14px; background: #f5f5f5;
+  }
+  .home-indicator div {
+    width: 134px; height: 5px;
+    background: #1a1a2e; border-radius: 3px; opacity: 0.15;
+  }
+
+  /* ---- Labels ---- */
+  .label { text-align: center; margin-bottom: 12px; }
+  .label-tag {
+    display: inline-block; padding: 6px 18px; border-radius: 8px;
+    font-size: 13px; font-weight: 700; letter-spacing: 0.5px;
+  }
+  .label-old .label-tag { background: #ff4444; color: #fff; }
+  .label-new .label-tag { background: #28a745; color: #fff; }
+
+  /* =========================================
+     CURRENT DESIGN — My Vouchers
+     ========================================= */
+  .old-header {
+    background: #fff; padding: 12px 20px;
+    display: flex; align-items: center; gap: 12px;
+    border-bottom: 1px solid #eee;
+  }
+  .old-header .back { font-size: 20px; color: #333; cursor: pointer; }
+  .old-header-text h3 { font-size: 17px; font-weight: 700; color: #1a1a2e; }
+  .old-header-text p { font-size: 12px; color: #999; }
+
+  .old-voucher-list {
+    background: #f5f5f5; padding: 12px 16px;
+    display: flex; flex-direction: column; gap: 10px;
+    min-height: 580px;
+  }
+  .old-voucher-card {
+    background: #fff; border-radius: 12px;
+    display: flex; overflow: hidden;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  }
+  .old-voucher-img {
+    width: 100px; height: 90px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 36px;
+  }
+  .old-voucher-img.food { background: linear-gradient(135deg, #e8c4a0, #d4a574); }
+  .old-voucher-img.sushi { background: linear-gradient(135deg, #f0d0b0, #e8b888); }
+  .old-voucher-img.dessert { background: linear-gradient(135deg, #f5e0c0, #e8c8a0); }
+  .old-voucher-body {
+    padding: 10px 12px; flex: 1;
+    display: flex; flex-direction: column; justify-content: center;
+  }
+  .old-voucher-title {
+    font-size: 13px; font-weight: 600; color: #1a1a2e;
+    margin-bottom: 3px; line-height: 1.3;
+  }
+  .old-voucher-merchant { font-size: 11px; color: #999; margin-bottom: 6px; }
+  .old-voucher-badge {
+    display: inline-block; align-self: flex-start;
+    font-size: 9px; font-weight: 600; padding: 3px 8px;
+    border-radius: 4px; text-transform: uppercase; letter-spacing: 0.3px;
+  }
+  .old-voucher-badge.exclusive { background: #e8f5e9; color: #2e7d32; }
+  .old-voucher-badge.instore { background: #e3f2fd; color: #1565c0; }
+  .old-voucher-badge.expiring { background: #fff3e0; color: #e65100; }
+
+  /* =========================================
+     NEW DESIGN — My Vouchers
+     ========================================= */
+  .new-header {
+    background: #fff; padding: 12px 20px;
+    display: flex; align-items: center; justify-content: space-between;
+    border-bottom: 1px solid #eee;
+  }
+  .new-header-left {
+    display: flex; align-items: center; gap: 12px;
+  }
+  .new-header .back {
+    font-size: 20px; color: #333; cursor: pointer;
+    width: 32px; height: 32px; display: flex;
+    align-items: center; justify-content: center;
+  }
+  .new-header-text h3 { font-size: 17px; font-weight: 700; color: #1a1a2e; }
+  .new-header-text p { font-size: 12px; color: #999; }
+
+  /* Savings summary bar */
+  .savings-bar {
+    background: linear-gradient(135deg, #f0faf3 0%, #e8f5eb 100%);
+    padding: 12px 20px;
+    display: flex; align-items: center; justify-content: space-between;
+    border-bottom: 1px solid #d4edda;
+  }
+  .savings-bar-left {
+    display: flex; align-items: center; gap: 10px;
+  }
+  .savings-icon {
+    width: 36px; height: 36px; border-radius: 10px;
+    background: #6B9B7D; display: flex;
+    align-items: center; justify-content: center;
+    font-size: 16px; color: #fff;
+  }
+  .savings-amount { font-size: 20px; font-weight: 800; color: #2d6a4f; }
+  .savings-label { font-size: 11px; color: #6B9B7D; font-weight: 500; }
+  .savings-bar-right { text-align: right; }
+  .savings-count { font-size: 22px; font-weight: 800; color: #2d6a4f; }
+  .savings-count-label { font-size: 11px; color: #6B9B7D; font-weight: 500; }
+
+  /* Filter tabs */
+  .filter-tabs {
+    background: #fff; padding: 10px 16px;
+    display: flex; gap: 8px; overflow-x: auto;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  .filter-tab {
+    padding: 6px 14px; border-radius: 20px;
+    font-size: 12px; font-weight: 600;
+    white-space: nowrap; cursor: pointer;
+    border: 1.5px solid #e0e0e0; color: #666;
+    background: #fff; transition: all 0.15s;
+  }
+  .filter-tab.active {
+    background: #1a1a2e; color: #fff; border-color: #1a1a2e;
+  }
+
+  .new-voucher-list {
+    background: #f5f5f5; padding: 10px 16px 16px;
+    display: flex; flex-direction: column; gap: 10px;
+    min-height: 420px;
+  }
+
+  .new-voucher-card {
+    background: #fff; border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 1px 6px rgba(0,0,0,0.06);
+    position: relative;
+  }
+  .new-voucher-card.expiring-soon {
+    border-left: 4px solid #ff9800;
+  }
+  .new-voucher-card.redeemed {
+    opacity: 0.55;
+  }
+
+  .new-voucher-top {
+    display: flex; padding: 12px;
+  }
+  .new-voucher-img {
+    width: 80px; height: 80px; flex-shrink: 0;
+    border-radius: 10px; display: flex;
+    align-items: center; justify-content: center;
+    font-size: 34px; position: relative;
+  }
+  .new-voucher-img.food { background: linear-gradient(135deg, #e8c4a0, #d4a574); }
+  .new-voucher-img.sushi { background: linear-gradient(135deg, #f0d0b0, #e8b888); }
+  .new-voucher-img.dessert { background: linear-gradient(135deg, #f5e0c0, #e8c8a0); }
+  .new-voucher-img.spa { background: linear-gradient(135deg, #c8e6c9, #a5d6a7); }
+
+  .new-voucher-body {
+    padding: 0 12px; flex: 1;
+    display: flex; flex-direction: column; justify-content: center;
+  }
+  .new-voucher-title {
+    font-size: 14px; font-weight: 700; color: #1a1a2e;
+    margin-bottom: 2px; line-height: 1.3;
+  }
+  .new-voucher-merchant {
+    font-size: 12px; color: #888; margin-bottom: 6px;
+    display: flex; align-items: center; gap: 4px;
+  }
+  .new-voucher-merchant .dot { color: #ccc; }
+
+  .new-voucher-pricing {
+    display: flex; align-items: center; gap: 6px;
+  }
+  .new-voucher-original {
+    font-size: 12px; color: #bbb;
+    text-decoration: line-through; font-weight: 500;
+  }
+  .new-voucher-arrow { font-size: 10px; color: #ccc; }
+  .new-voucher-price {
+    font-size: 14px; font-weight: 800; color: #1a1a2e;
+  }
+  .new-voucher-discount {
+    font-size: 10px; font-weight: 800; color: #fff;
+    background: #FF6B6B; padding: 2px 7px;
+    border-radius: 10px; margin-left: 4px;
+  }
+
+  .new-voucher-bottom {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 8px 12px; border-top: 1px solid #f5f5f5;
+    background: #fafafa;
+  }
+  .new-voucher-expiry {
+    font-size: 11px; font-weight: 600;
+    display: flex; align-items: center; gap: 4px;
+  }
+  .new-voucher-expiry.normal { color: #999; }
+  .new-voucher-expiry.warning { color: #e65100; }
+  .new-voucher-expiry.expired { color: #dc3545; }
+  .new-voucher-expiry.redeemed-text { color: #28a745; }
+
+  .new-voucher-action {
+    font-size: 12px; font-weight: 700; color: #6B9B7D;
+    cursor: pointer; display: flex; align-items: center; gap: 3px;
+    padding: 4px 0;
+  }
+  .new-voucher-action:hover { color: #5A876B; }
+  .new-voucher-action.disabled { color: #ccc; cursor: default; }
+
+  /* Redeemed overlay stamp */
+  .redeemed-stamp {
+    position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%, -50%) rotate(-15deg);
+    border: 3px solid #28a745; border-radius: 10px;
+    padding: 4px 16px; color: #28a745;
+    font-size: 14px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 1px;
+    background: rgba(255,255,255,0.9);
+    pointer-events: none;
+  }
+
+  /* ---- Annotation section ---- */
+  .annotation-section { width: 100%; max-width: 800px; }
+  .annotation-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 14px;
+  }
+  @media (max-width: 700px) {
+    .annotation-grid { grid-template-columns: 1fr; }
+  }
+  .annotation-card {
+    background: #1e1e2e; border-radius: 12px;
+    padding: 18px; border-left: 4px solid;
+  }
+  .annotation-card.good { border-color: #28a745; }
+  .annotation-card.bad { border-color: #ff4444; }
+  .annotation-card h4 { color: #fff; font-size: 13px; font-weight: 700; margin-bottom: 5px; }
+  .annotation-card p { color: #aaa; font-size: 12px; line-height: 1.5; }
+  .annotation-card .tag {
+    display: inline-block; padding: 2px 8px; border-radius: 4px;
+    font-size: 10px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.5px; margin-bottom: 6px;
+  }
+  .annotation-card.good .tag { background: #28a74522; color: #28a745; }
+  .annotation-card.bad .tag { background: #ff444422; color: #ff4444; }
+
+  /* =========================================
+     EXPIRY LOGIC — Visual States
+     ========================================= */
+  .expiry-section { width: 100%; max-width: 960px; }
+
+  .expiry-timeline {
+    display: flex; flex-direction: column; gap: 0;
+    position: relative; padding-left: 40px;
+  }
+  .expiry-timeline::before {
+    content: ''; position: absolute; left: 15px; top: 20px; bottom: 20px;
+    width: 3px; background: linear-gradient(to bottom, #6B9B7D 0%, #ff9800 50%, #dc3545 80%, #999 100%);
+    border-radius: 2px;
+  }
+
+  .timeline-node {
+    position: relative; padding: 16px 0 16px 24px;
+  }
+  .timeline-dot {
+    position: absolute; left: -32px; top: 20px;
+    width: 20px; height: 20px; border-radius: 50%;
+    border: 3px solid; display: flex;
+    align-items: center; justify-content: center;
+    font-size: 9px; background: #111118;
+  }
+  .timeline-dot.green { border-color: #6B9B7D; color: #6B9B7D; }
+  .timeline-dot.blue { border-color: #4A90D9; color: #4A90D9; }
+  .timeline-dot.orange { border-color: #ff9800; color: #ff9800; }
+  .timeline-dot.red { border-color: #dc3545; color: #dc3545; }
+  .timeline-dot.gray { border-color: #666; color: #666; }
+
+  .timeline-content {
+    background: #1e1e2e; border-radius: 12px;
+    padding: 16px 18px; position: relative;
+  }
+  .timeline-content::before {
+    content: ''; position: absolute; left: -8px; top: 22px;
+    width: 0; height: 0;
+    border-top: 8px solid transparent;
+    border-bottom: 8px solid transparent;
+    border-right: 8px solid #1e1e2e;
+  }
+  .timeline-day {
+    font-size: 11px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 1px; margin-bottom: 4px;
+  }
+  .timeline-day.green { color: #6B9B7D; }
+  .timeline-day.blue { color: #4A90D9; }
+  .timeline-day.orange { color: #ff9800; }
+  .timeline-day.red { color: #dc3545; }
+  .timeline-day.gray { color: #666; }
+  .timeline-title { font-size: 14px; font-weight: 700; color: #fff; margin-bottom: 4px; }
+  .timeline-desc { font-size: 12px; color: #aaa; line-height: 1.5; }
+  .timeline-notif {
+    margin-top: 8px; padding: 8px 12px;
+    background: #252535; border-radius: 8px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .timeline-notif-icon {
+    width: 28px; height: 28px; border-radius: 7px;
+    background: #6B9B7D; display: flex;
+    align-items: center; justify-content: center;
+    font-size: 13px; flex-shrink: 0;
+  }
+  .timeline-notif-text { font-size: 11px; color: #ccc; line-height: 1.4; }
+  .timeline-notif-label {
+    font-size: 9px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.5px; color: #888; margin-bottom: 2px;
+  }
+
+  /* Expiry state cards for phone */
+  .expiry-states-grid {
+    display: flex; gap: 20px; flex-wrap: wrap; justify-content: center;
+  }
+  .expiry-state-phone {
+    width: 320px; border-radius: 20px; overflow: hidden;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+    background: #f5f5f5;
+  }
+  .expiry-state-label {
+    background: #1e1e2e; color: #999;
+    font-size: 11px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 1px;
+    padding: 10px 16px; text-align: center;
+  }
+
+  /* Progress bar for expiry */
+  .expiry-progress-wrap {
+    padding: 0 12px;
+    margin-top: 4px; margin-bottom: 2px;
+  }
+  .expiry-progress-bar {
+    height: 4px; border-radius: 2px; background: #eee;
+    overflow: hidden;
+  }
+  .expiry-progress-fill {
+    height: 100%; border-radius: 2px;
+    transition: width 0.3s;
+  }
+  .expiry-progress-fill.healthy { background: #6B9B7D; }
+  .expiry-progress-fill.warning { background: #ff9800; }
+  .expiry-progress-fill.critical { background: #dc3545; }
+  .expiry-progress-text {
+    font-size: 10px; color: #999; font-weight: 500;
+    padding: 3px 12px 0; text-align: right;
+  }
+
+  /* Expired card */
+  .new-voucher-card.expired-card {
+    opacity: 0.45; border-left: 4px solid #dc3545;
+  }
+  .expired-stamp {
+    position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%, -50%) rotate(-15deg);
+    border: 3px solid #dc3545; border-radius: 10px;
+    padding: 4px 16px; color: #dc3545;
+    font-size: 14px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 1px;
+    background: rgba(255,255,255,0.9);
+    pointer-events: none;
+  }
+</style>
+</head>
+<body>
+
+<h1>B-Ticket — My Vouchers Redesign</h1>
+<p class="subtitle">
+  Current design is missing expiry dates, savings amounts, and status clarity.
+  The redesign adds all critical info a subscriber needs at a glance.
+</p>
+
+<!-- ============================== -->
+<!-- SIDE BY SIDE PHONE FRAMES      -->
+<!-- ============================== -->
+
+<div class="comparison">
+
+  <!-- ==================== -->
+  <!-- CURRENT DESIGN       -->
+  <!-- ==================== -->
+  <div>
+    <div class="label label-old"><span class="label-tag">CURRENT DESIGN</span></div>
+    <div class="phone-frame">
+      <div class="status-bar">
+        <div class="dynamic-island"></div>
+        <span class="time">9:41</span>
+      </div>
+
+      <div class="old-header">
+        <span class="back">←</span>
+        <div class="old-header-text">
+          <h3>My Vouchers</h3>
+          <p>Collected coupons</p>
+        </div>
+      </div>
+
+      <div class="old-voucher-list">
+
+        <!-- Card 1 -->
+        <div class="old-voucher-card">
+          <div class="old-voucher-img food">🥩</div>
+          <div class="old-voucher-body">
+            <div class="old-voucher-title">Buy 1 Get 1 California Maki</div>
+            <div class="old-voucher-merchant">Sushi Nori – Makati</div>
+            <span class="old-voucher-badge exclusive">Exclusive to B-ticket</span>
+          </div>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="old-voucher-card">
+          <div class="old-voucher-img sushi">🍣</div>
+          <div class="old-voucher-body">
+            <div class="old-voucher-title">₱450 Off California Maki</div>
+            <div class="old-voucher-merchant">Sushi Nori – Makati</div>
+            <span class="old-voucher-badge exclusive">Exclusive to B-ticket</span>
+          </div>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="old-voucher-card">
+          <div class="old-voucher-img food">🍱</div>
+          <div class="old-voucher-body">
+            <div class="old-voucher-title">Buy 1 Get 1 California Maki</div>
+            <div class="old-voucher-merchant">Sushi Nori – Makati</div>
+            <span class="old-voucher-badge instore">Available in-store</span>
+          </div>
+        </div>
+
+        <!-- Card 4 -->
+        <div class="old-voucher-card">
+          <div class="old-voucher-img sushi">🍣</div>
+          <div class="old-voucher-body">
+            <div class="old-voucher-title">Buy 1 Get 1 California Maki</div>
+            <div class="old-voucher-merchant">Sushi Nori – Makati</div>
+            <span class="old-voucher-badge expiring">Expiring in 8 hours</span>
+          </div>
+        </div>
+
+        <!-- Card 5 -->
+        <div class="old-voucher-card">
+          <div class="old-voucher-img dessert">🧁</div>
+          <div class="old-voucher-body">
+            <div class="old-voucher-title">₱450 Off California Maki</div>
+            <div class="old-voucher-merchant">Sushi Nori – Makati</div>
+            <span class="old-voucher-badge exclusive">Exclusive to B-ticket</span>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="home-indicator"><div></div></div>
+    </div>
+  </div>
+
+  <!-- ==================== -->
+  <!-- RECOMMENDED DESIGN   -->
+  <!-- ==================== -->
+  <div>
+    <div class="label label-new"><span class="label-tag">RECOMMENDED DESIGN</span></div>
+    <div class="phone-frame">
+      <div class="status-bar">
+        <div class="dynamic-island"></div>
+        <span class="time">9:41</span>
+      </div>
+
+      <div class="new-header">
+        <div class="new-header-left">
+          <span class="back">←</span>
+          <div class="new-header-text">
+            <h3>My Vouchers</h3>
+            <p>5 collected</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Savings summary -->
+      <div class="savings-bar">
+        <div class="savings-bar-left">
+          <div class="savings-icon">₱</div>
+          <div>
+            <div class="savings-amount">₱2,350</div>
+            <div class="savings-label">Total savings this month</div>
+          </div>
+        </div>
+        <div class="savings-bar-right">
+          <div class="savings-count">12</div>
+          <div class="savings-count-label">Redeemed</div>
+        </div>
+      </div>
+
+      <!-- Filter tabs -->
+      <div class="filter-tabs">
+        <div class="filter-tab active">All (5)</div>
+        <div class="filter-tab">Active (3)</div>
+        <div class="filter-tab">Expiring (1)</div>
+        <div class="filter-tab">Redeemed (1)</div>
+      </div>
+
+      <div class="new-voucher-list">
+
+        <!-- Card 1 — Expiring soon (orange left border) -->
+        <div class="new-voucher-card expiring-soon">
+          <div class="new-voucher-top">
+            <div class="new-voucher-img food">🥩</div>
+            <div class="new-voucher-body">
+              <div class="new-voucher-title">Buy 1 Get 1 California Maki</div>
+              <div class="new-voucher-merchant">
+                🍣 Sushi Nori <span class="dot">·</span> Makati
+              </div>
+              <div class="new-voucher-pricing">
+                <span class="new-voucher-original">₱600</span>
+                <span class="new-voucher-arrow">→</span>
+                <span class="new-voucher-price">₱300</span>
+                <span class="new-voucher-discount">50% OFF</span>
+              </div>
+            </div>
+          </div>
+          <div class="new-voucher-bottom">
+            <span class="new-voucher-expiry warning">⚠ Expires in 3 hours</span>
+            <span class="new-voucher-action">Use Now →</span>
+          </div>
+        </div>
+
+        <!-- Card 2 — Active -->
+        <div class="new-voucher-card">
+          <div class="new-voucher-top">
+            <div class="new-voucher-img sushi">🍣</div>
+            <div class="new-voucher-body">
+              <div class="new-voucher-title">₱450 Off California Maki</div>
+              <div class="new-voucher-merchant">
+                🍣 Sushi Nori <span class="dot">·</span> Makati
+              </div>
+              <div class="new-voucher-pricing">
+                <span class="new-voucher-original">₱900</span>
+                <span class="new-voucher-arrow">→</span>
+                <span class="new-voucher-price">₱450</span>
+                <span class="new-voucher-discount">50% OFF</span>
+              </div>
+            </div>
+          </div>
+          <div class="new-voucher-bottom">
+            <span class="new-voucher-expiry normal">📅 Expires Mar 25</span>
+            <span class="new-voucher-action">Use Now →</span>
+          </div>
+        </div>
+
+        <!-- Card 3 — Active -->
+        <div class="new-voucher-card">
+          <div class="new-voucher-top">
+            <div class="new-voucher-img dessert">🧁</div>
+            <div class="new-voucher-body">
+              <div class="new-voucher-title">Free Matcha Latte</div>
+              <div class="new-voucher-merchant">
+                ☕ Café Selina <span class="dot">·</span> BGC
+              </div>
+              <div class="new-voucher-pricing">
+                <span class="new-voucher-original">₱220</span>
+                <span class="new-voucher-arrow">→</span>
+                <span class="new-voucher-price" style="color:#28a745;">FREE</span>
+                <span class="new-voucher-discount" style="background:#28a745;">100% OFF</span>
+              </div>
+            </div>
+          </div>
+          <div class="new-voucher-bottom">
+            <span class="new-voucher-expiry normal">📅 Expires Apr 1</span>
+            <span class="new-voucher-action">Use Now →</span>
+          </div>
+        </div>
+
+        <!-- Card 4 — Already redeemed -->
+        <div class="new-voucher-card redeemed">
+          <div class="redeemed-stamp">Redeemed</div>
+          <div class="new-voucher-top">
+            <div class="new-voucher-img spa">💆</div>
+            <div class="new-voucher-body">
+              <div class="new-voucher-title">30% Off Full Body Massage</div>
+              <div class="new-voucher-merchant">
+                🧖 Zen Spa <span class="dot">·</span> Taguig
+              </div>
+              <div class="new-voucher-pricing">
+                <span class="new-voucher-original">₱1,200</span>
+                <span class="new-voucher-arrow">→</span>
+                <span class="new-voucher-price">₱840</span>
+                <span class="new-voucher-discount">30% OFF</span>
+              </div>
+            </div>
+          </div>
+          <div class="new-voucher-bottom">
+            <span class="new-voucher-expiry redeemed-text">✓ Used on Mar 15</span>
+            <span class="new-voucher-action disabled">View Receipt</span>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="home-indicator"><div></div></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ============================== -->
+<!-- WHAT CHANGED & WHY             -->
+<!-- ============================== -->
+
+<div class="annotation-section">
+  <h2>What Changed & Why</h2>
+  <div class="annotation-grid">
+    <div class="annotation-card good">
+      <div class="tag">Added</div>
+      <h4>Savings Summary Bar</h4>
+      <p>Shows "₱2,350 saved this month" + redemption count. Reinforces subscription value — the user sees their ₱99/mo is paying off massively.</p>
+    </div>
+    <div class="annotation-card good">
+      <div class="tag">Added</div>
+      <h4>Filter Tabs</h4>
+      <p>All / Active / Expiring / Redeemed tabs let users quickly find what they need. "Expiring" tab creates urgency to use coupons before they're gone.</p>
+    </div>
+    <div class="annotation-card good">
+      <div class="tag">Added</div>
+      <h4>Expiry Dates on Every Card</h4>
+      <p>The current design shows NO expiry dates. Users don't know if a coupon expires today or next month. Now each card shows exactly when, with color-coded urgency.</p>
+    </div>
+    <div class="annotation-card good">
+      <div class="tag">Added</div>
+      <h4>Price Breakdown on Cards</h4>
+      <p>Each card now shows ₱900 → ₱450 with a 50% OFF badge. Users instantly see the value of each coupon without opening it.</p>
+    </div>
+    <div class="annotation-card bad">
+      <div class="tag">Removed</div>
+      <h4>"Exclusive to B-ticket" Badge</h4>
+      <p>This is a marketing label, not useful info. Replaced with expiry dates and pricing — things the user actually needs to make a decision.</p>
+    </div>
+    <div class="annotation-card good">
+      <div class="tag">Added</div>
+      <h4>Orange Border for Expiring</h4>
+      <p>Coupons expiring within 24h get a left orange border + "⚠ Expires in 3 hours" warning. Visual urgency drives redemption.</p>
+    </div>
+    <div class="annotation-card good">
+      <div class="tag">Added</div>
+      <h4>"Use Now →" Action</h4>
+      <p>Each card has a clear action link. One tap goes straight to the redemption screen. No confusion about what to do next.</p>
+    </div>
+    <div class="annotation-card good">
+      <div class="tag">Added</div>
+      <h4>Redeemed State</h4>
+      <p>Used coupons are faded with a "REDEEMED" stamp and "Used on Mar 15" date. Users can still view receipts. Clear visual separation from active coupons.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ============================== -->
+<!-- EXPIRY LOGIC TIMELINE          -->
+<!-- ============================== -->
+
+<div class="expiry-section">
+  <h2>Coupon Claim Expiry — Full Lifecycle</h2>
+  <p class="subtitle" style="margin-bottom:30px;">
+    When a subscriber collects a coupon, a 7-day claim window begins.<br>
+    Here's every state the coupon goes through, with push notification triggers.
+  </p>
+
+  <div class="expiry-timeline">
+
+    <!-- Day 0: Collected -->
+    <div class="timeline-node">
+      <div class="timeline-dot green">✓</div>
+      <div class="timeline-content">
+        <div class="timeline-day green">Day 0 — Coupon Collected</div>
+        <div class="timeline-title">Claim window starts (7 days)</div>
+        <div class="timeline-desc">
+          User taps "Collect Coupon." A 7-day countdown begins — or the merchant's coupon end date, whichever comes first. The coupon is reserved for this user.
+        </div>
+        <div class="timeline-notif">
+          <div class="timeline-notif-icon">🎟</div>
+          <div>
+            <div class="timeline-notif-label">Push Notification</div>
+            <div class="timeline-notif-text">"Coupon saved! You have 7 days to use your 50% off at Sushi Nori. Enjoy your meal! 🍣"</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Day 4: Gentle reminder -->
+    <div class="timeline-node">
+      <div class="timeline-dot blue">📅</div>
+      <div class="timeline-content">
+        <div class="timeline-day blue">Day 4 — 3 Days Left</div>
+        <div class="timeline-title">Gentle reminder</div>
+        <div class="timeline-desc">
+          Card still looks normal — green expiry text shows "Expires Mar 25." No visual urgency yet. A helpful push reminds them.
+        </div>
+        <div class="timeline-notif">
+          <div class="timeline-notif-icon">📅</div>
+          <div>
+            <div class="timeline-notif-label">Push Notification</div>
+            <div class="timeline-notif-text">"Reminder: Your 50% off Hanger Steak coupon expires in 3 days. Plan your visit! 🥩"</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Day 6: Urgency -->
+    <div class="timeline-node">
+      <div class="timeline-dot orange">⚠</div>
+      <div class="timeline-content">
+        <div class="timeline-day orange">Day 6 — 24 Hours Left</div>
+        <div class="timeline-title">Urgency state activated</div>
+        <div class="timeline-desc">
+          Card gets an <strong>orange left border</strong>. Expiry text turns orange: "⚠ Expires in 24 hours." Progress bar turns orange. Card is auto-sorted to the top of the list.
+        </div>
+        <div class="timeline-notif">
+          <div class="timeline-notif-icon" style="background:#ff9800;">⚠</div>
+          <div>
+            <div class="timeline-notif-label">Push Notification</div>
+            <div class="timeline-notif-text">"⚠ Last day! Your ₱450 savings at Sushi Nori expires tomorrow. Don't miss out!"</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Day 6.75: Critical -->
+    <div class="timeline-node">
+      <div class="timeline-dot red">🔥</div>
+      <div class="timeline-content">
+        <div class="timeline-day red">Day 6.75 — 6 Hours Left</div>
+        <div class="timeline-title">Critical state</div>
+        <div class="timeline-desc">
+          Expiry text turns <strong>red</strong>: "🔥 Expires in 6 hours." Progress bar turns red. This is the highest-converting push notification window.
+        </div>
+        <div class="timeline-notif">
+          <div class="timeline-notif-icon" style="background:#dc3545;">🔥</div>
+          <div>
+            <div class="timeline-notif-label">Push Notification</div>
+            <div class="timeline-notif-text">"🔥 6 hours left! Your 50% off Hanger Steak coupon is about to expire. Use it now before it's gone!"</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Day 7: Expired -->
+    <div class="timeline-node">
+      <div class="timeline-dot gray">✕</div>
+      <div class="timeline-content">
+        <div class="timeline-day gray">Day 7 — Expired</div>
+        <div class="timeline-title">Coupon claim expired</div>
+        <div class="timeline-desc">
+          Card is faded with an "EXPIRED" stamp. Moved to bottom of list or "Expired" tab. A re-engagement push offers similar deals. The coupon slot is released back to the merchant's pool.
+        </div>
+        <div class="timeline-notif">
+          <div class="timeline-notif-icon" style="background:#666;">📢</div>
+          <div>
+            <div class="timeline-notif-label">Push Notification</div>
+            <div class="timeline-notif-text">"Your coupon expired, but Sushi Nori has 3 new deals! Browse now and save →"</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ============================== -->
+<!-- ALL EXPIRY CARD STATES          -->
+<!-- ============================== -->
+
+<div class="expiry-section">
+  <h2>All Voucher Card States</h2>
+  <div class="expiry-states-grid">
+
+    <!-- State 1: Healthy (5+ days) -->
+    <div class="expiry-state-phone">
+      <div class="expiry-state-label" style="background:#1a3d2a; color:#6B9B7D;">Active — 5+ Days Left</div>
+      <div style="background:#f5f5f5; padding:10px 12px;">
+        <div class="new-voucher-card" style="margin:0;">
+          <div class="new-voucher-top">
+            <div class="new-voucher-img sushi">🍣</div>
+            <div class="new-voucher-body">
+              <div class="new-voucher-title">₱450 Off California Maki</div>
+              <div class="new-voucher-merchant">🍣 Sushi Nori <span class="dot">·</span> Makati</div>
+              <div class="new-voucher-pricing">
+                <span class="new-voucher-original">₱900</span>
+                <span class="new-voucher-arrow">→</span>
+                <span class="new-voucher-price">₱450</span>
+                <span class="new-voucher-discount">50% OFF</span>
+              </div>
+            </div>
+          </div>
+          <div class="expiry-progress-wrap">
+            <div class="expiry-progress-bar"><div class="expiry-progress-fill healthy" style="width:71%;"></div></div>
+          </div>
+          <div class="expiry-progress-text">5 of 7 days left</div>
+          <div class="new-voucher-bottom">
+            <span class="new-voucher-expiry normal">📅 Expires Mar 25</span>
+            <span class="new-voucher-action">Use Now →</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- State 2: Warning (24h left) -->
+    <div class="expiry-state-phone">
+      <div class="expiry-state-label" style="background:#3d2a0a; color:#ff9800;">Warning — 24 Hours Left</div>
+      <div style="background:#f5f5f5; padding:10px 12px;">
+        <div class="new-voucher-card expiring-soon" style="margin:0;">
+          <div class="new-voucher-top">
+            <div class="new-voucher-img sushi">🍣</div>
+            <div class="new-voucher-body">
+              <div class="new-voucher-title">₱450 Off California Maki</div>
+              <div class="new-voucher-merchant">🍣 Sushi Nori <span class="dot">·</span> Makati</div>
+              <div class="new-voucher-pricing">
+                <span class="new-voucher-original">₱900</span>
+                <span class="new-voucher-arrow">→</span>
+                <span class="new-voucher-price">₱450</span>
+                <span class="new-voucher-discount">50% OFF</span>
+              </div>
+            </div>
+          </div>
+          <div class="expiry-progress-wrap">
+            <div class="expiry-progress-bar"><div class="expiry-progress-fill warning" style="width:14%;"></div></div>
+          </div>
+          <div class="expiry-progress-text" style="color:#ff9800;">1 of 7 days left</div>
+          <div class="new-voucher-bottom">
+            <span class="new-voucher-expiry warning">⚠ Expires in 24 hours</span>
+            <span class="new-voucher-action">Use Now →</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- State 3: Critical (< 6 hours) -->
+    <div class="expiry-state-phone">
+      <div class="expiry-state-label" style="background:#3d0a0a; color:#dc3545;">Critical — Under 6 Hours</div>
+      <div style="background:#f5f5f5; padding:10px 12px;">
+        <div class="new-voucher-card" style="margin:0; border-left: 4px solid #dc3545;">
+          <div class="new-voucher-top">
+            <div class="new-voucher-img sushi">🍣</div>
+            <div class="new-voucher-body">
+              <div class="new-voucher-title">₱450 Off California Maki</div>
+              <div class="new-voucher-merchant">🍣 Sushi Nori <span class="dot">·</span> Makati</div>
+              <div class="new-voucher-pricing">
+                <span class="new-voucher-original">₱900</span>
+                <span class="new-voucher-arrow">→</span>
+                <span class="new-voucher-price">₱450</span>
+                <span class="new-voucher-discount">50% OFF</span>
+              </div>
+            </div>
+          </div>
+          <div class="expiry-progress-wrap">
+            <div class="expiry-progress-bar"><div class="expiry-progress-fill critical" style="width:4%;"></div></div>
+          </div>
+          <div class="expiry-progress-text" style="color:#dc3545;">6 hours left</div>
+          <div class="new-voucher-bottom">
+            <span class="new-voucher-expiry expired" style="font-weight:700;">🔥 Expires in 6 hours!</span>
+            <span class="new-voucher-action" style="color:#dc3545; font-weight:800;">Use Now →</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- State 4: Expired -->
+    <div class="expiry-state-phone">
+      <div class="expiry-state-label" style="background:#1e1e1e; color:#666;">Expired</div>
+      <div style="background:#f5f5f5; padding:10px 12px;">
+        <div class="new-voucher-card expired-card" style="margin:0;">
+          <div class="expired-stamp">Expired</div>
+          <div class="new-voucher-top">
+            <div class="new-voucher-img sushi">🍣</div>
+            <div class="new-voucher-body">
+              <div class="new-voucher-title">₱450 Off California Maki</div>
+              <div class="new-voucher-merchant">🍣 Sushi Nori <span class="dot">·</span> Makati</div>
+              <div class="new-voucher-pricing">
+                <span class="new-voucher-original">₱900</span>
+                <span class="new-voucher-arrow">→</span>
+                <span class="new-voucher-price">₱450</span>
+                <span class="new-voucher-discount" style="background:#999;">50% OFF</span>
+              </div>
+            </div>
+          </div>
+          <div class="expiry-progress-wrap">
+            <div class="expiry-progress-bar"><div class="expiry-progress-fill" style="width:0%; background:#999;"></div></div>
+          </div>
+          <div class="expiry-progress-text" style="color:#dc3545;">Expired on Mar 21</div>
+          <div class="new-voucher-bottom">
+            <span class="new-voucher-expiry expired">✕ Expired Mar 21</span>
+            <span class="new-voucher-action disabled">Recollect →</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- State 5: Redeemed (success) -->
+    <div class="expiry-state-phone">
+      <div class="expiry-state-label" style="background:#0a3d1a; color:#28a745;">Redeemed (Success)</div>
+      <div style="background:#f5f5f5; padding:10px 12px;">
+        <div class="new-voucher-card redeemed" style="margin:0;">
+          <div class="redeemed-stamp">Redeemed</div>
+          <div class="new-voucher-top">
+            <div class="new-voucher-img sushi">🍣</div>
+            <div class="new-voucher-body">
+              <div class="new-voucher-title">₱450 Off California Maki</div>
+              <div class="new-voucher-merchant">🍣 Sushi Nori <span class="dot">·</span> Makati</div>
+              <div class="new-voucher-pricing">
+                <span class="new-voucher-original">₱900</span>
+                <span class="new-voucher-arrow">→</span>
+                <span class="new-voucher-price">₱450</span>
+                <span class="new-voucher-discount">50% OFF</span>
+              </div>
+            </div>
+          </div>
+          <div class="new-voucher-bottom">
+            <span class="new-voucher-expiry redeemed-text">✓ Used on Mar 18</span>
+            <span class="new-voucher-action disabled">View Receipt</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ============================== -->
+<!-- EXPIRY RULES SUMMARY           -->
+<!-- ============================== -->
+
+<div class="annotation-section">
+  <h2>Expiry Rules Summary</h2>
+  <div class="annotation-grid">
+    <div class="annotation-card good">
+      <div class="tag">Rule</div>
+      <h4>7-Day Claim Window</h4>
+      <p>After collecting, subscriber has 7 days to redeem at the store. Long enough to plan a visit, short enough to create urgency. Can be adjusted per merchant.</p>
+    </div>
+    <div class="annotation-card good">
+      <div class="tag">Rule</div>
+      <h4>Merchant End Date Overrides</h4>
+      <p>If a merchant's promo ends in 3 days and a user collects it, the claim expires in 3 days — not 7. The earlier date always wins.</p>
+    </div>
+    <div class="annotation-card good">
+      <div class="tag">Rule</div>
+      <h4>Auto-Sort by Urgency</h4>
+      <p>Expiring-soon coupons automatically sort to the top of My Vouchers. Users see what needs attention first without scrolling.</p>
+    </div>
+    <div class="annotation-card good">
+      <div class="tag">Rule</div>
+      <h4>Recollect After Expiry</h4>
+      <p>If the merchant's coupon is still active after a claim expires, the user can recollect it — starting a fresh 7-day window. No penalty for letting it lapse.</p>
+    </div>
+    <div class="annotation-card good">
+      <div class="tag">Rule</div>
+      <h4>4 Push Notifications Max</h4>
+      <p>Per coupon: Day 0 (collected), Day 4 (reminder), Day 6 (24h warning), Day 7 (expired + browse more). Never spam — each notification is useful.</p>
+    </div>
+    <div class="annotation-card good">
+      <div class="tag">Rule</div>
+      <h4>10-Minute Redemption Window</h4>
+      <p>Once "Slide to redeem" is triggered, the QR/code is valid for 10 minutes. Prevents screenshots being shared or replayed by others.</p>
+    </div>
+    <div class="annotation-card good">
+      <div class="tag">Revenue Impact</div>
+      <h4>Why This Drives Revenue</h4>
+      <p>Expiry → urgency → higher redemption rate → more value for merchants → lower merchant churn → more subscription revenue. The entire flywheel depends on coupons being USED, not hoarded.</p>
+    </div>
+    <div class="annotation-card good">
+      <div class="tag">Progress Bar</div>
+      <h4>Visual Countdown</h4>
+      <p>A thin progress bar under each card shows time remaining. Green (5+ days) → Orange (24h) → Red (6h). Subtle but effective — borrowed from game/streak mechanics.</p>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>B-Ticket — Daily Refresh & Merchant Frequency Settings</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: #111118;
+    display: flex; flex-direction: column; align-items: center;
+    padding: 40px 20px; gap: 60px; min-height: 100vh;
+  }
+  h1 { color: #fff; font-size: 28px; font-weight: 700; text-align: center; }
+  .subtitle { color: #888; font-size: 14px; text-align: center; max-width: 560px; line-height: 1.6; }
+  h2 {
+    color: #888; font-size: 13px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 2px;
+    margin-bottom: 20px; text-align: center;
+  }
+  .comparison {
+    display: flex; gap: 40px; flex-wrap: wrap;
+    justify-content: center; align-items: flex-start;
+  }
+
+  /* ---- Phone frame ---- */
+  .phone-frame {
+    width: 375px; background: #f5f5f5;
+    border-radius: 44px; overflow: hidden;
+    box-shadow: 0 25px 80px rgba(0,0,0,0.5), 0 0 0 2px #333;
+  }
+  .status-bar {
+    height: 54px; background: #fff;
+    display: flex; align-items: flex-end;
+    justify-content: center; padding-bottom: 8px;
+    position: relative;
+  }
+  .status-bar .time { font-size: 15px; font-weight: 600; color: #000; }
+  .dynamic-island {
+    position: absolute; top: 12px; left: 50%; transform: translateX(-50%);
+    width: 120px; height: 34px; background: #000; border-radius: 20px;
+  }
+  .home-indicator {
+    display: flex; justify-content: center;
+    padding: 10px 0 14px;
+  }
+  .home-indicator div {
+    width: 134px; height: 5px;
+    background: #1a1a2e; border-radius: 3px; opacity: 0.15;
+  }
+
+  /* ---- Labels ---- */
+  .label { text-align: center; margin-bottom: 12px; }
+  .label-tag {
+    display: inline-block; padding: 6px 18px; border-radius: 8px;
+    font-size: 13px; font-weight: 700; letter-spacing: 0.5px;
+  }
+  .label-green .label-tag { background: #28a745; color: #fff; }
+  .label-blue .label-tag { background: #4A90D9; color: #fff; }
+  .label-purple .label-tag { background: #7C3AED; color: #fff; }
+
+  /* =========================================
+     CONSUMER — My Vouchers with Daily Refresh
+     ========================================= */
+  .screen-header {
+    background: #fff; padding: 12px 20px;
+    display: flex; align-items: center; justify-content: space-between;
+    border-bottom: 1px solid #eee;
+  }
+  .screen-header-left { display: flex; align-items: center; gap: 12px; }
+  .screen-header .back {
+    font-size: 20px; color: #333; width: 32px; height: 32px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .screen-header-text h3 { font-size: 17px; font-weight: 700; color: #1a1a2e; }
+  .screen-header-text p { font-size: 12px; color: #999; }
+
+  /* Today banner */
+  .today-banner {
+    background: linear-gradient(135deg, #6B9B7D 0%, #4A8B5C 100%);
+    padding: 14px 20px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .today-banner-left h4 {
+    font-size: 16px; font-weight: 800; color: #fff; margin-bottom: 2px;
+  }
+  .today-banner-left p {
+    font-size: 12px; color: rgba(255,255,255,0.75); font-weight: 500;
+  }
+  .today-banner-right {
+    text-align: right;
+  }
+  .today-banner-count {
+    font-size: 28px; font-weight: 900; color: #fff;
+  }
+  .today-banner-label {
+    font-size: 10px; color: rgba(255,255,255,0.7);
+    font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;
+  }
+
+  /* Filter tabs */
+  .filter-tabs {
+    background: #fff; padding: 10px 16px;
+    display: flex; gap: 8px; overflow-x: auto;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  .filter-tab {
+    padding: 6px 14px; border-radius: 20px;
+    font-size: 12px; font-weight: 600;
+    white-space: nowrap; cursor: pointer;
+    border: 1.5px solid #e0e0e0; color: #666;
+    background: #fff;
+  }
+  .filter-tab.active { background: #1a1a2e; color: #fff; border-color: #1a1a2e; }
+
+  .voucher-list {
+    background: #f5f5f5; padding: 10px 16px 16px;
+    display: flex; flex-direction: column; gap: 10px;
+  }
+
+  /* Section label inside list */
+  .list-section-label {
+    font-size: 11px; font-weight: 700; color: #999;
+    text-transform: uppercase; letter-spacing: 1px;
+    padding: 6px 0 2px;
+  }
+
+  /* Voucher card */
+  .v-card {
+    background: #fff; border-radius: 14px;
+    overflow: hidden; box-shadow: 0 1px 6px rgba(0,0,0,0.06);
+    position: relative;
+  }
+  .v-card.used-today { opacity: 0.6; }
+  .v-card.weekly-locked { opacity: 0.5; }
+
+  .v-top { display: flex; padding: 12px; }
+  .v-img {
+    width: 72px; height: 72px; flex-shrink: 0;
+    border-radius: 10px; display: flex;
+    align-items: center; justify-content: center;
+    font-size: 30px;
+  }
+  .v-img.steak { background: linear-gradient(135deg, #e8c4a0, #d4a574); }
+  .v-img.sushi { background: linear-gradient(135deg, #f0d0b0, #e8b888); }
+  .v-img.coffee { background: linear-gradient(135deg, #d4a574, #c49464); }
+  .v-img.spa { background: linear-gradient(135deg, #c8e6c9, #a5d6a7); }
+  .v-img.pizza { background: linear-gradient(135deg, #f5d0a0, #e8b870); }
+  .v-img.dessert { background: linear-gradient(135deg, #f5e0c0, #e8c8a0); }
+
+  .v-body { padding: 0 10px; flex: 1; display: flex; flex-direction: column; justify-content: center; }
+  .v-title { font-size: 13px; font-weight: 700; color: #1a1a2e; margin-bottom: 2px; line-height: 1.3; }
+  .v-merchant { font-size: 11px; color: #888; margin-bottom: 5px; }
+  .v-pricing { display: flex; align-items: center; gap: 5px; }
+  .v-orig { font-size: 11px; color: #bbb; text-decoration: line-through; font-weight: 500; }
+  .v-arrow { font-size: 9px; color: #ccc; }
+  .v-price { font-size: 13px; font-weight: 800; color: #1a1a2e; }
+  .v-badge {
+    font-size: 9px; font-weight: 800; color: #fff;
+    background: #FF6B6B; padding: 2px 6px;
+    border-radius: 8px; margin-left: 3px;
+  }
+
+  /* Frequency badge */
+  .v-freq-badge {
+    position: absolute; top: 10px; right: 10px;
+    font-size: 9px; font-weight: 700; padding: 3px 8px;
+    border-radius: 6px; text-transform: uppercase; letter-spacing: 0.3px;
+  }
+  .v-freq-badge.daily { background: #e8f5e9; color: #2e7d32; }
+  .v-freq-badge.weekly { background: #e3f2fd; color: #1565c0; }
+  .v-freq-badge.once { background: #fce4ec; color: #c62828; }
+  .v-freq-badge.monthly { background: #f3e5f5; color: #7b1fa2; }
+
+  .v-bottom {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 8px 12px; border-top: 1px solid #f5f5f5; background: #fafafa;
+  }
+  .v-status { font-size: 11px; font-weight: 600; display: flex; align-items: center; gap: 4px; }
+  .v-status.available { color: #2e7d32; }
+  .v-status.used { color: #999; }
+  .v-status.refresh { color: #4A90D9; }
+  .v-status.locked { color: #e65100; }
+  .v-action {
+    font-size: 12px; font-weight: 700; color: #6B9B7D;
+    cursor: pointer; padding: 4px 0;
+  }
+  .v-action.disabled { color: #ccc; cursor: default; }
+
+  /* Refresh countdown */
+  .refresh-countdown {
+    display: flex; align-items: center; gap: 6px;
+    padding: 6px 12px; background: #f0f7ff; border-top: 1px solid #d6e9ff;
+  }
+  .refresh-icon {
+    width: 20px; height: 20px; border-radius: 50%;
+    background: #4A90D9; display: flex;
+    align-items: center; justify-content: center;
+    font-size: 10px; color: #fff;
+  }
+  .refresh-text { font-size: 11px; color: #4A90D9; font-weight: 600; }
+
+  /* Used overlay */
+  .used-check {
+    position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 40px; height: 40px; border-radius: 50%;
+    background: rgba(40,167,69,0.9);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px; color: #fff; font-weight: 800;
+    box-shadow: 0 2px 8px rgba(40,167,69,0.3);
+  }
+
+  /* =========================================
+     MERCHANT — Create Coupon Frequency
+     ========================================= */
+  .merchant-screen {
+    background: #fff;
+  }
+  .merchant-header {
+    background: #6B9B7D; padding: 14px 20px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .merchant-header .back { font-size: 20px; color: #fff; }
+  .merchant-header h3 { font-size: 17px; font-weight: 700; color: #fff; }
+
+  .merchant-section {
+    padding: 20px;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  .merchant-section-title {
+    font-size: 14px; font-weight: 700; color: #1a1a2e;
+    margin-bottom: 4px;
+  }
+  .merchant-section-desc {
+    font-size: 12px; color: #999; margin-bottom: 14px; line-height: 1.4;
+  }
+
+  /* Radio options */
+  .radio-group { display: flex; flex-direction: column; gap: 8px; }
+  .radio-option {
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px 14px; border-radius: 12px;
+    border: 1.5px solid #e8e8e8; cursor: pointer;
+    transition: all 0.15s;
+  }
+  .radio-option:hover { border-color: #6B9B7D; }
+  .radio-option.selected {
+    border-color: #6B9B7D; background: #f0faf3;
+  }
+  .radio-dot {
+    width: 20px; height: 20px; border-radius: 50%;
+    border: 2px solid #ccc; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .radio-option.selected .radio-dot {
+    border-color: #6B9B7D;
+  }
+  .radio-dot-inner {
+    width: 10px; height: 10px; border-radius: 50%;
+    background: transparent;
+  }
+  .radio-option.selected .radio-dot-inner {
+    background: #6B9B7D;
+  }
+  .radio-content { flex: 1; }
+  .radio-label { font-size: 14px; font-weight: 600; color: #1a1a2e; }
+  .radio-desc { font-size: 11px; color: #999; margin-top: 1px; }
+  .radio-tag {
+    font-size: 9px; font-weight: 700; padding: 2px 7px;
+    border-radius: 4px; text-transform: uppercase;
+    letter-spacing: 0.3px;
+  }
+  .radio-tag.popular { background: #fff3e0; color: #e65100; }
+  .radio-tag.recommended { background: #e8f5e9; color: #2e7d32; }
+
+  /* Number input */
+  .number-input-row {
+    display: flex; align-items: center; gap: 10px;
+    margin-top: 14px;
+  }
+  .number-input-label { font-size: 13px; color: #555; font-weight: 500; flex: 1; }
+  .number-input {
+    width: 72px; height: 40px; border-radius: 10px;
+    border: 1.5px solid #e0e0e0; text-align: center;
+    font-size: 16px; font-weight: 700; color: #1a1a2e;
+    background: #f8f8f8;
+  }
+  .number-input-unit { font-size: 13px; color: #888; font-weight: 500; }
+
+  /* Toggle */
+  .toggle-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 0;
+  }
+  .toggle-label-group { flex: 1; }
+  .toggle-label { font-size: 13px; font-weight: 600; color: #1a1a2e; }
+  .toggle-desc { font-size: 11px; color: #999; margin-top: 1px; }
+  .toggle-switch {
+    width: 48px; height: 28px; border-radius: 14px;
+    background: #e0e0e0; position: relative;
+    cursor: pointer; flex-shrink: 0;
+  }
+  .toggle-switch.on { background: #6B9B7D; }
+  .toggle-knob {
+    width: 22px; height: 22px; border-radius: 50%;
+    background: #fff; position: absolute;
+    top: 3px; left: 3px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    transition: left 0.15s;
+  }
+  .toggle-switch.on .toggle-knob { left: 23px; }
+
+  /* Preview box */
+  .preview-box {
+    background: #f8f9fa; border-radius: 12px;
+    padding: 14px; margin-top: 14px;
+    border: 1px dashed #ddd;
+  }
+  .preview-box-title {
+    font-size: 11px; font-weight: 700; color: #999;
+    text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;
+  }
+  .preview-box-text {
+    font-size: 13px; color: #1a1a2e; font-weight: 600; line-height: 1.5;
+  }
+  .preview-highlight { color: #6B9B7D; font-weight: 700; }
+
+  /* Save button */
+  .save-btn {
+    margin: 20px; padding: 16px; background: #6B9B7D;
+    border: none; border-radius: 14px; color: #fff;
+    font-size: 16px; font-weight: 700; width: calc(100% - 40px);
+    cursor: pointer; text-align: center;
+  }
+
+  /* ---- Annotation section ---- */
+  .annotation-section { width: 100%; max-width: 800px; }
+  .annotation-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 14px;
+  }
+  @media (max-width: 700px) { .annotation-grid { grid-template-columns: 1fr; } }
+  .annotation-card {
+    background: #1e1e2e; border-radius: 12px;
+    padding: 18px; border-left: 4px solid;
+  }
+  .annotation-card.good { border-color: #28a745; }
+  .annotation-card.info { border-color: #4A90D9; }
+  .annotation-card h4 { color: #fff; font-size: 13px; font-weight: 700; margin-bottom: 5px; }
+  .annotation-card p { color: #aaa; font-size: 12px; line-height: 1.5; }
+  .annotation-card .tag {
+    display: inline-block; padding: 2px 8px; border-radius: 4px;
+    font-size: 10px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.5px; margin-bottom: 6px;
+  }
+  .annotation-card.good .tag { background: #28a74522; color: #28a745; }
+  .annotation-card.info .tag { background: #4A90D922; color: #4A90D9; }
+</style>
+</head>
+<body>
+
+<h1>B-Ticket — Daily Refresh System</h1>
+<p class="subtitle">
+  Subscribers can reclaim coupons based on frequency rules set by merchants.
+  Daily, weekly, monthly, or one-time — the merchant decides.
+</p>
+
+<!-- ============================== -->
+<!-- CONSUMER: MY VOUCHERS VIEW     -->
+<!-- ============================== -->
+
+<div class="comparison">
+
+  <!-- Consumer: My Vouchers with refresh states -->
+  <div>
+    <div class="label label-green"><span class="label-tag">CONSUMER — MY VOUCHERS</span></div>
+    <div class="phone-frame">
+      <div class="status-bar">
+        <div class="dynamic-island"></div>
+        <span class="time">9:41</span>
+      </div>
+
+      <div class="screen-header">
+        <div class="screen-header-left">
+          <span class="back">←</span>
+          <div class="screen-header-text">
+            <h3>My Vouchers</h3>
+            <p>6 collected</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Today banner -->
+      <div class="today-banner">
+        <div class="today-banner-left">
+          <h4>Today's Deals</h4>
+          <p>March 18, 2026 · Refreshed at 6:00 AM</p>
+        </div>
+        <div class="today-banner-right">
+          <div class="today-banner-count">4</div>
+          <div class="today-banner-label">Available</div>
+        </div>
+      </div>
+
+      <div class="filter-tabs">
+        <div class="filter-tab active">Available (4)</div>
+        <div class="filter-tab">Used Today (2)</div>
+        <div class="filter-tab">All (6)</div>
+      </div>
+
+      <div class="voucher-list">
+
+        <div class="list-section-label">Ready to Use</div>
+
+        <!-- Card 1: Available daily coupon -->
+        <div class="v-card">
+          <span class="v-freq-badge daily">Daily</span>
+          <div class="v-top">
+            <div class="v-img steak">🥩</div>
+            <div class="v-body">
+              <div class="v-title">50% OFF Hanger Steak</div>
+              <div class="v-merchant">🍽 Maple Tree · Highstreet BGC</div>
+              <div class="v-pricing">
+                <span class="v-orig">₱900</span>
+                <span class="v-arrow">→</span>
+                <span class="v-price">₱450</span>
+                <span class="v-badge">50% OFF</span>
+              </div>
+            </div>
+          </div>
+          <div class="v-bottom">
+            <span class="v-status available">✓ Available today</span>
+            <span class="v-action">Use Now →</span>
+          </div>
+        </div>
+
+        <!-- Card 2: Available daily coupon -->
+        <div class="v-card">
+          <span class="v-freq-badge daily">Daily</span>
+          <div class="v-top">
+            <div class="v-img coffee">☕</div>
+            <div class="v-body">
+              <div class="v-title">Free Iced Latte</div>
+              <div class="v-merchant">☕ Café Selina · BGC</div>
+              <div class="v-pricing">
+                <span class="v-orig">₱180</span>
+                <span class="v-arrow">→</span>
+                <span class="v-price" style="color:#28a745;">FREE</span>
+                <span class="v-badge" style="background:#28a745;">100%</span>
+              </div>
+            </div>
+          </div>
+          <div class="v-bottom">
+            <span class="v-status available">✓ Available today</span>
+            <span class="v-action">Use Now →</span>
+          </div>
+        </div>
+
+        <!-- Card 3: Weekly coupon - available -->
+        <div class="v-card">
+          <span class="v-freq-badge weekly">Weekly</span>
+          <div class="v-top">
+            <div class="v-img sushi">🍣</div>
+            <div class="v-body">
+              <div class="v-title">Buy 1 Get 1 California Maki</div>
+              <div class="v-merchant">🍣 Sushi Nori · Makati</div>
+              <div class="v-pricing">
+                <span class="v-orig">₱600</span>
+                <span class="v-arrow">→</span>
+                <span class="v-price">₱300</span>
+                <span class="v-badge">50% OFF</span>
+              </div>
+            </div>
+          </div>
+          <div class="v-bottom">
+            <span class="v-status available">✓ Available this week</span>
+            <span class="v-action">Use Now →</span>
+          </div>
+        </div>
+
+        <!-- Card 4: One-time coupon -->
+        <div class="v-card">
+          <span class="v-freq-badge once">One-Time</span>
+          <div class="v-top">
+            <div class="v-img spa">💆</div>
+            <div class="v-body">
+              <div class="v-title">30% Off Full Body Massage</div>
+              <div class="v-merchant">🧖 Zen Spa · Taguig</div>
+              <div class="v-pricing">
+                <span class="v-orig">₱1,200</span>
+                <span class="v-arrow">→</span>
+                <span class="v-price">₱840</span>
+                <span class="v-badge">30% OFF</span>
+              </div>
+            </div>
+          </div>
+          <div class="v-bottom">
+            <span class="v-status available">✓ Available · Expires Mar 30</span>
+            <span class="v-action">Use Now →</span>
+          </div>
+        </div>
+
+        <div class="list-section-label" style="margin-top:4px;">Used Today</div>
+
+        <!-- Card 5: Used today — daily, refreshes tomorrow -->
+        <div class="v-card used-today">
+          <div class="used-check">✓</div>
+          <span class="v-freq-badge daily">Daily</span>
+          <div class="v-top">
+            <div class="v-img pizza">🍕</div>
+            <div class="v-body">
+              <div class="v-title">₱200 Off Any Large Pizza</div>
+              <div class="v-merchant">🍕 Pizza Republic · BGC</div>
+              <div class="v-pricing">
+                <span class="v-orig">₱550</span>
+                <span class="v-arrow">→</span>
+                <span class="v-price">₱350</span>
+                <span class="v-badge">36% OFF</span>
+              </div>
+            </div>
+          </div>
+          <div class="refresh-countdown">
+            <div class="refresh-icon">🔄</div>
+            <span class="refresh-text">Refreshes tomorrow at 6:00 AM · in 12 hours</span>
+          </div>
+          <div class="v-bottom">
+            <span class="v-status used">✓ Used today at 11:32 AM</span>
+            <span class="v-action disabled">View Receipt</span>
+          </div>
+        </div>
+
+        <!-- Card 6: Used today — weekly, refreshes Monday -->
+        <div class="v-card used-today">
+          <div class="used-check">✓</div>
+          <span class="v-freq-badge weekly">Weekly</span>
+          <div class="v-top">
+            <div class="v-img dessert">🧁</div>
+            <div class="v-body">
+              <div class="v-title">Free Slice of Cake</div>
+              <div class="v-merchant">🍰 Sweet Tooth · Makati</div>
+              <div class="v-pricing">
+                <span class="v-orig">₱280</span>
+                <span class="v-arrow">→</span>
+                <span class="v-price" style="color:#28a745;">FREE</span>
+                <span class="v-badge" style="background:#28a745;">100%</span>
+              </div>
+            </div>
+          </div>
+          <div class="refresh-countdown">
+            <div class="refresh-icon" style="background:#1565c0;">🔄</div>
+            <span class="refresh-text" style="color:#1565c0;">Refreshes Monday, Mar 23 · in 5 days</span>
+          </div>
+          <div class="v-bottom">
+            <span class="v-status used">✓ Used today at 2:15 PM</span>
+            <span class="v-action disabled">View Receipt</span>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="home-indicator"><div></div></div>
+    </div>
+  </div>
+
+  <!-- Merchant: Coupon Frequency Settings -->
+  <div>
+    <div class="label label-purple"><span class="label-tag">MERCHANT — COUPON SETTINGS</span></div>
+    <div class="phone-frame">
+      <div class="status-bar">
+        <div class="dynamic-island"></div>
+        <span class="time">9:41</span>
+      </div>
+
+      <div class="merchant-header">
+        <span class="back">←</span>
+        <h3>Redemption Settings</h3>
+      </div>
+
+      <div class="merchant-screen">
+
+        <!-- Frequency setting -->
+        <div class="merchant-section">
+          <div class="merchant-section-title">How often can a customer use this?</div>
+          <div class="merchant-section-desc">Controls how frequently the same subscriber can redeem this coupon.</div>
+
+          <div class="radio-group">
+            <div class="radio-option selected">
+              <div class="radio-dot"><div class="radio-dot-inner"></div></div>
+              <div class="radio-content">
+                <div style="display:flex; align-items:center; gap:8px;">
+                  <span class="radio-label">Once per day</span>
+                  <span class="radio-tag popular">Most Popular</span>
+                </div>
+                <div class="radio-desc">Customer can redeem again after midnight. Great for cafes & daily lunch spots.</div>
+              </div>
+            </div>
+            <div class="radio-option">
+              <div class="radio-dot"><div class="radio-dot-inner"></div></div>
+              <div class="radio-content">
+                <div style="display:flex; align-items:center; gap:8px;">
+                  <span class="radio-label">Once per week</span>
+                  <span class="radio-tag recommended">Recommended</span>
+                </div>
+                <div class="radio-desc">Resets every Monday. Ideal for casual dining & retail.</div>
+              </div>
+            </div>
+            <div class="radio-option">
+              <div class="radio-dot"><div class="radio-dot-inner"></div></div>
+              <div class="radio-content">
+                <span class="radio-label">Once per month</span>
+                <div class="radio-desc">Resets on the 1st. Good for higher-value deals.</div>
+              </div>
+            </div>
+            <div class="radio-option">
+              <div class="radio-dot"><div class="radio-dot-inner"></div></div>
+              <div class="radio-content">
+                <span class="radio-label">One time only</span>
+                <div class="radio-desc">Each subscriber can use this coupon once, ever.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Daily cap -->
+        <div class="merchant-section">
+          <div class="merchant-section-title">Daily Limits</div>
+          <div class="merchant-section-desc">Protect yourself from being overwhelmed. Once the cap is hit, the coupon shows "Sold out for today."</div>
+
+          <div class="number-input-row">
+            <span class="number-input-label">Max redemptions per day</span>
+            <input type="text" class="number-input" value="30">
+            <span class="number-input-unit">/ day</span>
+          </div>
+
+          <div style="height:10px;"></div>
+
+          <div class="toggle-row">
+            <div class="toggle-label-group">
+              <div class="toggle-label">Pause when daily cap is reached</div>
+              <div class="toggle-desc">Automatically hides coupon for the rest of the day</div>
+            </div>
+            <div class="toggle-switch on"><div class="toggle-knob"></div></div>
+          </div>
+        </div>
+
+        <!-- Refresh time -->
+        <div class="merchant-section">
+          <div class="merchant-section-title">Refresh Time</div>
+          <div class="merchant-section-desc">When daily/weekly coupons become available again.</div>
+
+          <div class="number-input-row">
+            <span class="number-input-label">Daily reset time</span>
+            <input type="text" class="number-input" value="6:00" style="width:80px;">
+            <span class="number-input-unit">AM</span>
+          </div>
+        </div>
+
+        <!-- Preview -->
+        <div class="merchant-section" style="border-bottom:none;">
+          <div class="preview-box">
+            <div class="preview-box-title">Customer will see</div>
+            <div class="preview-box-text">
+              "50% OFF Hanger Steak" can be used
+              <span class="preview-highlight">once per day</span>, with up to
+              <span class="preview-highlight">30 total redemptions per day</span>
+              across all customers. Refreshes daily at
+              <span class="preview-highlight">6:00 AM</span>.
+            </div>
+          </div>
+        </div>
+
+        <button class="save-btn">Save Redemption Settings</button>
+
+      </div>
+
+      <div class="home-indicator" style="background:#fff;"><div></div></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ============================== -->
+<!-- WHAT CHANGED & WHY             -->
+<!-- ============================== -->
+
+<div class="annotation-section">
+  <h2>How Daily Refresh Works</h2>
+  <div class="annotation-grid">
+    <div class="annotation-card good">
+      <div class="tag">Consumer</div>
+      <h4>"Available Today" vs "Used Today" Split</h4>
+      <p>My Vouchers is now split into two clear sections. Available coupons are on top with "Use Now →". Used ones are faded with a refresh countdown showing exactly when they'll be back.</p>
+    </div>
+    <div class="annotation-card good">
+      <div class="tag">Consumer</div>
+      <h4>Frequency Badges</h4>
+      <p>Each card shows a colored badge: "Daily" (green), "Weekly" (blue), "One-Time" (red). Users instantly know which coupons refresh and which are use-it-or-lose-it.</p>
+    </div>
+    <div class="annotation-card good">
+      <div class="tag">Consumer</div>
+      <h4>Refresh Countdown Bar</h4>
+      <p>"Refreshes tomorrow at 6:00 AM · in 12 hours" — gives the user a reason to open the app first thing tomorrow morning. Drives daily habit.</p>
+    </div>
+    <div class="annotation-card good">
+      <div class="tag">Consumer</div>
+      <h4>"Today's Deals" Banner</h4>
+      <p>Shows the date, refresh time, and count of available coupons. Creates a "daily drop" feeling — like checking what's new each morning.</p>
+    </div>
+    <div class="annotation-card info">
+      <div class="tag">Merchant</div>
+      <h4>Frequency Control</h4>
+      <p>Merchants choose: daily, weekly, monthly, or one-time. A milk tea shop picks "daily." A spa picks "monthly." Each merchant controls their own exposure.</p>
+    </div>
+    <div class="annotation-card info">
+      <div class="tag">Merchant</div>
+      <h4>Daily Cap Protection</h4>
+      <p>"Max 30 per day" prevents a viral coupon from overwhelming the kitchen. When the cap hits, the coupon shows "Sold out for today" — creating scarcity AND protecting the merchant.</p>
+    </div>
+    <div class="annotation-card info">
+      <div class="tag">Merchant</div>
+      <h4>Custom Refresh Time</h4>
+      <p>Default 6:00 AM, but merchants can change it. A bar might set refresh at 5:00 PM for happy hour deals. Aligns with actual business hours.</p>
+    </div>
+    <div class="annotation-card info">
+      <div class="tag">Merchant</div>
+      <h4>Live Preview</h4>
+      <p>Before saving, the merchant sees exactly how the rules will appear to customers. No guessing — reduces support tickets and merchant confusion.</p>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

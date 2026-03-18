@@ -1,0 +1,1586 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>B-Ticket — Merchant Portal: In-App Advertising</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: #0f1110; color: #fff;
+    display: flex; flex-direction: column; align-items: center;
+    padding: 40px 20px; gap: 60px; min-height: 100vh;
+  }
+  h1 { font-size: 28px; font-weight: 700; text-align: center; }
+  .subtitle { color: #888; font-size: 14px; text-align: center; max-width: 700px; line-height: 1.6; }
+  h2 {
+    color: #888; font-size: 13px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 2px;
+    margin-bottom: 20px; text-align: center;
+  }
+
+  /* ---- Browser frame ---- */
+  .browser-frame {
+    width: 100%; max-width: 1200px;
+    border-radius: 12px; overflow: hidden;
+    box-shadow: 0 25px 80px rgba(0,0,0,0.5), 0 0 0 1px #333;
+    background: #fff;
+  }
+  .browser-bar {
+    background: #2d2a2a; padding: 10px 16px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .browser-dots { display: flex; gap: 6px; }
+  .browser-dots div {
+    width: 12px; height: 12px; border-radius: 50%;
+  }
+  .browser-dots .red { background: #ff5f57; }
+  .browser-dots .yellow { background: #ffbd2e; }
+  .browser-dots .green { background: #56A66F; }
+  .browser-url {
+    flex: 1; background: #2a2525; border-radius: 6px;
+    padding: 6px 12px; font-size: 12px; color: #888;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .browser-url .lock { color: #56A66F; font-size: 11px; }
+
+  /* ---- Portal layout ---- */
+  .portal-layout {
+    display: flex; min-height: 900px;
+  }
+
+  /* ---- Sidebar ---- */
+  .sidebar {
+    width: 240px; background: #221F1F; color: #fff;
+    display: flex; flex-direction: column; padding: 0; flex-shrink: 0;
+  }
+  .sidebar-logo {
+    display: flex; align-items: center; gap: 10px;
+    padding: 20px 20px 24px; border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+  .logo-box {
+    width: 34px; height: 34px; background: #205C50; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800; font-size: 16px; color: #fff;
+  }
+  .logo-text { font-size: 15px; font-weight: 700; color: #fff; }
+  .logo-sub { font-size: 9px; color: #205C50; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
+
+  .sidebar-section-label {
+    padding: 16px 14px 8px;
+    font-size: 10px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 1.5px; color: #555;
+  }
+  .sidebar-nav { list-style: none; padding: 0; }
+  .sidebar-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 20px; font-size: 13px; color: #888;
+    cursor: pointer; border-left: 3px solid transparent;
+    transition: all 0.15s;
+  }
+  .sidebar-item:hover { color: #fff; background: #2d2928; }
+  .sidebar-item.active {
+    color: #fff; background: #2d2928;
+    border-left-color: #205C50;
+  }
+  .sidebar-item .icon { font-size: 16px; width: 20px; text-align: center; }
+
+  .sidebar-footer {
+    margin-top: auto; padding: 16px 20px;
+    border-top: 1px solid rgba(255,255,255,0.06);
+    display: flex; align-items: center; gap: 10px;
+  }
+  .avatar-circle {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: linear-gradient(135deg, #205C50, #4a7a5d);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700; color: #fff; flex-shrink: 0;
+  }
+  .avatar-info { font-size: 12px; }
+  .avatar-info .name { font-weight: 600; color: #ccc; }
+  .avatar-info .status { font-size: 10px; color: #205C50; display: flex; align-items: center; gap: 4px; }
+  .status-dot { width: 6px; height: 6px; border-radius: 50%; background: #205C50; display: inline-block; }
+
+  /* ---- Main content ---- */
+  .main-content {
+    flex: 1; background: #f5f6f8; display: flex; flex-direction: column;
+    min-width: 0; overflow-y: auto;
+  }
+
+  /* ---- Top bar ---- */
+  .top-bar {
+    padding: 20px 32px; background: #fff;
+    border-bottom: 1px solid #e8e8ee;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .top-bar-left {}
+  .top-bar-greeting {
+    font-size: 22px; font-weight: 700; color: #221F1F;
+  }
+  .top-bar-sub { font-size: 13px; color: #999; margin-top: 2px; }
+  .top-bar-right { display: flex; align-items: center; gap: 14px; }
+
+  .notif-bell {
+    position: relative; width: 36px; height: 36px;
+    border-radius: 8px; border: 1px solid #e0e0e0;
+    background: #fff; display: flex; align-items: center; justify-content: center;
+    cursor: pointer; font-size: 18px;
+  }
+  .notif-badge {
+    position: absolute; top: -4px; right: -4px;
+    width: 18px; height: 18px; border-radius: 50%;
+    background: #EE4036; color: #fff; font-size: 9px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    border: 2px solid #fff;
+  }
+
+  .btn {
+    padding: 10px 20px; border-radius: 8px; font-size: 13px;
+    font-weight: 600; cursor: pointer; border: none;
+    font-family: inherit; display: flex; align-items: center; gap: 6px;
+    transition: all 0.15s;
+  }
+  .btn-primary {
+    background: #205C50; color: #fff; border: 1px solid #205C50;
+  }
+  .btn-primary:hover { background: #5a8a6c; }
+  .btn-outline {
+    background: #fff; color: #555; border: 1px solid #e0e0e0;
+  }
+  .btn-outline:hover { background: #f5f5f5; }
+  .btn-dark {
+    background: #221F1F; color: #fff; border: 1px solid #221F1F;
+  }
+  .btn-dark:hover { background: #2d2a2a; }
+
+  /* ---- Dashboard area ---- */
+  .dashboard-area {
+    padding: 24px 32px; flex: 1;
+  }
+
+  /* ---- Badges ---- */
+  .badge {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 3px 10px; border-radius: 10px;
+    font-size: 11px; font-weight: 600;
+  }
+  .badge-green { background: #e8f2ee; color: #56A66F; }
+  .badge-orange { background: #fff3e0; color: #F9A250; }
+  .badge-gray { background: #f0f0f0; color: #888; }
+  .badge-yellow { background: #fff8e1; color: #f57f17; }
+  .badge-red { background: #fdecea; color: #EE4036; }
+  .badge-blue { background: #e0f5fb; color: #50C9EF; }
+
+  /* ---- Card ---- */
+  .card {
+    background: #fff; border-radius: 12px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+    overflow: hidden;
+  }
+  .card-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid #f0f0f0;
+    font-size: 14px; font-weight: 700; color: #221F1F;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .card-body {
+    padding: 20px;
+  }
+
+  /* ==================================================================
+     SCREEN 1: AD PLACEMENTS OVERVIEW
+     ================================================================== */
+  .ad-format-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 20px;
+    margin-bottom: 24px;
+  }
+  .ad-format-card {
+    background: #fff; border-radius: 12px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+    overflow: hidden; position: relative;
+    display: flex; flex-direction: column;
+  }
+  .ad-format-card .almost-full-badge {
+    position: absolute; top: 12px; right: 12px;
+    background: #fff3e0; color: #F9A250;
+    padding: 3px 10px; border-radius: 10px;
+    font-size: 10px; font-weight: 700; letter-spacing: 0.5px;
+    z-index: 2;
+  }
+  .ad-preview {
+    background: #221F1F; padding: 20px;
+    display: flex; align-items: center; justify-content: center;
+    min-height: 200px; position: relative;
+  }
+  .phone-wireframe {
+    width: 140px; background: #0f1110; border-radius: 16px;
+    padding: 8px; position: relative;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+  }
+  .phone-wireframe .phone-notch {
+    width: 40px; height: 6px; background: #2d2a2a; border-radius: 3px;
+    margin: 0 auto 6px;
+  }
+  .phone-wireframe .phone-screen {
+    background: #f5f6f8; border-radius: 10px;
+    overflow: hidden; min-height: 180px;
+    position: relative;
+  }
+  .phone-wireframe .phone-home-bar {
+    width: 40px; height: 4px; background: #2d2a2a; border-radius: 2px;
+    margin: 6px auto 0;
+  }
+
+  /* Hero banner phone wireframe */
+  .phone-screen .wire-status-bar {
+    height: 10px; background: #fff; padding: 0 6px;
+    display: flex; align-items: center; justify-content: space-between;
+    font-size: 4px; color: #999;
+  }
+  .phone-screen .wire-search {
+    margin: 4px 6px; height: 10px; background: #e8e8ee; border-radius: 4px;
+  }
+  .phone-screen .wire-hero-banner {
+    margin: 4px 6px; height: 28px; background: linear-gradient(135deg, #205C50, #4a7a5d);
+    border-radius: 4px; display: flex; align-items: center; justify-content: center;
+    font-size: 5px; color: #fff; font-weight: 700;
+    border: 1.5px solid #205C50;
+    box-shadow: 0 0 8px rgba(107,155,125,0.4);
+    animation: pulse-glow 2s ease-in-out infinite;
+  }
+  @keyframes pulse-glow {
+    0%, 100% { box-shadow: 0 0 8px rgba(107,155,125,0.4); }
+    50% { box-shadow: 0 0 14px rgba(107,155,125,0.7); }
+  }
+  .phone-screen .wire-section-label {
+    margin: 6px 6px 3px; height: 5px; width: 35px; background: #ddd; border-radius: 2px;
+  }
+  .phone-screen .wire-coupon-row {
+    display: flex; gap: 4px; padding: 0 6px; margin-bottom: 4px;
+  }
+  .phone-screen .wire-coupon {
+    flex: 1; height: 32px; background: #fff; border-radius: 4px;
+    border: 1px solid #eee;
+  }
+  .phone-screen .wire-top-banner {
+    margin: 0; padding: 4px 6px; height: 22px;
+    background: linear-gradient(135deg, #205C50, #4a7a5d);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 5px; color: #fff; font-weight: 700;
+    box-shadow: 0 0 8px rgba(107,155,125,0.4);
+    animation: pulse-glow 2s ease-in-out infinite;
+  }
+  .phone-screen .wire-category-tabs {
+    display: flex; gap: 3px; padding: 4px 6px;
+  }
+  .phone-screen .wire-cat-tab {
+    flex: 1; height: 8px; background: #e8e8ee; border-radius: 3px;
+  }
+  .phone-screen .wire-cat-tab.active { background: #205C50; }
+  .phone-screen .wire-list-item {
+    margin: 3px 6px; height: 18px; background: #fff; border-radius: 4px;
+    border: 1px solid #eee;
+  }
+
+  /* Pop-up phone wireframe */
+  .phone-screen .wire-popup-overlay {
+    position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.4); display: flex; align-items: center;
+    justify-content: center; z-index: 2;
+  }
+  .phone-screen .wire-popup-card {
+    width: 75%; background: #fff; border-radius: 6px;
+    padding: 6px; text-align: center;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+    border: 1.5px solid #205C50;
+  }
+  .phone-screen .wire-popup-img {
+    height: 50px; background: linear-gradient(135deg, #205C50, #4a7a5d);
+    border-radius: 4px; margin-bottom: 4px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 5px; color: #fff; font-weight: 700;
+  }
+  .phone-screen .wire-popup-text {
+    height: 4px; width: 60%; background: #ddd; border-radius: 2px;
+    margin: 3px auto;
+  }
+  .phone-screen .wire-popup-btn {
+    height: 10px; width: 50%; background: #205C50; border-radius: 3px;
+    margin: 5px auto 2px;
+  }
+  .phone-screen .wire-popup-close {
+    position: absolute; top: 4px; right: 4px;
+    font-size: 6px; color: #fff; font-weight: 700;
+    background: rgba(0,0,0,0.4); width: 10px; height: 10px;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+  }
+
+  /* Full-screen phone wireframe */
+  .phone-screen .wire-fullscreen-ad {
+    position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+    background: linear-gradient(135deg, #205C50, #3a6b4d);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    z-index: 2;
+  }
+  .phone-screen .wire-fs-skip {
+    position: absolute; top: 6px; right: 6px;
+    font-size: 5px; color: rgba(255,255,255,0.8); font-weight: 600;
+    background: rgba(0,0,0,0.3); padding: 2px 5px; border-radius: 3px;
+  }
+  .phone-screen .wire-fs-logo {
+    width: 30px; height: 30px; background: rgba(255,255,255,0.2);
+    border-radius: 8px; margin-bottom: 6px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 800; color: #fff;
+  }
+  .phone-screen .wire-fs-text {
+    height: 4px; width: 60%; background: rgba(255,255,255,0.3); border-radius: 2px;
+    margin-bottom: 3px;
+  }
+  .phone-screen .wire-fs-text.short { width: 40%; }
+  .phone-screen .wire-fs-cta {
+    height: 12px; width: 50%; background: #fff; border-radius: 4px;
+    margin-top: 8px; display: flex; align-items: center; justify-content: center;
+    font-size: 5px; color: #205C50; font-weight: 700;
+  }
+
+  .ad-format-details {
+    padding: 20px; flex: 1; display: flex; flex-direction: column;
+  }
+  .ad-format-title {
+    font-size: 16px; font-weight: 700; color: #221F1F; margin-bottom: 4px;
+  }
+  .ad-format-size {
+    font-size: 11px; color: #888; font-weight: 600; margin-bottom: 10px;
+  }
+  .ad-detail-row {
+    display: flex; align-items: flex-start; gap: 8px;
+    font-size: 12px; color: #666; margin-bottom: 6px; line-height: 1.4;
+  }
+  .ad-detail-row .detail-icon {
+    font-size: 13px; flex-shrink: 0; width: 16px; text-align: center;
+  }
+  .ad-price {
+    font-size: 22px; font-weight: 800; color: #205C50; margin: 12px 0 10px;
+  }
+  .ad-price span {
+    font-size: 12px; font-weight: 500; color: #999;
+  }
+  .slot-availability {
+    margin-bottom: 14px;
+  }
+  .slot-label {
+    font-size: 11px; font-weight: 600; color: #888; margin-bottom: 4px;
+    display: flex; justify-content: space-between;
+  }
+  .slot-bar {
+    height: 6px; background: #e8e8ee; border-radius: 3px; overflow: hidden;
+  }
+  .slot-bar-fill {
+    height: 100%; border-radius: 3px; background: #205C50;
+  }
+  .slot-bar-fill.orange { background: #F9A250; }
+  .ad-format-btn {
+    margin-top: auto;
+    padding: 10px 20px; border-radius: 8px; font-size: 13px;
+    font-weight: 600; cursor: pointer; border: none;
+    font-family: inherit; text-align: center;
+    background: #205C50; color: #fff;
+    transition: all 0.15s;
+  }
+  .ad-format-btn:hover { background: #5a8a6c; }
+
+  /* Comparison table */
+  .comparison-table {
+    background: #fff; border-radius: 12px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+    overflow: hidden;
+  }
+  .comparison-table table {
+    width: 100%; border-collapse: collapse;
+  }
+  .comparison-table th {
+    padding: 12px 16px; font-size: 11px; font-weight: 700;
+    color: #888; text-transform: uppercase; letter-spacing: 0.5px;
+    background: #fafafa; border-bottom: 1px solid #eee;
+    text-align: left;
+  }
+  .comparison-table td {
+    padding: 10px 16px; font-size: 12px; color: #555;
+    border-bottom: 1px solid #f5f5f5;
+  }
+  .comparison-table tr:last-child td { border-bottom: none; }
+  .comparison-table td:first-child {
+    font-weight: 600; color: #221F1F;
+  }
+  .comparison-table .price-cell {
+    font-weight: 700; color: #205C50;
+  }
+
+  /* ==================================================================
+     SCREEN 2: AD CREATION FORM
+     ================================================================== */
+  .form-layout {
+    display: flex; gap: 24px; padding: 24px 32px;
+  }
+  .form-left { flex: 3; display: flex; flex-direction: column; gap: 20px; }
+  .form-right { flex: 2; display: flex; flex-direction: column; gap: 20px; }
+
+  .form-group {
+    margin-bottom: 16px;
+  }
+  .form-group:last-child { margin-bottom: 0; }
+  .form-label {
+    font-size: 12px; font-weight: 600; color: #555; margin-bottom: 6px;
+    display: block;
+  }
+  .form-input {
+    width: 100%; padding: 10px 12px; border: 1px solid #e0e0e0;
+    border-radius: 8px; font-size: 13px; font-family: inherit;
+    color: #333; background: #fff;
+    transition: border-color 0.15s;
+  }
+  .form-input:focus { outline: none; border-color: #205C50; }
+  .form-hint {
+    font-size: 11px; color: #999; margin-top: 4px;
+  }
+  .form-hint.green { color: #56A66F; }
+  .form-row {
+    display: flex; gap: 12px;
+  }
+  .form-row .form-group { flex: 1; }
+
+  .upload-area {
+    border: 2px dashed #d0d0d0; border-radius: 12px;
+    padding: 30px; text-align: center; cursor: pointer;
+    transition: all 0.15s; background: #fafafa;
+  }
+  .upload-area:hover { border-color: #205C50; background: #f0f8f4; }
+  .upload-icon { font-size: 36px; margin-bottom: 8px; }
+  .upload-text { font-size: 13px; color: #666; margin-bottom: 4px; }
+  .upload-specs { font-size: 11px; color: #999; }
+
+  .upload-preview {
+    border: 2px solid #205C50; border-radius: 12px;
+    overflow: hidden; position: relative;
+  }
+  .upload-preview-img {
+    width: 100%; height: 96px;
+    background: linear-gradient(135deg, #205C50 0%, #4a7a5d 40%, #F9A250 60%, #ff8a00 100%);
+    display: flex; align-items: center; justify-content: center;
+    color: #fff; font-size: 14px; font-weight: 700;
+    text-shadow: 0 1px 4px rgba(0,0,0,0.3);
+  }
+  .upload-validation {
+    padding: 10px 14px; display: flex; align-items: center; gap: 6px;
+    font-size: 12px; color: #56A66F; font-weight: 600;
+    background: #f0f8f4;
+  }
+  .upload-validation .check { color: #56A66F; }
+
+  .radio-group {
+    display: flex; flex-direction: column; gap: 10px;
+  }
+  .radio-option {
+    display: flex; align-items: center; gap: 10px;
+    padding: 12px 14px; border: 1px solid #e0e0e0; border-radius: 8px;
+    cursor: pointer; transition: all 0.15s;
+    font-size: 13px; color: #555;
+  }
+  .radio-option:hover { border-color: #205C50; }
+  .radio-option.selected { border-color: #205C50; background: #f0f8f4; }
+  .radio-circle {
+    width: 18px; height: 18px; border-radius: 50%;
+    border: 2px solid #d0d0d0; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .radio-option.selected .radio-circle {
+    border-color: #205C50;
+  }
+  .radio-option.selected .radio-circle::after {
+    content: ''; width: 10px; height: 10px; border-radius: 50%;
+    background: #205C50;
+  }
+
+  /* Preview phone in form */
+  .preview-phone-wrap {
+    background: #221F1F; border-radius: 12px; padding: 24px;
+    display: flex; flex-direction: column; align-items: center;
+  }
+  .preview-phone {
+    width: 180px; background: #0f1110; border-radius: 20px;
+    padding: 10px; margin-bottom: 12px;
+  }
+  .preview-phone .phone-notch {
+    width: 50px; height: 7px; background: #2d2a2a; border-radius: 4px;
+    margin: 0 auto 8px;
+  }
+  .preview-phone .phone-screen {
+    background: #f5f6f8; border-radius: 12px;
+    overflow: hidden; min-height: 240px;
+  }
+  .preview-phone .phone-home-bar {
+    width: 50px; height: 4px; background: #2d2a2a; border-radius: 2px;
+    margin: 8px auto 0;
+  }
+  .preview-phone .phone-screen .wire-status-bar {
+    height: 12px; background: #fff; padding: 0 8px;
+    display: flex; align-items: center; justify-content: space-between;
+    font-size: 5px; color: #999;
+  }
+  .preview-phone .phone-screen .wire-search {
+    margin: 5px 8px; height: 14px; background: #e8e8ee; border-radius: 5px;
+  }
+  .preview-phone .phone-screen .preview-hero-banner {
+    margin: 5px 8px; height: 36px;
+    background: linear-gradient(135deg, #205C50 0%, #4a7a5d 40%, #F9A250 60%, #ff8a00 100%);
+    border-radius: 5px; display: flex; align-items: center; justify-content: center;
+    font-size: 6px; color: #fff; font-weight: 700;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+    border: 1.5px solid #205C50;
+    box-shadow: 0 0 8px rgba(107,155,125,0.4);
+  }
+  .preview-phone .phone-screen .wire-section-label {
+    margin: 8px 8px 4px; height: 6px; width: 45px; background: #ddd; border-radius: 2px;
+  }
+  .preview-phone .phone-screen .wire-coupon-row {
+    display: flex; gap: 5px; padding: 0 8px; margin-bottom: 5px;
+  }
+  .preview-phone .phone-screen .wire-coupon {
+    flex: 1; height: 45px; background: #fff; border-radius: 5px;
+    border: 1px solid #eee;
+  }
+  .preview-note {
+    font-size: 11px; color: #888; text-align: center;
+  }
+
+  /* Order summary */
+  .order-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 8px 0; font-size: 13px;
+  }
+  .order-row .label { color: #888; }
+  .order-row .value { font-weight: 600; color: #221F1F; }
+  .order-total {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 12px 0; font-size: 16px; font-weight: 700;
+    border-top: 2px solid #eee; margin-top: 4px;
+  }
+  .order-total .label { color: #221F1F; }
+  .order-total .value { color: #205C50; }
+  .order-note {
+    font-size: 11px; color: #999; line-height: 1.5; margin-top: 12px;
+    padding: 10px 12px; background: #fafafa; border-radius: 8px;
+  }
+
+  /* ==================================================================
+     SCREEN 3: PAYMENT & CONFIRMATION
+     ================================================================== */
+  .payment-options {
+    display: flex; flex-direction: column; gap: 10px;
+  }
+  .payment-option {
+    display: flex; align-items: center; gap: 14px;
+    padding: 14px 16px; border: 2px solid #e0e0e0; border-radius: 10px;
+    cursor: pointer; transition: all 0.15s;
+  }
+  .payment-option:hover { border-color: #bbb; }
+  .payment-option.selected { border-color: #205C50; background: #f0f8f4; }
+  .payment-logo {
+    width: 44px; height: 44px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 800; color: #fff; flex-shrink: 0;
+  }
+  .payment-logo.gcash { background: #007bff; }
+  .payment-logo.maya { background: #6b21a8; }
+  .payment-logo.card { background: #221F1F; font-size: 9px; }
+  .payment-logo.wallet { background: #205C50; }
+  .payment-name {
+    font-size: 14px; font-weight: 600; color: #221F1F;
+  }
+  .payment-sub {
+    font-size: 11px; color: #999; margin-top: 1px;
+  }
+  .payment-check {
+    margin-left: auto; width: 22px; height: 22px; border-radius: 50%;
+    border: 2px solid #e0e0e0; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .payment-option.selected .payment-check {
+    border-color: #205C50; background: #205C50;
+    color: #fff; font-size: 12px; font-weight: 700;
+  }
+
+  .order-recap {
+    display: flex; flex-direction: column; gap: 8px;
+    margin-bottom: 16px;
+  }
+  .recap-row {
+    display: flex; justify-content: space-between;
+    font-size: 13px;
+  }
+  .recap-row .label { color: #888; }
+  .recap-row .value { font-weight: 600; color: #221F1F; }
+  .recap-row .value.green { color: #205C50; }
+
+  .terms-list {
+    display: flex; flex-direction: column; gap: 10px;
+    margin-top: 16px; padding-top: 16px; border-top: 1px solid #f0f0f0;
+  }
+  .term-item {
+    display: flex; align-items: flex-start; gap: 10px;
+    font-size: 12px; color: #555; line-height: 1.5;
+  }
+  .checkbox {
+    width: 18px; height: 18px; border-radius: 4px;
+    border: 2px solid #205C50; background: #205C50;
+    flex-shrink: 0; display: flex; align-items: center; justify-content: center;
+    color: #fff; font-size: 11px; font-weight: 700; margin-top: 1px;
+  }
+
+  /* Timeline */
+  .timeline {
+    display: flex; flex-direction: column; gap: 0;
+  }
+  .timeline-step {
+    display: flex; align-items: flex-start; gap: 14px;
+    padding-bottom: 20px; position: relative;
+  }
+  .timeline-step:last-child { padding-bottom: 0; }
+  .timeline-step::before {
+    content: ''; position: absolute;
+    left: 13px; top: 28px; bottom: 0;
+    width: 2px; background: #e8e8ee;
+  }
+  .timeline-step:last-child::before { display: none; }
+  .timeline-dot {
+    width: 28px; height: 28px; border-radius: 50%;
+    flex-shrink: 0; display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700; z-index: 1;
+  }
+  .timeline-dot.done {
+    background: #205C50; color: #fff;
+  }
+  .timeline-dot.pending {
+    background: #fff; border: 2px solid #e0e0e0; color: #888;
+  }
+  .timeline-info {}
+  .timeline-title {
+    font-size: 13px; font-weight: 600; color: #221F1F; margin-bottom: 2px;
+  }
+  .timeline-desc {
+    font-size: 11px; color: #999;
+  }
+
+  .pay-now-btn {
+    width: 100%; padding: 16px 24px; border-radius: 10px;
+    font-size: 15px; font-weight: 700; cursor: pointer; border: none;
+    font-family: inherit; text-align: center;
+    background: #221F1F; color: #fff;
+    transition: all 0.15s;
+    margin-top: 16px;
+  }
+  .pay-now-btn:hover { background: #2d2a2a; }
+  .pay-now-sub {
+    text-align: center; font-size: 11px; color: #999; margin-top: 8px;
+  }
+
+  /* ==================================================================
+     MY ACTIVE ADS TABLE
+     ================================================================== */
+  .ads-table-section {
+    width: 100%; max-width: 1200px; margin-top: 0;
+  }
+  .ads-table {
+    background: #fff; border-radius: 12px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+    overflow: hidden;
+  }
+  .ads-table table {
+    width: 100%; border-collapse: collapse;
+  }
+  .ads-table th {
+    padding: 12px 16px; font-size: 11px; font-weight: 700;
+    color: #888; text-transform: uppercase; letter-spacing: 0.5px;
+    background: #fafafa; border-bottom: 1px solid #eee;
+    text-align: left;
+  }
+  .ads-table td {
+    padding: 12px 16px; font-size: 12px; color: #555;
+    border-bottom: 1px solid #f5f5f5;
+  }
+  .ads-table tr:last-child td { border-bottom: none; }
+  .ads-table td:first-child {
+    font-weight: 600; color: #221F1F;
+  }
+
+  .back-arrow {
+    font-size: 18px; cursor: pointer; color: #888;
+    margin-right: 8px;
+  }
+  .draft-badge {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 3px 10px; border-radius: 10px;
+    font-size: 11px; font-weight: 600;
+    background: #f0f0f0; color: #888;
+    margin-left: 12px;
+  }
+</style>
+</head>
+<body>
+
+<h1>B-Ticket Merchant Portal — In-App Advertising</h1>
+<p class="subtitle">Merchant Ad Creation Flow: Browse ad placements, create campaigns, and pay for in-app advertising slots to promote your business to thousands of coupon seekers.</p>
+
+<!-- ================================================================
+     SCREEN 1: AD PLACEMENTS OVERVIEW
+     ================================================================ -->
+<h2>Screen 1 — Ad Placements Overview</h2>
+
+<div class="browser-frame">
+  <div class="browser-bar">
+    <div class="browser-dots"><div class="red"></div><div class="yellow"></div><div class="green"></div></div>
+    <div class="browser-url">
+      <span class="lock">&#x1F512;</span>
+      merchant.b-ticket.ph/ads
+    </div>
+  </div>
+
+  <div class="portal-layout">
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+      <div class="sidebar-logo">
+        <div class="logo-box">B</div>
+        <div>
+          <div class="logo-text">B-Ticket</div>
+          <div class="logo-sub">Merchant Portal</div>
+        </div>
+      </div>
+
+      <div class="sidebar-section-label">Main</div>
+      <ul class="sidebar-nav">
+        <li class="sidebar-item"><span class="icon">&#x1F4CA;</span> Dashboard</li>
+        <li class="sidebar-item"><span class="icon">&#x1F3AB;</span> My Coupons</li>
+        <li class="sidebar-item"><span class="icon">&#x1F4C8;</span> Analytics</li>
+        <li class="sidebar-item active"><span class="icon">&#x1F4E2;</span> Advertising</li>
+      </ul>
+
+      <div class="sidebar-section-label">Business</div>
+      <ul class="sidebar-nav">
+        <li class="sidebar-item"><span class="icon">&#x1F3E2;</span> Business Profile</li>
+        <li class="sidebar-item"><span class="icon">&#x1F4CD;</span> Branches</li>
+        <li class="sidebar-item"><span class="icon">&#x1F4F7;</span> Photos</li>
+      </ul>
+
+      <div class="sidebar-section-label">Account</div>
+      <ul class="sidebar-nav">
+        <li class="sidebar-item"><span class="icon">&#x2699;&#xFE0F;</span> Settings</li>
+      </ul>
+
+      <div class="sidebar-footer">
+        <div class="avatar-circle">MT</div>
+        <div class="avatar-info">
+          <div class="name">Maple Tree BGC</div>
+          <div class="status"><span class="status-dot"></span> Active</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="main-content">
+      <!-- Top Bar -->
+      <div class="top-bar">
+        <div class="top-bar-left">
+          <div>
+            <div class="top-bar-greeting">In-App Advertising</div>
+            <div class="top-bar-sub">Promote your business to thousands of coupon seekers</div>
+          </div>
+        </div>
+        <div class="top-bar-right">
+          <div class="notif-bell">
+            &#x1F514;
+            <div class="notif-badge">3</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Ad Format Cards -->
+      <div class="dashboard-area">
+        <div class="ad-format-grid">
+
+          <!-- Card 1: Hero Banner -->
+          <div class="ad-format-card">
+            <div class="ad-preview">
+              <div class="phone-wireframe">
+                <div class="phone-notch"></div>
+                <div class="phone-screen">
+                  <div class="wire-status-bar">
+                    <span>9:41</span>
+                    <span>&#x1F4F6; &#x1F50B;</span>
+                  </div>
+                  <div class="wire-search"></div>
+                  <div class="wire-hero-banner">YOUR AD HERE</div>
+                  <div class="wire-section-label"></div>
+                  <div class="wire-coupon-row">
+                    <div class="wire-coupon"></div>
+                    <div class="wire-coupon"></div>
+                  </div>
+                  <div class="wire-section-label"></div>
+                  <div class="wire-coupon-row">
+                    <div class="wire-coupon"></div>
+                    <div class="wire-coupon"></div>
+                  </div>
+                </div>
+                <div class="phone-home-bar"></div>
+              </div>
+            </div>
+            <div class="ad-format-details">
+              <div class="ad-format-title">Hero Banner</div>
+              <div class="ad-format-size">357 x 96 px</div>
+              <div class="ad-detail-row">
+                <span class="detail-icon">&#x1F4CD;</span>
+                <span>Home Screen — seen by 100% of users</span>
+              </div>
+              <div class="ad-detail-row">
+                <span class="detail-icon">&#x1F504;</span>
+                <span>5-second rotation with up to 15 merchants</span>
+              </div>
+              <div class="ad-price">&#8369;15,000 <span>/month</span></div>
+              <div class="slot-availability">
+                <div class="slot-label">
+                  <span>Slot Availability</span>
+                  <span>12 of 15 available</span>
+                </div>
+                <div class="slot-bar">
+                  <div class="slot-bar-fill" style="width: 80%;"></div>
+                </div>
+              </div>
+              <button class="ad-format-btn">Select Hero Banner &#x2192;</button>
+            </div>
+          </div>
+
+          <!-- Card 2: Top Banner -->
+          <div class="ad-format-card">
+            <div class="ad-preview">
+              <div class="phone-wireframe">
+                <div class="phone-notch"></div>
+                <div class="phone-screen">
+                  <div class="wire-status-bar">
+                    <span>9:41</span>
+                    <span>&#x1F4F6; &#x1F50B;</span>
+                  </div>
+                  <div class="wire-top-banner">YOUR AD HERE</div>
+                  <div class="wire-category-tabs">
+                    <div class="wire-cat-tab active"></div>
+                    <div class="wire-cat-tab"></div>
+                    <div class="wire-cat-tab"></div>
+                    <div class="wire-cat-tab"></div>
+                  </div>
+                  <div class="wire-list-item"></div>
+                  <div class="wire-list-item"></div>
+                  <div class="wire-list-item"></div>
+                  <div class="wire-list-item"></div>
+                  <div class="wire-list-item"></div>
+                </div>
+                <div class="phone-home-bar"></div>
+              </div>
+            </div>
+            <div class="ad-format-details">
+              <div class="ad-format-title">Top Banner</div>
+              <div class="ad-format-size">392 x 72 px</div>
+              <div class="ad-detail-row">
+                <span class="detail-icon">&#x1F4CD;</span>
+                <span>Explore &amp; Category Pages</span>
+              </div>
+              <div class="ad-detail-row">
+                <span class="detail-icon">&#x1F504;</span>
+                <span>5-second rotation with up to 10 merchants</span>
+              </div>
+              <div class="ad-price">&#8369;8,000 <span>/month</span></div>
+              <div class="slot-availability">
+                <div class="slot-label">
+                  <span>Slot Availability</span>
+                  <span>7 of 10 available</span>
+                </div>
+                <div class="slot-bar">
+                  <div class="slot-bar-fill" style="width: 70%;"></div>
+                </div>
+              </div>
+              <button class="ad-format-btn">Select Top Banner &#x2192;</button>
+            </div>
+          </div>
+
+          <!-- Card 3: Pop-up -->
+          <div class="ad-format-card">
+            <div class="ad-preview">
+              <div class="phone-wireframe">
+                <div class="phone-notch"></div>
+                <div class="phone-screen" style="position: relative;">
+                  <div class="wire-status-bar">
+                    <span>9:41</span>
+                    <span>&#x1F4F6; &#x1F50B;</span>
+                  </div>
+                  <div class="wire-search"></div>
+                  <div class="wire-section-label"></div>
+                  <div class="wire-coupon-row">
+                    <div class="wire-coupon"></div>
+                    <div class="wire-coupon"></div>
+                  </div>
+                  <!-- popup overlay -->
+                  <div class="wire-popup-overlay">
+                    <div class="wire-popup-card">
+                      <div class="wire-popup-close">&#x2715;</div>
+                      <div class="wire-popup-img">YOUR AD</div>
+                      <div class="wire-popup-text"></div>
+                      <div class="wire-popup-text" style="width: 40%;"></div>
+                      <div class="wire-popup-btn"></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="phone-home-bar"></div>
+              </div>
+            </div>
+            <div class="ad-format-details">
+              <div class="ad-format-title">Pop-up Ad</div>
+              <div class="ad-format-size">310 x 371 px</div>
+              <div class="ad-detail-row">
+                <span class="detail-icon">&#x1F4CD;</span>
+                <span>Overlay on any screen</span>
+              </div>
+              <div class="ad-detail-row">
+                <span class="detail-icon">&#x23F1;</span>
+                <span>3-second mandatory view, then dismissible</span>
+              </div>
+              <div class="ad-detail-row">
+                <span class="detail-icon">&#x1F464;</span>
+                <span>1x per user per session</span>
+              </div>
+              <div class="ad-price">&#8369;20,000 <span>/month</span></div>
+              <div class="slot-availability">
+                <div class="slot-label">
+                  <span>Slot Availability</span>
+                  <span>3 of 5 available</span>
+                </div>
+                <div class="slot-bar">
+                  <div class="slot-bar-fill" style="width: 60%;"></div>
+                </div>
+              </div>
+              <button class="ad-format-btn">Select Pop-up &#x2192;</button>
+            </div>
+          </div>
+
+          <!-- Card 4: Full-Screen -->
+          <div class="ad-format-card">
+            <div class="almost-full-badge">ALMOST FULL</div>
+            <div class="ad-preview">
+              <div class="phone-wireframe">
+                <div class="phone-notch"></div>
+                <div class="phone-screen" style="position: relative;">
+                  <div class="wire-fullscreen-ad">
+                    <div class="wire-fs-skip">5s | Skip Ad</div>
+                    <div class="wire-fs-logo">B</div>
+                    <div class="wire-fs-text"></div>
+                    <div class="wire-fs-text short"></div>
+                    <div class="wire-fs-cta">LEARN MORE</div>
+                  </div>
+                </div>
+                <div class="phone-home-bar"></div>
+              </div>
+            </div>
+            <div class="ad-format-details">
+              <div class="ad-format-title">Full-Screen Interstitial</div>
+              <div class="ad-format-size">392 x 615 px</div>
+              <div class="ad-detail-row">
+                <span class="detail-icon">&#x1F4CD;</span>
+                <span>Between screen transitions</span>
+              </div>
+              <div class="ad-detail-row">
+                <span class="detail-icon">&#x23F1;</span>
+                <span>5-second mandatory view, then skip enabled</span>
+              </div>
+              <div class="ad-detail-row">
+                <span class="detail-icon">&#x1F464;</span>
+                <span>1x per user per day</span>
+              </div>
+              <div class="ad-price">&#8369;25,000 <span>/month</span></div>
+              <div class="slot-availability">
+                <div class="slot-label">
+                  <span>Slot Availability</span>
+                  <span style="color: #F9A250; font-weight: 700;">1 of 3 available</span>
+                </div>
+                <div class="slot-bar">
+                  <div class="slot-bar-fill orange" style="width: 33%;"></div>
+                </div>
+              </div>
+              <button class="ad-format-btn">Select Full-Screen &#x2192;</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Comparison Table -->
+        <div class="comparison-table">
+          <div class="card-header">&#x1F4CA; Ad Format Comparison</div>
+          <table>
+            <thead>
+              <tr>
+                <th>Feature</th>
+                <th>Hero</th>
+                <th>Top</th>
+                <th>Pop-up</th>
+                <th>Full-Screen</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Monthly Rate</td>
+                <td class="price-cell">&#8369;15,000</td>
+                <td class="price-cell">&#8369;8,000</td>
+                <td class="price-cell">&#8369;20,000</td>
+                <td class="price-cell">&#8369;25,000</td>
+              </tr>
+              <tr>
+                <td>Max Slots</td>
+                <td>15</td>
+                <td>10</td>
+                <td>5</td>
+                <td>3</td>
+              </tr>
+              <tr>
+                <td>Rotation</td>
+                <td>5s time-based</td>
+                <td>5s time-based</td>
+                <td>Per-user</td>
+                <td>Per-user</td>
+              </tr>
+              <tr>
+                <td>Mandatory View</td>
+                <td style="color: #ccc;">—</td>
+                <td style="color: #ccc;">—</td>
+                <td>3 seconds</td>
+                <td>5 seconds</td>
+              </tr>
+              <tr>
+                <td>Best For</td>
+                <td>Brand awareness</td>
+                <td>Location deals</td>
+                <td>Flash sales</td>
+                <td>Grand openings</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ================================================================
+     SCREEN 2: AD CREATION FORM
+     ================================================================ -->
+<h2>Screen 2 — Ad Creation Form</h2>
+
+<div class="browser-frame">
+  <div class="browser-bar">
+    <div class="browser-dots"><div class="red"></div><div class="yellow"></div><div class="green"></div></div>
+    <div class="browser-url">
+      <span class="lock">&#x1F512;</span>
+      merchant.b-ticket.ph/ads/create?format=hero
+    </div>
+  </div>
+
+  <div class="portal-layout" style="min-height: 1000px;">
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+      <div class="sidebar-logo">
+        <div class="logo-box">B</div>
+        <div>
+          <div class="logo-text">B-Ticket</div>
+          <div class="logo-sub">Merchant Portal</div>
+        </div>
+      </div>
+
+      <div class="sidebar-section-label">Main</div>
+      <ul class="sidebar-nav">
+        <li class="sidebar-item"><span class="icon">&#x1F4CA;</span> Dashboard</li>
+        <li class="sidebar-item"><span class="icon">&#x1F3AB;</span> My Coupons</li>
+        <li class="sidebar-item"><span class="icon">&#x1F4C8;</span> Analytics</li>
+        <li class="sidebar-item active"><span class="icon">&#x1F4E2;</span> Advertising</li>
+      </ul>
+
+      <div class="sidebar-section-label">Business</div>
+      <ul class="sidebar-nav">
+        <li class="sidebar-item"><span class="icon">&#x1F3E2;</span> Business Profile</li>
+        <li class="sidebar-item"><span class="icon">&#x1F4CD;</span> Branches</li>
+        <li class="sidebar-item"><span class="icon">&#x1F4F7;</span> Photos</li>
+      </ul>
+
+      <div class="sidebar-section-label">Account</div>
+      <ul class="sidebar-nav">
+        <li class="sidebar-item"><span class="icon">&#x2699;&#xFE0F;</span> Settings</li>
+      </ul>
+
+      <div class="sidebar-footer">
+        <div class="avatar-circle">MT</div>
+        <div class="avatar-info">
+          <div class="name">Maple Tree BGC</div>
+          <div class="status"><span class="status-dot"></span> Active</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="main-content">
+      <!-- Top Bar -->
+      <div class="top-bar">
+        <div class="top-bar-left" style="display: flex; align-items: center;">
+          <span class="back-arrow">&#x2190;</span>
+          <div>
+            <div class="top-bar-greeting">Create Hero Banner Ad <span class="draft-badge">Draft</span></div>
+            <div class="top-bar-sub">Configure your campaign, upload creative, and set your destination</div>
+          </div>
+        </div>
+        <div class="top-bar-right">
+          <div class="notif-bell">
+            &#x1F514;
+            <div class="notif-badge">3</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Form Content -->
+      <div class="form-layout">
+        <!-- LEFT SIDE: Form -->
+        <div class="form-left">
+          <!-- Campaign Details -->
+          <div class="card">
+            <div class="card-header">&#x1F4CB; Campaign Details</div>
+            <div class="card-body">
+              <div class="form-group">
+                <label class="form-label">Campaign Name</label>
+                <input type="text" class="form-input" value="March Steak Promo" readonly>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label">Start Date</label>
+                  <input type="text" class="form-input" value="2026-04-01" readonly>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">End Date</label>
+                  <input type="text" class="form-input" value="2026-04-30" readonly>
+                </div>
+              </div>
+              <div class="form-hint green" style="margin-top: 8px;">&#x2139;&#xFE0F; 1 month = &#8369;15,000 (auto-calculated)</div>
+            </div>
+          </div>
+
+          <!-- Creative Upload -->
+          <div class="card">
+            <div class="card-header">&#x1F3A8; Upload Your Banner Creative</div>
+            <div class="card-body">
+              <!-- Show uploaded state -->
+              <div class="upload-preview" style="margin-bottom: 12px;">
+                <div class="upload-preview-img">
+                  50% OFF Hanger Steak — Maple Tree BGC
+                </div>
+                <div class="upload-validation">
+                  <span class="check">&#x2705;</span>
+                  Image meets size requirements (357 x 96 px)
+                </div>
+              </div>
+              <div class="form-hint" style="margin-top: 8px;">Required: 357 x 96 pixels &middot; JPG or PNG &middot; Max 500KB</div>
+
+              <!-- Also show the empty upload state below for reference -->
+              <div style="margin-top: 16px; padding-top: 16px; border-top: 1px dashed #e0e0e0;">
+                <div class="form-hint" style="margin-bottom: 8px; font-style: italic;">Empty state (before upload):</div>
+                <div class="upload-area">
+                  <div class="upload-icon">&#x1F4E4;</div>
+                  <div class="upload-text">Drop your image here or click to browse</div>
+                  <div class="upload-specs">Required: 357 x 96 pixels &middot; JPG or PNG &middot; Max 500KB</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Destination -->
+          <div class="card">
+            <div class="card-header">&#x1F517; Tap Destination</div>
+            <div class="card-body">
+              <div class="form-label" style="margin-bottom: 10px;">Where should users go when they tap your ad?</div>
+              <div class="radio-group">
+                <div class="radio-option selected">
+                  <div class="radio-circle"></div>
+                  <div>
+                    <div style="font-weight: 600; color: #221F1F;">My merchant profile page</div>
+                    <div style="font-size: 11px; color: #999; margin-top: 2px;">Users will see your full business profile and active coupons</div>
+                  </div>
+                </div>
+                <div class="radio-option">
+                  <div class="radio-circle"></div>
+                  <div>
+                    <div style="font-weight: 600; color: #221F1F;">A specific coupon</div>
+                    <div style="font-size: 11px; color: #999; margin-top: 2px;">Select from your active coupons</div>
+                  </div>
+                </div>
+                <div class="radio-option">
+                  <div class="radio-circle"></div>
+                  <div>
+                    <div style="font-weight: 600; color: #221F1F;">External link</div>
+                    <div style="font-size: 11px; color: #999; margin-top: 2px;">Enter a URL to redirect users</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT SIDE: Preview & Summary -->
+        <div class="form-right">
+          <!-- Live Preview -->
+          <div class="card">
+            <div class="card-header">&#x1F4F1; Preview</div>
+            <div class="card-body" style="padding: 0;">
+              <div class="preview-phone-wrap">
+                <div class="preview-phone">
+                  <div class="phone-notch"></div>
+                  <div class="phone-screen">
+                    <div class="wire-status-bar">
+                      <span>9:41</span>
+                      <span>&#x1F4F6; &#x1F50B;</span>
+                    </div>
+                    <div class="wire-search"></div>
+                    <div class="preview-hero-banner">50% OFF Steak</div>
+                    <div class="wire-section-label"></div>
+                    <div class="wire-coupon-row">
+                      <div class="wire-coupon"></div>
+                      <div class="wire-coupon"></div>
+                    </div>
+                    <div class="wire-section-label"></div>
+                    <div class="wire-coupon-row">
+                      <div class="wire-coupon"></div>
+                      <div class="wire-coupon"></div>
+                    </div>
+                    <div class="wire-section-label"></div>
+                    <div class="wire-coupon-row">
+                      <div class="wire-coupon"></div>
+                      <div class="wire-coupon"></div>
+                    </div>
+                  </div>
+                  <div class="phone-home-bar"></div>
+                </div>
+                <div class="preview-note">Your ad will rotate with 2 other merchants every 5 seconds</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Order Summary -->
+          <div class="card">
+            <div class="card-header">&#x1F4E6; Order Summary</div>
+            <div class="card-body">
+              <div class="order-row">
+                <span class="label">Format</span>
+                <span class="value">Hero Banner</span>
+              </div>
+              <div class="order-row">
+                <span class="label">Duration</span>
+                <span class="value">April 1–30, 2026 (1 month)</span>
+              </div>
+              <div class="order-row">
+                <span class="label">Monthly Rate</span>
+                <span class="value">&#8369;15,000</span>
+              </div>
+              <div class="order-total">
+                <span class="label">Total</span>
+                <span class="value">&#8369;15,000</span>
+              </div>
+              <div class="order-note">
+                100% payment upfront. Auto-renews monthly. Cancel 5 days before next cycle.
+              </div>
+              <button class="btn btn-primary" style="width: 100%; justify-content: center; margin-top: 16px; padding: 14px 20px; font-size: 14px;">
+                Proceed to Payment &#x2192;
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ================================================================
+     SCREEN 3: PAYMENT & CONFIRMATION
+     ================================================================ -->
+<h2>Screen 3 — Payment &amp; Confirmation</h2>
+
+<div class="browser-frame">
+  <div class="browser-bar">
+    <div class="browser-dots"><div class="red"></div><div class="yellow"></div><div class="green"></div></div>
+    <div class="browser-url">
+      <span class="lock">&#x1F512;</span>
+      merchant.b-ticket.ph/ads/create/payment
+    </div>
+  </div>
+
+  <div class="portal-layout" style="min-height: 850px;">
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+      <div class="sidebar-logo">
+        <div class="logo-box">B</div>
+        <div>
+          <div class="logo-text">B-Ticket</div>
+          <div class="logo-sub">Merchant Portal</div>
+        </div>
+      </div>
+
+      <div class="sidebar-section-label">Main</div>
+      <ul class="sidebar-nav">
+        <li class="sidebar-item"><span class="icon">&#x1F4CA;</span> Dashboard</li>
+        <li class="sidebar-item"><span class="icon">&#x1F3AB;</span> My Coupons</li>
+        <li class="sidebar-item"><span class="icon">&#x1F4C8;</span> Analytics</li>
+        <li class="sidebar-item active"><span class="icon">&#x1F4E2;</span> Advertising</li>
+      </ul>
+
+      <div class="sidebar-section-label">Business</div>
+      <ul class="sidebar-nav">
+        <li class="sidebar-item"><span class="icon">&#x1F3E2;</span> Business Profile</li>
+        <li class="sidebar-item"><span class="icon">&#x1F4CD;</span> Branches</li>
+        <li class="sidebar-item"><span class="icon">&#x1F4F7;</span> Photos</li>
+      </ul>
+
+      <div class="sidebar-section-label">Account</div>
+      <ul class="sidebar-nav">
+        <li class="sidebar-item"><span class="icon">&#x2699;&#xFE0F;</span> Settings</li>
+      </ul>
+
+      <div class="sidebar-footer">
+        <div class="avatar-circle">MT</div>
+        <div class="avatar-info">
+          <div class="name">Maple Tree BGC</div>
+          <div class="status"><span class="status-dot"></span> Active</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="main-content">
+      <!-- Top Bar -->
+      <div class="top-bar">
+        <div class="top-bar-left" style="display: flex; align-items: center;">
+          <span class="back-arrow">&#x2190;</span>
+          <div>
+            <div class="top-bar-greeting">Payment</div>
+            <div class="top-bar-sub">Complete your payment to launch your Hero Banner campaign</div>
+          </div>
+        </div>
+        <div class="top-bar-right">
+          <div class="notif-bell">
+            &#x1F514;
+            <div class="notif-badge">3</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Payment Content -->
+      <div class="form-layout">
+        <!-- LEFT SIDE: Payment -->
+        <div class="form-left">
+          <!-- Payment Method -->
+          <div class="card">
+            <div class="card-header">&#x1F4B3; Select Payment Method</div>
+            <div class="card-body">
+              <div class="payment-options">
+                <!-- GCash — Selected -->
+                <div class="payment-option selected">
+                  <div class="payment-logo gcash">GCash</div>
+                  <div>
+                    <div class="payment-name">GCash</div>
+                    <div class="payment-sub">Pay using your GCash wallet</div>
+                  </div>
+                  <div class="payment-check">&#x2713;</div>
+                </div>
+                <!-- Maya -->
+                <div class="payment-option">
+                  <div class="payment-logo maya">Maya</div>
+                  <div>
+                    <div class="payment-name">Maya</div>
+                    <div class="payment-sub">Pay using your Maya account</div>
+                  </div>
+                  <div class="payment-check"></div>
+                </div>
+                <!-- Credit/Debit Card -->
+                <div class="payment-option">
+                  <div class="payment-logo card">VISA / MC</div>
+                  <div>
+                    <div class="payment-name">Credit / Debit Card</div>
+                    <div class="payment-sub">Visa, Mastercard accepted</div>
+                  </div>
+                  <div class="payment-check"></div>
+                </div>
+                <!-- B-Ticket Wallet -->
+                <div class="payment-option">
+                  <div class="payment-logo wallet">B</div>
+                  <div>
+                    <div class="payment-name">B-Ticket Wallet</div>
+                    <div class="payment-sub">Balance: &#8369;0.00</div>
+                  </div>
+                  <div class="payment-check"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Order Details -->
+          <div class="card">
+            <div class="card-header">&#x1F4C4; Order Details</div>
+            <div class="card-body">
+              <div class="order-recap">
+                <div class="recap-row">
+                  <span class="label">Ad Format</span>
+                  <span class="value">Hero Banner (357 x 96)</span>
+                </div>
+                <div class="recap-row">
+                  <span class="label">Campaign</span>
+                  <span class="value">March Steak Promo</span>
+                </div>
+                <div class="recap-row">
+                  <span class="label">Period</span>
+                  <span class="value">April 1–30, 2026</span>
+                </div>
+                <div class="recap-row">
+                  <span class="label">Amount</span>
+                  <span class="value green">&#8369;15,000</span>
+                </div>
+              </div>
+
+              <div class="terms-list">
+                <div class="term-item">
+                  <div class="checkbox">&#x2713;</div>
+                  <span>I agree to B-Ticket's Advertising Terms of Service</span>
+                </div>
+                <div class="term-item">
+                  <div class="checkbox">&#x2713;</div>
+                  <span>I understand this is non-refundable once the campaign is live</span>
+                </div>
+                <div class="term-item">
+                  <div class="checkbox">&#x2713;</div>
+                  <span>My creative will be reviewed and approved within 3 business days</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT SIDE: Confirmation Preview -->
+        <div class="form-right">
+          <!-- What Happens Next -->
+          <div class="card">
+            <div class="card-header">&#x1F4C5; What Happens Next</div>
+            <div class="card-body">
+              <div class="timeline">
+                <div class="timeline-step">
+                  <div class="timeline-dot done">&#x2713;</div>
+                  <div class="timeline-info">
+                    <div class="timeline-title">Payment processed</div>
+                    <div class="timeline-desc">Your payment will be confirmed instantly</div>
+                  </div>
+                </div>
+                <div class="timeline-step">
+                  <div class="timeline-dot pending">2</div>
+                  <div class="timeline-info">
+                    <div class="timeline-title">Creative reviewed by B-Ticket team</div>
+                    <div class="timeline-desc">1–3 business days review period</div>
+                  </div>
+                </div>
+                <div class="timeline-step">
+                  <div class="timeline-dot pending">3</div>
+                  <div class="timeline-info">
+                    <div class="timeline-title">Ad goes live on April 1, 2026</div>
+                    <div class="timeline-desc">Your banner will start rotating on the home screen</div>
+                  </div>
+                </div>
+                <div class="timeline-step">
+                  <div class="timeline-dot pending">4</div>
+                  <div class="timeline-info">
+                    <div class="timeline-title">Monthly performance report delivered</div>
+                    <div class="timeline-desc">Track impressions, taps, and CTR</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Pay Now -->
+          <div class="card">
+            <div class="card-body" style="text-align: center;">
+              <button class="pay-now-btn">Pay &#8369;15,000 via GCash</button>
+              <div class="pay-now-sub">You will be redirected to GCash to complete payment</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ================================================================
+     MY ACTIVE ADS TABLE
+     ================================================================ -->
+<h2>My Active Ads — Management View</h2>
+
+<div class="ads-table-section">
+  <div class="ads-table">
+    <table>
+      <thead>
+        <tr>
+          <th>Campaign</th>
+          <th>Format</th>
+          <th>Status</th>
+          <th>Period</th>
+          <th>Impressions</th>
+          <th>Taps</th>
+          <th>CTR</th>
+          <th>Amount</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>March Steak Promo</td>
+          <td style="color: #555;">Hero Banner</td>
+          <td><span class="badge badge-green">&#x25CF; Active</span></td>
+          <td style="color: #555;">Apr 1–30</td>
+          <td style="color: #555;">12,450</td>
+          <td style="color: #555;">342</td>
+          <td style="color: #555;">2.7%</td>
+          <td style="color: #205C50; font-weight: 700;">&#8369;15,000</td>
+        </tr>
+        <tr>
+          <td>Weekend Pizza Deal</td>
+          <td style="color: #555;">Top Banner</td>
+          <td><span class="badge badge-yellow">&#x25CF; Pending Review</span></td>
+          <td style="color: #555;">Apr 1–30</td>
+          <td style="color: #ccc;">—</td>
+          <td style="color: #ccc;">—</td>
+          <td style="color: #ccc;">—</td>
+          <td style="color: #205C50; font-weight: 700;">&#8369;8,000</td>
+        </tr>
+        <tr>
+          <td>Grand Opening</td>
+          <td style="color: #555;">Full-Screen</td>
+          <td><span class="badge badge-red">&#x25CF; Sold Out (Waitlisted)</span></td>
+          <td style="color: #ccc;">—</td>
+          <td style="color: #ccc;">—</td>
+          <td style="color: #ccc;">—</td>
+          <td style="color: #ccc;">—</td>
+          <td style="color: #205C50; font-weight: 700;">&#8369;25,000</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+</body>
+</html>

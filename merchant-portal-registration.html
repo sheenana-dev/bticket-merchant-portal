@@ -1,0 +1,1804 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>B-Ticket — Merchant Portal: Registration &amp; Onboarding</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: #0f1110; color: #fff;
+    display: flex; flex-direction: column; align-items: center;
+    padding: 40px 20px; gap: 60px; min-height: 100vh;
+  }
+  h1 { font-size: 28px; font-weight: 700; text-align: center; }
+  .subtitle { color: #888; font-size: 14px; text-align: center; max-width: 700px; line-height: 1.6; }
+  h2 {
+    color: #888; font-size: 13px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 2px;
+    margin-bottom: 20px; text-align: center;
+  }
+
+  /* ---- Browser frame ---- */
+  .browser-frame {
+    width: 100%; max-width: 1100px;
+    border-radius: 12px; overflow: hidden;
+    box-shadow: 0 25px 80px rgba(0,0,0,0.5), 0 0 0 1px #333;
+    background: #fff;
+  }
+  .browser-bar {
+    background: #2d2a2a; padding: 10px 16px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .browser-dots { display: flex; gap: 6px; }
+  .browser-dots div {
+    width: 12px; height: 12px; border-radius: 50%;
+  }
+  .browser-dots .red { background: #ff5f57; }
+  .browser-dots .yellow { background: #ffbd2e; }
+  .browser-dots .green { background: #56A66F; }
+  .browser-url {
+    flex: 1; background: #2a2525; border-radius: 6px;
+    padding: 6px 12px; font-size: 12px; color: #888;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .browser-url svg { width: 12px; height: 12px; opacity: 0.5; }
+
+  /* ---- Portal layout ---- */
+  .portal-layout {
+    display: flex; min-height: 700px;
+  }
+
+  /* ---- Sidebar ---- */
+  .sidebar {
+    width: 240px; background: #221F1F; color: #fff;
+    display: flex; flex-direction: column; padding: 0; flex-shrink: 0;
+  }
+  .sidebar-logo {
+    display: flex; align-items: center; gap: 10px;
+    padding: 20px 20px 24px; border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+  .logo-box {
+    width: 34px; height: 34px; background: #205C50; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800; font-size: 16px; color: #fff;
+  }
+  .logo-text { font-size: 15px; font-weight: 700; color: #fff; }
+  .logo-sub { font-size: 9px; color: #205C50; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
+
+  .sidebar-section {
+    padding: 16px 14px 8px;
+    font-size: 10px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 1.5px; color: #555;
+  }
+  .sidebar-nav { list-style: none; padding: 0 8px; }
+  .sidebar-nav li {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 12px; border-radius: 8px; font-size: 13px;
+    color: #555; cursor: default; margin-bottom: 2px;
+    position: relative;
+  }
+  .sidebar-nav li.active {
+    background: rgba(107,155,125,0.15); color: #205C50; font-weight: 600;
+  }
+  .sidebar-nav li svg { width: 18px; height: 18px; opacity: 0.5; flex-shrink: 0; }
+  .sidebar-nav li.active svg { opacity: 1; }
+  .nav-badge {
+    margin-left: auto; font-size: 9px; font-weight: 700;
+    padding: 2px 8px; border-radius: 10px;
+    background: rgba(255,180,0,0.15); color: #ffb400;
+    text-transform: uppercase; letter-spacing: 0.5px;
+  }
+  .nav-badge.pending {
+    background: rgba(255,180,0,0.15); color: #ffb400;
+  }
+  .sidebar-footer {
+    margin-top: auto; padding: 16px;
+    border-top: 1px solid rgba(255,255,255,0.06);
+    display: flex; align-items: center; gap: 10px;
+  }
+  .avatar-circle {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: linear-gradient(135deg, #205C50, #4a7a5d);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700; color: #fff;
+  }
+  .avatar-info { font-size: 12px; }
+  .avatar-info div:first-child { font-weight: 600; color: #ccc; }
+  .avatar-info div:last-child { font-size: 10px; color: #666; }
+
+  /* ---- Main content ---- */
+  .main-content {
+    flex: 1; background: #f5f6f8; display: flex; flex-direction: column;
+    min-width: 0;
+  }
+
+  /* ---- Top bar ---- */
+  .top-bar {
+    padding: 16px 28px; background: #fff;
+    border-bottom: 1px solid #e8e8ee;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .top-bar-left { display: flex; align-items: center; gap: 12px; }
+  .top-bar-left h3 { font-size: 16px; font-weight: 700; color: #221F1F; }
+  .top-bar-right { display: flex; align-items: center; gap: 12px; }
+  .top-bar-right .help-btn {
+    display: flex; align-items: center; gap: 6px;
+    padding: 6px 14px; border-radius: 8px; border: 1px solid #ddd;
+    background: #fff; font-size: 12px; color: #666; cursor: pointer;
+    font-family: inherit;
+  }
+
+  /* ---- Stepper ---- */
+  .stepper-bar {
+    padding: 20px 28px; background: #fff;
+    border-bottom: 1px solid #e8e8ee;
+  }
+  .stepper {
+    display: flex; align-items: center; justify-content: center; gap: 0;
+  }
+  .step-item {
+    display: flex; align-items: center; gap: 8px; position: relative;
+  }
+  .step-circle {
+    width: 32px; height: 32px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 700;
+    border: 2px solid #ddd; color: #999; background: #fff;
+    flex-shrink: 0; position: relative; z-index: 1;
+  }
+  .step-circle.completed {
+    background: #205C50; border-color: #205C50; color: #fff;
+  }
+  .step-circle.active {
+    border-color: #205C50; color: #205C50; background: rgba(107,155,125,0.08);
+  }
+  .step-label {
+    font-size: 11px; font-weight: 600; color: #999;
+    white-space: nowrap;
+  }
+  .step-label.completed { color: #205C50; }
+  .step-label.active { color: #205C50; }
+  .step-connector {
+    width: 40px; height: 2px; background: #ddd; margin: 0 4px;
+    flex-shrink: 0;
+  }
+  .step-connector.completed { background: #205C50; }
+
+  /* ---- Form area ---- */
+  .form-area {
+    flex: 1; padding: 24px 28px; overflow-y: auto;
+  }
+  .form-card {
+    background: #fff; border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 0 0 1px rgba(0,0,0,0.03);
+    padding: 28px; margin-bottom: 20px;
+  }
+  .form-card-title {
+    font-size: 16px; font-weight: 700; color: #221F1F;
+    margin-bottom: 4px;
+  }
+  .form-card-subtitle {
+    font-size: 12px; color: #888; margin-bottom: 20px;
+  }
+  .form-row {
+    display: flex; gap: 16px; margin-bottom: 16px;
+  }
+  .form-group {
+    flex: 1; display: flex; flex-direction: column;
+  }
+  .form-group.full { flex: 1 1 100%; }
+  .form-label {
+    font-size: 12px; font-weight: 600; color: #444;
+    margin-bottom: 6px; display: flex; align-items: center; gap: 4px;
+  }
+  .form-label .req { color: #e74c3c; font-size: 14px; }
+  .form-input, .form-select, .form-textarea {
+    padding: 10px 12px; border: 1px solid #ddd; border-radius: 8px;
+    font-size: 13px; font-family: inherit; color: #333;
+    background: #fafafa; outline: none; transition: border 0.2s;
+  }
+  .form-input:focus, .form-select:focus, .form-textarea:focus {
+    border-color: #205C50; background: #fff;
+  }
+  .form-input.has-value { background: #fff; color: #221F1F; }
+  .form-select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L5 5L9 1' stroke='%23999' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 32px; }
+  .form-textarea { resize: vertical; min-height: 80px; }
+  .form-hint {
+    font-size: 11px; color: #999; margin-top: 4px;
+  }
+  .form-hint.error { color: #e74c3c; }
+  .input-prefix {
+    display: flex; align-items: stretch;
+  }
+  .input-prefix .prefix {
+    padding: 10px 10px; background: #eee; border: 1px solid #ddd;
+    border-right: none; border-radius: 8px 0 0 8px;
+    font-size: 13px; color: #666; display: flex; align-items: center;
+    font-weight: 600;
+  }
+  .input-prefix .form-input {
+    border-radius: 0 8px 8px 0; flex: 1;
+  }
+  .password-wrap {
+    position: relative;
+  }
+  .password-wrap .form-input { padding-right: 40px; width: 100%; }
+  .password-toggle {
+    position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
+    background: none; border: none; cursor: pointer; color: #999; font-size: 14px;
+  }
+
+  /* ---- Action bar ---- */
+  .action-bar {
+    padding: 14px 28px; background: #fff;
+    border-top: 1px solid #e8e8ee;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .action-left { display: flex; gap: 10px; }
+  .action-right { display: flex; gap: 10px; }
+  .btn {
+    padding: 10px 20px; border-radius: 8px; font-size: 13px;
+    font-weight: 600; cursor: pointer; border: none;
+    font-family: inherit; display: flex; align-items: center; gap: 6px;
+    transition: all 0.15s;
+  }
+  .btn-ghost {
+    background: none; color: #666; border: 1px solid #ddd;
+  }
+  .btn-ghost:hover { background: #f5f5f5; }
+  .btn-outline {
+    background: #fff; color: #205C50; border: 1px solid #205C50;
+  }
+  .btn-outline:hover { background: rgba(107,155,125,0.05); }
+  .btn-primary {
+    background: #205C50; color: #fff; border: 1px solid #205C50;
+  }
+  .btn-primary:hover { background: #5a8a6c; }
+  .btn-dark {
+    background: #221F1F; color: #fff;
+  }
+  .btn-dark:hover { background: #2a2a42; }
+
+  /* ---- Upload areas ---- */
+  .upload-zone {
+    border: 2px dashed #d0d0d8; border-radius: 12px;
+    padding: 30px; text-align: center; cursor: pointer;
+    transition: all 0.2s; background: #fafafa;
+  }
+  .upload-zone:hover {
+    border-color: #205C50; background: rgba(107,155,125,0.03);
+  }
+  .upload-zone svg { margin-bottom: 8px; }
+  .upload-zone .upload-title {
+    font-size: 13px; font-weight: 600; color: #444; margin-bottom: 4px;
+  }
+  .upload-zone .upload-sub {
+    font-size: 11px; color: #999;
+  }
+  .upload-grid {
+    display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px;
+    margin-top: 12px;
+  }
+  .upload-thumb {
+    aspect-ratio: 1; border: 2px dashed #d0d0d8; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    background: #fafafa; cursor: pointer; transition: all 0.2s;
+  }
+  .upload-thumb:hover { border-color: #205C50; }
+  .upload-thumb svg { opacity: 0.3; }
+  .upload-thumb.has-image {
+    border-style: solid; border-color: #205C50;
+    background: linear-gradient(135deg, #e8f0ec, #f0f5f2);
+  }
+
+  /* ---- Photo tip ---- */
+  .tip-banner {
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px 16px; border-radius: 10px;
+    background: rgba(107,155,125,0.08); border: 1px solid rgba(107,155,125,0.2);
+    margin-bottom: 20px;
+  }
+  .tip-banner svg { flex-shrink: 0; }
+  .tip-banner .tip-text {
+    font-size: 12px; color: #4a7a5d; font-weight: 500;
+  }
+
+  /* ---- Toggle switch ---- */
+  .toggle-row {
+    display: flex; align-items: center; gap: 12px;
+  }
+  .toggle-switch {
+    width: 40px; height: 22px; border-radius: 11px;
+    background: #ccc; position: relative; cursor: pointer;
+    transition: background 0.2s; flex-shrink: 0;
+  }
+  .toggle-switch.on { background: #205C50; }
+  .toggle-switch::after {
+    content: ''; position: absolute; top: 2px; left: 2px;
+    width: 18px; height: 18px; border-radius: 50%;
+    background: #fff; transition: left 0.2s;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+  }
+  .toggle-switch.on::after { left: 20px; }
+
+  /* ---- Business hours ---- */
+  .hours-table { width: 100%; }
+  .hours-row {
+    display: flex; align-items: center; gap: 12px;
+    padding: 8px 0; border-bottom: 1px solid #f0f0f0;
+  }
+  .hours-row:last-child { border-bottom: none; }
+  .hours-day {
+    width: 80px; font-size: 13px; font-weight: 600; color: #444;
+  }
+  .hours-times {
+    display: flex; align-items: center; gap: 8px; flex: 1;
+  }
+  .hours-times .form-input {
+    width: 100px; padding: 7px 10px; font-size: 12px;
+  }
+  .hours-sep { font-size: 12px; color: #999; }
+  .hours-status {
+    font-size: 11px; font-weight: 600; padding: 3px 10px;
+    border-radius: 10px;
+  }
+  .hours-status.open { background: rgba(107,155,125,0.1); color: #205C50; }
+  .hours-status.closed { background: rgba(230,70,70,0.08); color: #c0392b; }
+
+  /* ---- Map placeholder ---- */
+  .map-placeholder {
+    width: 100%; height: 180px; border-radius: 10px;
+    background: linear-gradient(135deg, #e8edf2, #dde3ea);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    border: 1px solid #d0d5dc; position: relative; overflow: hidden;
+  }
+  .map-placeholder::before {
+    content: '';
+    position: absolute; inset: 0;
+    background:
+      linear-gradient(90deg, transparent 49%, #cdd3da 49%, #cdd3da 51%, transparent 51%) center/60px 100%,
+      linear-gradient(0deg, transparent 49%, #cdd3da 49%, #cdd3da 51%, transparent 51%) center/100% 60px;
+    opacity: 0.3;
+  }
+  .map-pin {
+    width: 40px; height: 40px; position: relative; z-index: 1;
+  }
+  .map-label {
+    font-size: 11px; color: #777; margin-top: 6px; z-index: 1; font-weight: 500;
+  }
+
+  /* ---- Contract ---- */
+  .contract-box {
+    max-height: 200px; overflow-y: auto; padding: 16px;
+    border: 1px solid #e0e0e0; border-radius: 10px;
+    background: #fafafa; font-size: 12px; color: #555;
+    line-height: 1.7; margin-bottom: 16px;
+  }
+  .contract-box h4 {
+    font-size: 13px; color: #333; margin: 12px 0 6px;
+  }
+  .contract-box h4:first-child { margin-top: 0; }
+  .checkbox-row {
+    display: flex; align-items: flex-start; gap: 10px;
+    margin-bottom: 10px;
+  }
+  .checkbox-row input[type="checkbox"] {
+    accent-color: #205C50; margin-top: 2px; flex-shrink: 0;
+    width: 16px; height: 16px;
+  }
+  .checkbox-row label {
+    font-size: 13px; color: #444; cursor: pointer;
+  }
+  .signature-area {
+    border: 2px dashed #d0d5dc; border-radius: 10px;
+    padding: 20px; text-align: center; margin-top: 12px;
+  }
+  .signature-area .sig-label {
+    font-size: 11px; color: #888; margin-bottom: 8px;
+  }
+  .signature-area .form-input {
+    text-align: center; font-size: 18px; font-style: italic;
+    border: none; border-bottom: 2px solid #205C50;
+    border-radius: 0; background: transparent; max-width: 300px;
+    font-family: 'Georgia', serif;
+  }
+
+  /* ---- Plan cards ---- */
+  .plans-toggle {
+    display: flex; align-items: center; justify-content: center;
+    gap: 12px; margin-bottom: 24px;
+  }
+  .plans-toggle span { font-size: 13px; color: #666; font-weight: 500; }
+  .plans-toggle .discount-badge {
+    font-size: 10px; font-weight: 700; color: #205C50;
+    background: rgba(107,155,125,0.1); padding: 3px 8px; border-radius: 10px;
+  }
+  .plans-grid {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px;
+  }
+  .plan-card {
+    border: 2px solid #e8e8ee; border-radius: 12px;
+    padding: 20px 16px; text-align: center; position: relative;
+    background: #fff; transition: all 0.2s;
+  }
+  .plan-card:hover { border-color: #205C50; }
+  .plan-card.popular {
+    border-color: #205C50; box-shadow: 0 4px 20px rgba(107,155,125,0.15);
+    transform: scale(1.02);
+  }
+  .plan-card.popular::before {
+    content: 'MOST POPULAR';
+    position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
+    background: #205C50; color: #fff; font-size: 9px; font-weight: 800;
+    padding: 4px 12px; border-radius: 10px; letter-spacing: 1px;
+  }
+  .plan-name { font-size: 15px; font-weight: 700; color: #221F1F; margin-bottom: 4px; }
+  .plan-price { font-size: 26px; font-weight: 800; color: #221F1F; margin-bottom: 2px; }
+  .plan-price .currency { font-size: 14px; font-weight: 600; }
+  .plan-price .period { font-size: 12px; font-weight: 400; color: #999; }
+  .plan-features {
+    list-style: none; text-align: left; margin: 16px 0;
+    font-size: 12px; color: #555;
+  }
+  .plan-features li {
+    padding: 5px 0; display: flex; align-items: flex-start; gap: 6px;
+  }
+  .plan-features li::before {
+    content: ''; display: inline-block; width: 16px; height: 16px;
+    background: rgba(107,155,125,0.1); border-radius: 50%;
+    flex-shrink: 0; margin-top: 1px;
+    background-image: url("data:image/svg+xml,%3Csvg width='10' height='8' viewBox='0 0 10 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 4L3.5 6.5L9 1' stroke='%236B9B7D' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: center;
+  }
+  .plan-btn {
+    width: 100%; padding: 10px; border-radius: 8px;
+    font-size: 12px; font-weight: 600; cursor: pointer;
+    border: 1px solid #ddd; background: #fff; color: #444;
+    font-family: inherit; transition: all 0.15s;
+  }
+  .plan-btn:hover { border-color: #205C50; color: #205C50; }
+  .plan-btn.primary {
+    background: #205C50; color: #fff; border-color: #205C50;
+  }
+  .plan-btn.enterprise {
+    background: #221F1F; color: #fff; border-color: #221F1F;
+  }
+
+  /* ---- Review summary ---- */
+  .review-section {
+    margin-bottom: 20px;
+  }
+  .review-section-title {
+    font-size: 13px; font-weight: 700; color: #221F1F;
+    margin-bottom: 10px; display: flex; align-items: center; gap: 8px;
+  }
+  .review-section-title .edit-link {
+    font-size: 11px; font-weight: 500; color: #205C50;
+    cursor: pointer; margin-left: auto;
+  }
+  .review-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 8px 24px;
+  }
+  .review-item {
+    display: flex; flex-direction: column; padding: 6px 0;
+  }
+  .review-item .review-label {
+    font-size: 11px; color: #999; margin-bottom: 2px;
+  }
+  .review-item .review-value {
+    font-size: 13px; color: #333; font-weight: 500;
+  }
+  .status-banner {
+    padding: 16px 20px; border-radius: 10px; margin-bottom: 20px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .status-banner.pending {
+    background: rgba(255,180,0,0.08); border: 1px solid rgba(255,180,0,0.25);
+  }
+  .status-banner.pending .status-icon {
+    width: 36px; height: 36px; border-radius: 50%;
+    background: rgba(255,180,0,0.15);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .status-banner .status-text h4 {
+    font-size: 13px; font-weight: 700; color: #b8860b; margin-bottom: 2px;
+  }
+  .status-banner .status-text p {
+    font-size: 12px; color: #a07d1a; line-height: 1.5;
+  }
+
+  /* ---- Misc ---- */
+  .divider { height: 1px; background: #eee; margin: 20px 0; }
+  .section-tag {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 4px 10px; border-radius: 6px;
+    background: rgba(107,155,125,0.08); color: #205C50;
+    font-size: 10px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.5px; margin-bottom: 16px;
+  }
+
+  /* Price range slider visual */
+  .price-range {
+    display: flex; align-items: center; gap: 10px;
+  }
+  .price-range .form-input { width: 100px; text-align: center; }
+  .price-range .range-sep { color: #999; font-size: 14px; }
+  .range-bar {
+    flex: 1; height: 6px; background: #e0e0e0; border-radius: 3px;
+    position: relative;
+  }
+  .range-bar .range-fill {
+    position: absolute; left: 20%; right: 40%;
+    height: 100%; background: #205C50; border-radius: 3px;
+  }
+  .range-bar .range-handle {
+    position: absolute; top: 50%; transform: translateY(-50%);
+    width: 16px; height: 16px; border-radius: 50%;
+    background: #fff; border: 2px solid #205C50;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.15);
+  }
+  .range-bar .range-handle.left { left: calc(20% - 8px); }
+  .range-bar .range-handle.right { right: calc(40% - 8px); }
+</style>
+</head>
+<body>
+
+<h1>Merchant Portal &mdash; Registration &amp; Onboarding</h1>
+<p class="subtitle">Complete 6-step merchant registration flow for B-Ticket's digital coupon platform. Merchants register their business, upload documents, choose a plan, and submit for admin approval.</p>
+
+<!-- ============================================================ -->
+<!-- STEP 1: Business Information -->
+<!-- ============================================================ -->
+<h2>Step 1 &mdash; Business Information</h2>
+
+<div class="browser-frame">
+  <div class="browser-bar">
+    <div class="browser-dots"><div class="red"></div><div class="yellow"></div><div class="green"></div></div>
+    <div class="browser-url">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+      merchant.b-ticket.ph/register
+    </div>
+  </div>
+  <div class="portal-layout">
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <div class="sidebar-logo">
+        <div style="display:flex;flex-direction:column;align-items:flex-start;">
+          <div style="display:flex;align-items:center;gap:10px;">
+            <div class="logo-box">B</div>
+            <div>
+              <div class="logo-text">B-Ticket</div>
+              <div class="logo-sub">Merchant Portal</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="sidebar-section">Registration</div>
+      <ul class="sidebar-nav">
+        <li class="active">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 4h2a2 2 0 012 2v14a2 2 0 01-2 2H6a2 2 0 01-2-2V6a2 2 0 012-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/></svg>
+          Registration
+        </li>
+      </ul>
+      <div class="sidebar-section">Portal</div>
+      <ul class="sidebar-nav">
+        <li>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+          Dashboard
+          <span class="nav-badge pending">Pending</span>
+        </li>
+        <li>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+          Coupons
+          <span class="nav-badge pending">Pending</span>
+        </li>
+        <li>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+          Analytics
+          <span class="nav-badge pending">Pending</span>
+        </li>
+        <li>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+          Settings
+          <span class="nav-badge pending">Pending</span>
+        </li>
+      </ul>
+      <div class="sidebar-footer">
+        <div class="avatar-circle">JD</div>
+        <div class="avatar-info">
+          <div>Juan Dela Cruz</div>
+          <div>New Merchant</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+      <div class="top-bar">
+        <div class="top-bar-left">
+          <h3>Merchant Registration</h3>
+        </div>
+        <div class="top-bar-right">
+          <button class="help-btn">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            Need Help?
+          </button>
+        </div>
+      </div>
+
+      <!-- Stepper -->
+      <div class="stepper-bar">
+        <div class="stepper">
+          <div class="step-item">
+            <div class="step-circle active">1</div>
+            <span class="step-label active">Business Info</span>
+          </div>
+          <div class="step-connector"></div>
+          <div class="step-item">
+            <div class="step-circle">2</div>
+            <span class="step-label">Details</span>
+          </div>
+          <div class="step-connector"></div>
+          <div class="step-item">
+            <div class="step-circle">3</div>
+            <span class="step-label">Photos</span>
+          </div>
+          <div class="step-connector"></div>
+          <div class="step-item">
+            <div class="step-circle">4</div>
+            <span class="step-label">Documents</span>
+          </div>
+          <div class="step-connector"></div>
+          <div class="step-item">
+            <div class="step-circle">5</div>
+            <span class="step-label">Review</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Form Area -->
+      <div class="form-area">
+        <div class="form-card">
+          <div class="section-tag">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#205C50" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+            Step 1 of 5
+          </div>
+          <div class="form-card-title">Business Information</div>
+          <div class="form-card-subtitle">Tell us about your business. This information will be shown to customers on B-Ticket.</div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Business Name <span class="req">*</span></label>
+              <input type="text" class="form-input has-value" value="Kape ni Juan Coffee House">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Business Type <span class="req">*</span></label>
+              <select class="form-select">
+                <option>Cafe</option>
+                <option>Restaurant</option>
+                <option>Retail Store</option>
+                <option>Salon/Spa</option>
+                <option>Gym/Fitness</option>
+                <option>Services</option>
+                <option>Other</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Business Category <span class="req">*</span></label>
+              <select class="form-select">
+                <option>Food &amp; Beverage</option>
+                <option>Wellness &amp; Beauty</option>
+                <option>Retail &amp; Lifestyle</option>
+                <option>Services</option>
+                <option>Leisure</option>
+                <option>Learning</option>
+                <option>Accommodation</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group full">
+              <label class="form-label">Business Description <span class="req">*</span></label>
+              <textarea class="form-textarea" placeholder="Describe your business in 2-3 sentences. What makes it unique?">Kape ni Juan is a proudly Filipino specialty coffee house serving locally sourced single-origin beans. We offer a cozy workspace, artisan pastries, and a welcoming community atmosphere in the heart of Makati.</textarea>
+              <span class="form-hint">150-500 characters recommended</span>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+
+          <div class="form-card-title" style="font-size:14px;">Account Information</div>
+          <div class="form-card-subtitle">Your login credentials for the Merchant Portal.</div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Owner / Manager Name <span class="req">*</span></label>
+              <input type="text" class="form-input has-value" value="Juan Dela Cruz">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Email Address <span class="req">*</span></label>
+              <input type="email" class="form-input has-value" value="juan@kapenijuan.ph">
+              <span class="form-hint">We'll send a verification link to this email</span>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Mobile Number <span class="req">*</span></label>
+              <div class="input-prefix">
+                <span class="prefix">+63</span>
+                <input type="tel" class="form-input has-value" value="917 123 4567" placeholder="9XX XXX XXXX">
+              </div>
+              <span class="form-hint">Philippine mobile number for OTP verification</span>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Password <span class="req">*</span></label>
+              <div class="password-wrap">
+                <input type="password" class="form-input" value="strongpassword" style="width:100%;">
+                <button class="password-toggle">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                </button>
+              </div>
+              <span class="form-hint">Min. 8 characters with uppercase, lowercase, and number</span>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Confirm Password <span class="req">*</span></label>
+              <div class="password-wrap">
+                <input type="password" class="form-input" value="strongpassword" style="width:100%;">
+                <button class="password-toggle">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Action Bar -->
+      <div class="action-bar">
+        <div class="action-left">
+          <button class="btn btn-ghost" disabled style="opacity:0.4;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+            Back
+          </button>
+        </div>
+        <div class="action-right">
+          <button class="btn btn-outline">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/></svg>
+            Save Draft
+          </button>
+          <button class="btn btn-primary">
+            Next Step
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ============================================================ -->
+<!-- STEP 2: Business Details -->
+<!-- ============================================================ -->
+<h2>Step 2 &mdash; Business Details</h2>
+
+<div class="browser-frame">
+  <div class="browser-bar">
+    <div class="browser-dots"><div class="red"></div><div class="yellow"></div><div class="green"></div></div>
+    <div class="browser-url">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+      merchant.b-ticket.ph/register/details
+    </div>
+  </div>
+  <div class="portal-layout">
+    <!-- Sidebar (abbreviated) -->
+    <div class="sidebar">
+      <div class="sidebar-logo">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div class="logo-box">B</div>
+          <div><div class="logo-text">B-Ticket</div><div class="logo-sub">Merchant Portal</div></div>
+        </div>
+      </div>
+      <div class="sidebar-section">Registration</div>
+      <ul class="sidebar-nav">
+        <li class="active">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 4h2a2 2 0 012 2v14a2 2 0 01-2 2H6a2 2 0 01-2-2V6a2 2 0 012-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/></svg>
+          Registration
+        </li>
+      </ul>
+      <div class="sidebar-section">Portal</div>
+      <ul class="sidebar-nav">
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>Dashboard<span class="nav-badge pending">Pending</span></li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>Coupons<span class="nav-badge pending">Pending</span></li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>Analytics<span class="nav-badge pending">Pending</span></li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>Settings<span class="nav-badge pending">Pending</span></li>
+      </ul>
+      <div class="sidebar-footer">
+        <div class="avatar-circle">JD</div>
+        <div class="avatar-info"><div>Juan Dela Cruz</div><div>New Merchant</div></div>
+      </div>
+    </div>
+
+    <div class="main-content">
+      <div class="top-bar">
+        <div class="top-bar-left"><h3>Merchant Registration</h3></div>
+        <div class="top-bar-right">
+          <button class="help-btn">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            Need Help?
+          </button>
+        </div>
+      </div>
+
+      <!-- Stepper (Step 2 active, Step 1 completed) -->
+      <div class="stepper-bar">
+        <div class="stepper">
+          <div class="step-item">
+            <div class="step-circle completed">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <span class="step-label completed">Business Info</span>
+          </div>
+          <div class="step-connector completed"></div>
+          <div class="step-item">
+            <div class="step-circle active">2</div>
+            <span class="step-label active">Details</span>
+          </div>
+          <div class="step-connector"></div>
+          <div class="step-item">
+            <div class="step-circle">3</div>
+            <span class="step-label">Photos</span>
+          </div>
+          <div class="step-connector"></div>
+          <div class="step-item">
+            <div class="step-circle">4</div>
+            <span class="step-label">Documents</span>
+          </div>
+          <div class="step-connector"></div>
+          <div class="step-item">
+            <div class="step-circle">5</div>
+            <span class="step-label">Review</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-area">
+        <!-- Address Card -->
+        <div class="form-card">
+          <div class="section-tag">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#205C50" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            Step 2 of 5
+          </div>
+          <div class="form-card-title">Business Address &amp; Location</div>
+          <div class="form-card-subtitle">Help customers find your business with an accurate address.</div>
+
+          <div class="form-row">
+            <div class="form-group" style="flex:2;">
+              <label class="form-label">Street Address <span class="req">*</span></label>
+              <input type="text" class="form-input has-value" value="123 Ayala Avenue, Unit 5B">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Barangay <span class="req">*</span></label>
+              <input type="text" class="form-input has-value" value="Barangay Bel-Air">
+            </div>
+            <div class="form-group">
+              <label class="form-label">City / Municipality <span class="req">*</span></label>
+              <select class="form-select">
+                <option selected>Makati City</option>
+                <option>Taguig City</option>
+                <option>Quezon City</option>
+                <option>Manila</option>
+                <option>Pasig City</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Province <span class="req">*</span></label>
+              <select class="form-select">
+                <option selected>Metro Manila</option>
+                <option>Cavite</option>
+                <option>Laguna</option>
+                <option>Cebu</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Map placeholder -->
+          <div style="margin-top:8px;">
+            <label class="form-label">Pin your location on the map</label>
+            <div class="map-placeholder">
+              <svg class="map-pin" viewBox="0 0 24 24" fill="#205C50" stroke="#fff" stroke-width="1">
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/>
+                <circle cx="12" cy="10" r="3" fill="#fff"/>
+              </svg>
+              <div class="map-label">Click to set pin &middot; Makati City, Metro Manila</div>
+            </div>
+            <span class="form-hint">Drag the pin to your exact location for accurate directions</span>
+          </div>
+        </div>
+
+        <!-- Contact & Hours Card -->
+        <div class="form-card">
+          <div class="form-card-title">Contact &amp; Business Hours</div>
+          <div class="form-card-subtitle">Let customers know when you're open and how to reach you.</div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Phone for Customers</label>
+              <div class="input-prefix">
+                <span class="prefix">+63</span>
+                <input type="tel" class="form-input has-value" value="2 8123 4567">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Website URL <span style="font-weight:400;color:#999;">(optional)</span></label>
+              <input type="url" class="form-input" placeholder="https://www.yourbusiness.com">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Facebook Page</label>
+              <div class="input-prefix">
+                <span class="prefix" style="font-size:11px;">fb.com/</span>
+                <input type="text" class="form-input has-value" value="kapenijuancoffee">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Instagram</label>
+              <div class="input-prefix">
+                <span class="prefix">@</span>
+                <input type="text" class="form-input has-value" value="kapenijuan">
+              </div>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+
+          <div class="form-card-title" style="font-size:14px;">Business Hours</div>
+          <div style="margin-top:12px;">
+            <div class="hours-table">
+              <div class="hours-row">
+                <span class="hours-day">Monday</span>
+                <div class="toggle-row"><div class="toggle-switch on"></div></div>
+                <div class="hours-times">
+                  <input type="text" class="form-input" value="7:00 AM">
+                  <span class="hours-sep">to</span>
+                  <input type="text" class="form-input" value="9:00 PM">
+                </div>
+                <span class="hours-status open">Open</span>
+              </div>
+              <div class="hours-row">
+                <span class="hours-day">Tuesday</span>
+                <div class="toggle-row"><div class="toggle-switch on"></div></div>
+                <div class="hours-times">
+                  <input type="text" class="form-input" value="7:00 AM">
+                  <span class="hours-sep">to</span>
+                  <input type="text" class="form-input" value="9:00 PM">
+                </div>
+                <span class="hours-status open">Open</span>
+              </div>
+              <div class="hours-row">
+                <span class="hours-day">Wednesday</span>
+                <div class="toggle-row"><div class="toggle-switch on"></div></div>
+                <div class="hours-times">
+                  <input type="text" class="form-input" value="7:00 AM">
+                  <span class="hours-sep">to</span>
+                  <input type="text" class="form-input" value="9:00 PM">
+                </div>
+                <span class="hours-status open">Open</span>
+              </div>
+              <div class="hours-row">
+                <span class="hours-day">Thursday</span>
+                <div class="toggle-row"><div class="toggle-switch on"></div></div>
+                <div class="hours-times">
+                  <input type="text" class="form-input" value="7:00 AM">
+                  <span class="hours-sep">to</span>
+                  <input type="text" class="form-input" value="9:00 PM">
+                </div>
+                <span class="hours-status open">Open</span>
+              </div>
+              <div class="hours-row">
+                <span class="hours-day">Friday</span>
+                <div class="toggle-row"><div class="toggle-switch on"></div></div>
+                <div class="hours-times">
+                  <input type="text" class="form-input" value="7:00 AM">
+                  <span class="hours-sep">to</span>
+                  <input type="text" class="form-input" value="10:00 PM">
+                </div>
+                <span class="hours-status open">Open</span>
+              </div>
+              <div class="hours-row">
+                <span class="hours-day">Saturday</span>
+                <div class="toggle-row"><div class="toggle-switch on"></div></div>
+                <div class="hours-times">
+                  <input type="text" class="form-input" value="8:00 AM">
+                  <span class="hours-sep">to</span>
+                  <input type="text" class="form-input" value="10:00 PM">
+                </div>
+                <span class="hours-status open">Open</span>
+              </div>
+              <div class="hours-row">
+                <span class="hours-day">Sunday</span>
+                <div class="toggle-row"><div class="toggle-switch"></div></div>
+                <div class="hours-times" style="opacity:0.4;">
+                  <input type="text" class="form-input" value="--:-- --" disabled>
+                  <span class="hours-sep">to</span>
+                  <input type="text" class="form-input" value="--:-- --" disabled>
+                </div>
+                <span class="hours-status closed">Closed</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+
+          <div class="form-card-title" style="font-size:14px;">Pricing</div>
+          <div class="form-card-subtitle">Average price per person at your business.</div>
+          <div class="form-row" style="align-items:center;">
+            <div class="form-group" style="flex:0 0 auto;">
+              <label class="form-label">Min Price</label>
+              <div class="input-prefix">
+                <span class="prefix">&#8369;</span>
+                <input type="text" class="form-input has-value" value="150" style="width:80px;">
+              </div>
+            </div>
+            <div style="display:flex;align-items:center;padding-top:20px;color:#999;">to</div>
+            <div class="form-group" style="flex:0 0 auto;">
+              <label class="form-label">Max Price</label>
+              <div class="input-prefix">
+                <span class="prefix">&#8369;</span>
+                <input type="text" class="form-input has-value" value="500" style="width:80px;">
+              </div>
+            </div>
+            <div style="display:flex; align-items:center; gap:12px; padding-top:20px; margin-left:12px;">
+              <span style="font-size:13px; color:#999; padding:4px 10px; border:1.5px solid #e0e0e0; border-radius:6px; cursor:pointer;">₱</span>
+              <span style="font-size:13px; color:#fff; padding:4px 10px; border:1.5px solid #205C50; border-radius:6px; background:#205C50; font-weight:600; cursor:pointer;">₱₱</span>
+              <span style="font-size:13px; color:#999; padding:4px 10px; border:1.5px solid #e0e0e0; border-radius:6px; cursor:pointer;">₱₱₱</span>
+              <span style="font-size:13px; color:#999; padding:4px 10px; border:1.5px solid #e0e0e0; border-radius:6px; cursor:pointer;">₱₱₱₱</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="action-bar">
+        <div class="action-left">
+          <button class="btn btn-ghost">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+            Back
+          </button>
+        </div>
+        <div class="action-right">
+          <button class="btn btn-outline">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/></svg>
+            Save Draft
+          </button>
+          <button class="btn btn-primary">
+            Next Step
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ============================================================ -->
+<!-- STEP 3: Photos & Branding -->
+<!-- ============================================================ -->
+<h2>Step 3 &mdash; Photos &amp; Branding</h2>
+
+<div class="browser-frame">
+  <div class="browser-bar">
+    <div class="browser-dots"><div class="red"></div><div class="yellow"></div><div class="green"></div></div>
+    <div class="browser-url">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+      merchant.b-ticket.ph/register/photos
+    </div>
+  </div>
+  <div class="portal-layout">
+    <div class="sidebar">
+      <div class="sidebar-logo">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div class="logo-box">B</div>
+          <div><div class="logo-text">B-Ticket</div><div class="logo-sub">Merchant Portal</div></div>
+        </div>
+      </div>
+      <div class="sidebar-section">Registration</div>
+      <ul class="sidebar-nav">
+        <li class="active">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 4h2a2 2 0 012 2v14a2 2 0 01-2 2H6a2 2 0 01-2-2V6a2 2 0 012-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/></svg>
+          Registration
+        </li>
+      </ul>
+      <div class="sidebar-section">Portal</div>
+      <ul class="sidebar-nav">
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>Dashboard<span class="nav-badge pending">Pending</span></li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>Coupons<span class="nav-badge pending">Pending</span></li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>Analytics<span class="nav-badge pending">Pending</span></li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>Settings<span class="nav-badge pending">Pending</span></li>
+      </ul>
+      <div class="sidebar-footer">
+        <div class="avatar-circle">JD</div>
+        <div class="avatar-info"><div>Juan Dela Cruz</div><div>New Merchant</div></div>
+      </div>
+    </div>
+
+    <div class="main-content">
+      <div class="top-bar">
+        <div class="top-bar-left"><h3>Merchant Registration</h3></div>
+        <div class="top-bar-right">
+          <button class="help-btn">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            Need Help?
+          </button>
+        </div>
+      </div>
+
+      <!-- Stepper (Step 3 active, 1-2 completed) -->
+      <div class="stepper-bar">
+        <div class="stepper">
+          <div class="step-item">
+            <div class="step-circle completed"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
+            <span class="step-label completed">Business Info</span>
+          </div>
+          <div class="step-connector completed"></div>
+          <div class="step-item">
+            <div class="step-circle completed"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
+            <span class="step-label completed">Details</span>
+          </div>
+          <div class="step-connector completed"></div>
+          <div class="step-item">
+            <div class="step-circle active">3</div>
+            <span class="step-label active">Photos</span>
+          </div>
+          <div class="step-connector"></div>
+          <div class="step-item">
+            <div class="step-circle">4</div>
+            <span class="step-label">Documents</span>
+          </div>
+          <div class="step-connector"></div>
+          <div class="step-item">
+            <div class="step-circle">5</div>
+            <span class="step-label">Review</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-area">
+        <div class="tip-banner">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#205C50" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+          <span class="tip-text"><strong>Pro tip:</strong> Businesses with 5+ photos get 2x more views and 40% more coupon redemptions on B-Ticket!</span>
+        </div>
+
+        <div class="form-card">
+          <div class="section-tag">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#205C50" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+            Step 3 of 5
+          </div>
+          <div class="form-card-title">Business Logo</div>
+          <div class="form-card-subtitle">Your logo will be displayed on your merchant profile and coupon cards.</div>
+
+          <div style="display:flex;gap:20px;align-items:flex-start;">
+            <div class="upload-zone" style="width:160px;height:160px;display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0;">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#bbb" stroke-width="1.5"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+              <div class="upload-title">Upload Logo</div>
+              <div class="upload-sub">PNG, JPG up to 2MB</div>
+            </div>
+            <div style="font-size:12px;color:#888;line-height:1.7;padding-top:8px;">
+              <strong style="color:#444;">Logo guidelines:</strong><br>
+              &bull; Square format (1:1 ratio) recommended<br>
+              &bull; Minimum 200x200 pixels<br>
+              &bull; PNG with transparent background preferred<br>
+              &bull; No text-heavy logos for small display
+            </div>
+          </div>
+        </div>
+
+        <div class="form-card">
+          <div class="form-card-title">Cover Photo</div>
+          <div class="form-card-subtitle">This banner image appears at the top of your merchant profile page.</div>
+          <div class="upload-zone" style="padding:40px;">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#bbb" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+            <div class="upload-title" style="margin-top:8px;">Drag &amp; drop your cover photo here</div>
+            <div class="upload-sub">or <span style="color:#205C50;font-weight:600;cursor:pointer;">browse files</span> &middot; Recommended: 1200x400px &middot; JPG, PNG up to 5MB</div>
+          </div>
+        </div>
+
+        <div class="form-card">
+          <div class="form-card-title">Interior / Exterior Photos</div>
+          <div class="form-card-subtitle">Show customers what your space looks like. Up to 10 photos.</div>
+          <div class="upload-grid">
+            <div class="upload-thumb has-image">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#205C50" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <div class="upload-thumb has-image">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#205C50" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <div class="upload-thumb has-image">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#205C50" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <div class="upload-thumb">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="1.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            </div>
+            <div class="upload-thumb">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="1.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            </div>
+            <div class="upload-thumb">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="1.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            </div>
+            <div class="upload-thumb">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="1.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            </div>
+            <div class="upload-thumb">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="1.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            </div>
+            <div class="upload-thumb">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="1.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            </div>
+            <div class="upload-thumb">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="1.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            </div>
+          </div>
+          <span class="form-hint" style="margin-top:8px;display:block;">3 of 10 uploaded</span>
+        </div>
+
+        <div class="form-card">
+          <div class="form-card-title">Menu / Product Photos</div>
+          <div class="form-card-subtitle">Showcase your best products or menu items. Up to 10 photos.</div>
+          <div class="upload-grid">
+            <div class="upload-thumb">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="1.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            </div>
+            <div class="upload-thumb">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="1.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            </div>
+            <div class="upload-thumb">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="1.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            </div>
+            <div class="upload-thumb">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="1.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            </div>
+            <div class="upload-thumb">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="1.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            </div>
+            <div class="upload-thumb">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="1.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            </div>
+            <div class="upload-thumb">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="1.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            </div>
+            <div class="upload-thumb">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="1.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            </div>
+            <div class="upload-thumb">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="1.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            </div>
+            <div class="upload-thumb">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="1.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            </div>
+          </div>
+          <span class="form-hint" style="margin-top:8px;display:block;">0 of 10 uploaded</span>
+        </div>
+      </div>
+
+      <div class="action-bar">
+        <div class="action-left">
+          <button class="btn btn-ghost">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+            Back
+          </button>
+        </div>
+        <div class="action-right">
+          <button class="btn btn-outline">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/></svg>
+            Save Draft
+          </button>
+          <button class="btn btn-primary">
+            Next Step
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ============================================================ -->
+<!-- STEP 4: Documents & Contract -->
+<!-- ============================================================ -->
+<h2>Step 4 &mdash; Documents &amp; Contract</h2>
+
+<div class="browser-frame">
+  <div class="browser-bar">
+    <div class="browser-dots"><div class="red"></div><div class="yellow"></div><div class="green"></div></div>
+    <div class="browser-url">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+      merchant.b-ticket.ph/register/documents
+    </div>
+  </div>
+  <div class="portal-layout">
+    <div class="sidebar">
+      <div class="sidebar-logo">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div class="logo-box">B</div>
+          <div><div class="logo-text">B-Ticket</div><div class="logo-sub">Merchant Portal</div></div>
+        </div>
+      </div>
+      <div class="sidebar-section">Registration</div>
+      <ul class="sidebar-nav">
+        <li class="active">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 4h2a2 2 0 012 2v14a2 2 0 01-2 2H6a2 2 0 01-2-2V6a2 2 0 012-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/></svg>
+          Registration
+        </li>
+      </ul>
+      <div class="sidebar-section">Portal</div>
+      <ul class="sidebar-nav">
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>Dashboard<span class="nav-badge pending">Pending</span></li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>Coupons<span class="nav-badge pending">Pending</span></li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>Analytics<span class="nav-badge pending">Pending</span></li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>Settings<span class="nav-badge pending">Pending</span></li>
+      </ul>
+      <div class="sidebar-footer">
+        <div class="avatar-circle">JD</div>
+        <div class="avatar-info"><div>Juan Dela Cruz</div><div>New Merchant</div></div>
+      </div>
+    </div>
+
+    <div class="main-content">
+      <div class="top-bar">
+        <div class="top-bar-left"><h3>Merchant Registration</h3></div>
+        <div class="top-bar-right">
+          <button class="help-btn">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            Need Help?
+          </button>
+        </div>
+      </div>
+
+      <!-- Stepper (Step 4 active, 1-3 completed) -->
+      <div class="stepper-bar">
+        <div class="stepper">
+          <div class="step-item">
+            <div class="step-circle completed"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
+            <span class="step-label completed">Business Info</span>
+          </div>
+          <div class="step-connector completed"></div>
+          <div class="step-item">
+            <div class="step-circle completed"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
+            <span class="step-label completed">Details</span>
+          </div>
+          <div class="step-connector completed"></div>
+          <div class="step-item">
+            <div class="step-circle completed"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
+            <span class="step-label completed">Photos</span>
+          </div>
+          <div class="step-connector completed"></div>
+          <div class="step-item">
+            <div class="step-circle active">4</div>
+            <span class="step-label active">Documents</span>
+          </div>
+          <div class="step-connector"></div>
+          <div class="step-item">
+            <div class="step-circle">5</div>
+            <span class="step-label">Review</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-area">
+        <div class="form-card">
+          <div class="section-tag">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#205C50" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            Step 4 of 5
+          </div>
+          <div class="form-card-title">Required Documents</div>
+          <div class="form-card-subtitle">Upload copies of your business documents for verification. All documents are stored securely.</div>
+
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:8px;">
+            <!-- Business Permit -->
+            <div style="border:1px solid #e8e8ee;border-radius:10px;padding:16px;text-align:center;">
+              <div style="width:48px;height:48px;border-radius:12px;background:rgba(107,155,125,0.08);display:flex;align-items:center;justify-content:center;margin:0 auto 10px;">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#205C50" stroke-width="1.5"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+              </div>
+              <div style="font-size:13px;font-weight:600;color:#333;margin-bottom:4px;">Business Permit</div>
+              <div style="font-size:11px;color:#999;margin-bottom:12px;">Mayor's/Business permit</div>
+              <div class="upload-zone" style="padding:14px;border-radius:8px;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#bbb" stroke-width="1.5"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                <div class="upload-sub" style="margin-top:4px;">PDF, JPG, PNG</div>
+              </div>
+              <span style="font-size:10px;color:#e74c3c;font-weight:600;margin-top:6px;display:block;">Required</span>
+            </div>
+
+            <!-- BIR/DTI -->
+            <div style="border:1px solid #e8e8ee;border-radius:10px;padding:16px;text-align:center;">
+              <div style="width:48px;height:48px;border-radius:12px;background:rgba(107,155,125,0.08);display:flex;align-items:center;justify-content:center;margin:0 auto 10px;">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#205C50" stroke-width="1.5"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 3h-8l-2 4h12z"/></svg>
+              </div>
+              <div style="font-size:13px;font-weight:600;color:#333;margin-bottom:4px;">BIR / DTI Registration</div>
+              <div style="font-size:11px;color:#999;margin-bottom:12px;">Certificate of Registration</div>
+              <div class="upload-zone" style="padding:14px;border-radius:8px;border-color:#205C50;background:rgba(107,155,125,0.03);">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#205C50" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                <div style="font-size:11px;color:#205C50;font-weight:600;margin-top:4px;">bir_registration.pdf</div>
+              </div>
+              <span style="font-size:10px;color:#205C50;font-weight:600;margin-top:6px;display:block;">Uploaded</span>
+            </div>
+
+            <!-- Valid ID -->
+            <div style="border:1px solid #e8e8ee;border-radius:10px;padding:16px;text-align:center;">
+              <div style="width:48px;height:48px;border-radius:12px;background:rgba(107,155,125,0.08);display:flex;align-items:center;justify-content:center;margin:0 auto 10px;">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#205C50" stroke-width="1.5"><rect x="2" y="5" width="20" height="14" rx="2"/><circle cx="8" cy="12" r="2"/><path d="M14 10h4"/><path d="M14 14h4"/></svg>
+              </div>
+              <div style="font-size:13px;font-weight:600;color:#333;margin-bottom:4px;">Valid ID of Owner</div>
+              <div style="font-size:11px;color:#999;margin-bottom:12px;">Government-issued ID</div>
+              <div class="upload-zone" style="padding:14px;border-radius:8px;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#bbb" stroke-width="1.5"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                <div class="upload-sub" style="margin-top:4px;">PDF, JPG, PNG</div>
+              </div>
+              <span style="font-size:10px;color:#e74c3c;font-weight:600;margin-top:6px;display:block;">Required</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Contract / Agreement -->
+        <div class="form-card">
+          <div class="form-card-title">Merchant Agreement</div>
+          <div class="form-card-subtitle">Please review and accept the B-Ticket Merchant Terms of Service.</div>
+
+          <div class="contract-box">
+            <h4>B-TICKET MERCHANT TERMS OF SERVICE</h4>
+            <p>This Merchant Agreement ("Agreement") is entered into by and between B-Ticket Technologies, Inc. ("B-Ticket") and the Merchant identified in the registration form ("Merchant"), collectively referred to as the "Parties."</p>
+
+            <h4>1. Platform Services</h4>
+            <p>B-Ticket provides a digital coupon marketplace platform connecting Merchants with consumers. Merchants may create, publish, and manage digital coupons through the B-Ticket Merchant Portal.</p>
+
+            <h4>2. Commission Structure</h4>
+            <p>B-Ticket shall collect a commission on each coupon redeemed, as follows: (a) Free Plan: 15% commission per redemption; (b) Starter Plan: 12% commission; (c) Pro Plan: 8% commission; (d) Enterprise Plan: Custom rate as agreed.</p>
+
+            <h4>3. Payment Terms</h4>
+            <p>Settlements shall be processed bi-monthly (every 15th and 30th). Payments will be remitted to the Merchant's registered bank account within 3 business days of settlement date. Minimum payout threshold is &#8369;500.</p>
+
+            <h4>4. Merchant Obligations</h4>
+            <p>The Merchant agrees to: (a) honor all valid coupons presented by consumers; (b) maintain accurate business information; (c) comply with all applicable Philippine laws including the Consumer Act (RA 7394), Data Privacy Act (RA 10173), and BIR regulations.</p>
+
+            <h4>5. Intellectual Property</h4>
+            <p>Each Party retains ownership of its respective intellectual property. Merchant grants B-Ticket a non-exclusive license to use Merchant's name, logo, and images for platform display and promotional purposes.</p>
+
+            <h4>6. Data Privacy</h4>
+            <p>Both Parties agree to comply with the Data Privacy Act of 2012 (RA 10173). Consumer data collected through the platform shall be processed in accordance with B-Ticket's Privacy Policy.</p>
+
+            <h4>7. Term and Termination</h4>
+            <p>This Agreement is effective upon approval and continues until terminated. Either party may terminate with 30 days written notice. Outstanding obligations survive termination.</p>
+          </div>
+
+          <div style="margin-top:16px;">
+            <div class="checkbox-row">
+              <input type="checkbox" id="terms1" checked>
+              <label for="terms1">I agree to B-Ticket's <strong>Merchant Terms of Service</strong></label>
+            </div>
+            <div class="checkbox-row">
+              <input type="checkbox" id="terms2" checked>
+              <label for="terms2">I agree to the <strong>Commission and Payment Terms</strong> as outlined above</label>
+            </div>
+            <div class="checkbox-row">
+              <input type="checkbox" id="terms3">
+              <label for="terms3">I confirm that all information provided in this application is <strong>accurate and complete</strong></label>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+
+          <div class="form-card-title" style="font-size:14px;">Digital Signature</div>
+          <div class="form-card-subtitle">Type your full legal name below to serve as your electronic signature.</div>
+
+          <div class="signature-area">
+            <div class="sig-label">Type your full name to sign</div>
+            <input type="text" class="form-input" value="Juan Dela Cruz" placeholder="Your full legal name">
+            <div style="font-size:10px;color:#999;margin-top:8px;">By typing your name, you agree this constitutes a legally binding electronic signature.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="action-bar">
+        <div class="action-left">
+          <button class="btn btn-ghost">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+            Back
+          </button>
+        </div>
+        <div class="action-right">
+          <button class="btn btn-outline">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/></svg>
+            Save Draft
+          </button>
+          <button class="btn btn-primary">
+            Next Step
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ============================================================ -->
+<!-- STEP 5: Review & Submit -->
+<!-- ============================================================ -->
+<h2>Step 5 &mdash; Review &amp; Submit</h2>
+
+<div class="browser-frame">
+  <div class="browser-bar">
+    <div class="browser-dots"><div class="red"></div><div class="yellow"></div><div class="green"></div></div>
+    <div class="browser-url">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+      merchant.b-ticket.ph/register/review-submit
+    </div>
+  </div>
+  <div class="portal-layout">
+    <div class="sidebar">
+      <div class="sidebar-logo">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div class="logo-box">B</div>
+          <div><div class="logo-text">B-Ticket</div><div class="logo-sub">Merchant Portal</div></div>
+        </div>
+      </div>
+      <div class="sidebar-section">Registration</div>
+      <ul class="sidebar-nav">
+        <li class="active">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 4h2a2 2 0 012 2v14a2 2 0 01-2 2H6a2 2 0 01-2-2V6a2 2 0 012-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/></svg>
+          Registration
+        </li>
+      </ul>
+      <div class="sidebar-section">Portal</div>
+      <ul class="sidebar-nav">
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>Dashboard<span class="nav-badge pending">Pending</span></li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>Coupons<span class="nav-badge pending">Pending</span></li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>Analytics<span class="nav-badge pending">Pending</span></li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>Settings<span class="nav-badge pending">Pending</span></li>
+      </ul>
+      <div class="sidebar-footer">
+        <div class="avatar-circle">JD</div>
+        <div class="avatar-info"><div>Juan Dela Cruz</div><div>New Merchant</div></div>
+      </div>
+    </div>
+
+    <div class="main-content">
+      <div class="top-bar">
+        <div class="top-bar-left"><h3>Merchant Registration</h3></div>
+        <div class="top-bar-right">
+          <button class="help-btn">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            Need Help?
+          </button>
+        </div>
+      </div>
+
+      <!-- Stepper (Step 5 active, 1-4 completed) -->
+      <div class="stepper-bar">
+        <div class="stepper">
+          <div class="step-item">
+            <div class="step-circle completed"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
+            <span class="step-label completed">Business Info</span>
+          </div>
+          <div class="step-connector completed"></div>
+          <div class="step-item">
+            <div class="step-circle completed"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
+            <span class="step-label completed">Details</span>
+          </div>
+          <div class="step-connector completed"></div>
+          <div class="step-item">
+            <div class="step-circle completed"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
+            <span class="step-label completed">Photos</span>
+          </div>
+          <div class="step-connector completed"></div>
+          <div class="step-item">
+            <div class="step-circle completed"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
+            <span class="step-label completed">Documents</span>
+          </div>
+          <div class="step-connector completed"></div>
+          <div class="step-item">
+            <div class="step-circle active">5</div>
+            <span class="step-label active">Review</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-area">
+        <!-- Status Banner -->
+        <div class="status-banner pending">
+          <div class="status-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#b8860b" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          </div>
+          <div class="status-text">
+            <h4>Pending Admin Approval</h4>
+            <p>Our team will review your application within 24-48 hours. You'll receive an SMS and email notification once approved.</p>
+          </div>
+        </div>
+
+        <!-- Business Info Review -->
+        <div class="form-card">
+          <div class="section-tag">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#205C50" stroke-width="2"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+            Step 5 of 5
+          </div>
+          <div class="form-card-title">Review Your Application</div>
+          <div class="form-card-subtitle">Please review all information before submitting. Click "Edit" on any section to make changes.</div>
+
+          <div class="review-section">
+            <div class="review-section-title">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#205C50" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+              Business Information
+              <span class="edit-link">Edit</span>
+            </div>
+            <div class="review-grid">
+              <div class="review-item">
+                <span class="review-label">Business Name</span>
+                <span class="review-value">Kape ni Juan Coffee House</span>
+              </div>
+              <div class="review-item">
+                <span class="review-label">Business Type</span>
+                <span class="review-value">Cafe</span>
+              </div>
+              <div class="review-item">
+                <span class="review-label">Category</span>
+                <span class="review-value">Food &amp; Beverage</span>
+              </div>
+              <div class="review-item">
+                <span class="review-label">Owner</span>
+                <span class="review-value">Juan Dela Cruz</span>
+              </div>
+              <div class="review-item">
+                <span class="review-label">Email</span>
+                <span class="review-value">juan@kapenijuan.ph</span>
+              </div>
+              <div class="review-item">
+                <span class="review-label">Mobile</span>
+                <span class="review-value">+63 917 123 4567</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+
+          <div class="review-section">
+            <div class="review-section-title">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#205C50" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+              Business Details
+              <span class="edit-link">Edit</span>
+            </div>
+            <div class="review-grid">
+              <div class="review-item">
+                <span class="review-label">Address</span>
+                <span class="review-value">123 Ayala Avenue, Unit 5B</span>
+              </div>
+              <div class="review-item">
+                <span class="review-label">Barangay</span>
+                <span class="review-value">Bel-Air</span>
+              </div>
+              <div class="review-item">
+                <span class="review-label">City</span>
+                <span class="review-value">Makati City</span>
+              </div>
+              <div class="review-item">
+                <span class="review-label">Province</span>
+                <span class="review-value">Metro Manila</span>
+              </div>
+              <div class="review-item">
+                <span class="review-label">Phone</span>
+                <span class="review-value">+63 2 8123 4567</span>
+              </div>
+              <div class="review-item">
+                <span class="review-label">Price Range</span>
+                <span class="review-value">&#8369;150 &ndash; &#8369;500 per person</span>
+              </div>
+              <div class="review-item">
+                <span class="review-label">Facebook</span>
+                <span class="review-value">fb.com/kapenijuancoffee</span>
+              </div>
+              <div class="review-item">
+                <span class="review-label">Instagram</span>
+                <span class="review-value">@kapenijuan</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+
+          <div class="review-section">
+            <div class="review-section-title">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#205C50" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+              Photos &amp; Branding
+              <span class="edit-link">Edit</span>
+            </div>
+            <div class="review-grid">
+              <div class="review-item">
+                <span class="review-label">Logo</span>
+                <span class="review-value" style="color:#205C50;">Uploaded</span>
+              </div>
+              <div class="review-item">
+                <span class="review-label">Cover Photo</span>
+                <span class="review-value" style="color:#205C50;">Uploaded</span>
+              </div>
+              <div class="review-item">
+                <span class="review-label">Interior/Exterior</span>
+                <span class="review-value">3 photos uploaded</span>
+              </div>
+              <div class="review-item">
+                <span class="review-label">Menu/Products</span>
+                <span class="review-value" style="color:#999;">Not uploaded</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+
+          <div class="review-section">
+            <div class="review-section-title">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#205C50" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+              Documents &amp; Agreement
+              <span class="edit-link">Edit</span>
+            </div>
+            <div class="review-grid">
+              <div class="review-item">
+                <span class="review-label">Business Permit</span>
+                <span class="review-value" style="color:#999;">Not uploaded</span>
+              </div>
+              <div class="review-item">
+                <span class="review-label">BIR/DTI Registration</span>
+                <span class="review-value" style="color:#205C50;">bir_registration.pdf</span>
+              </div>
+              <div class="review-item">
+                <span class="review-label">Valid ID</span>
+                <span class="review-value" style="color:#999;">Not uploaded</span>
+              </div>
+              <div class="review-item">
+                <span class="review-label">Agreement</span>
+                <span class="review-value" style="color:#205C50;">Signed by Juan Dela Cruz</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Action Bar for Submit -->
+      <div class="action-bar">
+        <div class="action-left">
+          <button class="btn btn-ghost">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+            Back
+          </button>
+        </div>
+        <div class="action-right">
+          <button class="btn btn-outline">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/></svg>
+            Save Draft
+          </button>
+          <button class="btn btn-dark" style="padding:12px 28px;font-size:14px;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+            Submit Application
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div style="height:40px;"></div>
+
+</body>
+</html>
