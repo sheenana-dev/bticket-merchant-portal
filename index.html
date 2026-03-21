@@ -880,6 +880,7 @@ body{font-family:'Poppins',sans-serif;background:#f7f8fa;color:#3a3a3c;min-heigh
 <div class="form-card-subtitle">Help customers find you on the web and social media.</div>
 <div class="form-row"><div class="form-group"><label class="form-label">Website URL <span style="font-weight:400;color:#999">(optional)</span></label><input type="url" class="form-input" placeholder="https://www.yourbusiness.com"></div></div>
 <div class="form-row"><div class="form-group"><label class="form-label">Facebook Page</label><div class="input-prefix"><span class="prefix" style="font-size:11px">fb.com/</span><input type="text" class="form-input has-value" value="kapenijuancoffee"></div></div><div class="form-group"><label class="form-label">Instagram</label><div class="input-prefix"><span class="prefix">@</span><input type="text" class="form-input has-value" value="kapenijuan"></div></div></div>
+<div class="form-row"><div class="form-group"><label class="form-label">TikTok</label><div class="input-prefix"><span class="prefix">@</span><input type="text" class="form-input has-value" value="kapenijuan"></div></div><div class="form-group"></div></div>
 <div class="divider"></div>
 <div class="form-card-title" style="font-size:14px">Pricing</div>
 <div class="form-card-subtitle">Average price per person at your business.</div>
@@ -1136,6 +1137,28 @@ Image meets size requirements (<span id="ad-upload-size">357 x 96</span> px)
 <span>My creative will be reviewed and approved within 3 business days</span>
 </div>
 </div>
+
+<!-- Refund Policy -->
+<div style="margin-top: 16px; padding: 16px; background: #f0f8f4; border: 1px solid #d0e8da; border-radius: 10px;">
+<div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#205C50" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+<span style="font-size: 12px; font-weight: 600; color: #205C50;">Refund Policy</span>
+</div>
+<div style="display: flex; flex-direction: column; gap: 8px; font-size: 11px; color: #444; line-height: 1.5;">
+<div style="display: flex; align-items: flex-start; gap: 8px;">
+<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#56A66F" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0; margin-top: 1px;"><path d="M20 6L9 17l-5-5"/></svg>
+<span><strong>Full refund</strong> if your ad is rejected during review — processed within 3-5 business days to your original payment method.</span>
+</div>
+<div style="display: flex; align-items: flex-start; gap: 8px;">
+<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#EE4036" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0; margin-top: 1px;"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+<span><strong>No refund</strong> once your ad is approved and live — ad slots are time-bound inventory reserved for your campaign.</span>
+</div>
+<div style="display: flex; align-items: flex-start; gap: 8px;">
+<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#F9A250" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0; margin-top: 1px;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+<span><strong>Pro-rated credit</strong> if B-Ticket removes your ad due to a platform issue — credit applied to your next campaign.</span>
+</div>
+</div>
+</div>
 </div>
 </div>
 </div>
@@ -1263,7 +1286,7 @@ Image meets size requirements (<span id="ad-upload-size">357 x 96</span> px)
 </div>
 <div class="faq-item" onclick="this.classList.toggle('open')" style="padding:14px 0;border-bottom:1px solid #f0f1f3;cursor:pointer">
 <div style="display:flex;justify-content:space-between;align-items:center"><div style="font-size:14px;font-weight:600;color:#333">Can I pause or stop a coupon?</div><span style="color:#bbb;font-size:18px">+</span></div>
-<div style="font-size:13px;color:#888;line-height:1.7;margin-top:10px;display:none" class="faq-answer">Yes. Go to <strong>My Coupons</strong>, find the coupon, and click <strong>Pause</strong>. It will be hidden from customers immediately. You can resume it anytime.</div>
+<div style="font-size:13px;color:#888;line-height:1.7;margin-top:10px;display:none" class="faq-answer">Yes. Go to <strong>My Coupons</strong>, find the coupon, and click <strong>Pause</strong>. Your request will be sent to the B-ticket admin for approval. Once approved, the coupon will be hidden from customers. You can request to resume it anytime.</div>
 </div>
 <div class="faq-item" onclick="this.classList.toggle('open')" style="padding:14px 0;cursor:pointer">
 <div style="display:flex;justify-content:space-between;align-items:center"><div style="font-size:14px;font-weight:600;color:#333">What is the daily cap?</div><span style="color:#bbb;font-size:18px">+</span></div>
@@ -1323,15 +1346,17 @@ var name=row.querySelector('.table-coupon-name').textContent;
 var badge=row.querySelector('.badge');
 var actions=row.querySelector('.table-actions');
 if(action==='pause'){
-badge.className='badge badge-orange';badge.textContent='Paused';
-row.setAttribute('data-status','paused');
-actions.innerHTML='<button class="action-btn" onclick="couponAction(this,\'resume\')">Resume</button><button class="action-btn" onclick="couponAction(this,\'edit\')">Edit</button>';
-showToast(name+' paused')
+if(!confirm('Request to pause "'+name+'"?\n\nThis will be sent to the B-ticket admin for approval. Your coupon will remain active until approved.')){return}
+badge.className='badge badge-orange';badge.textContent='Pause Requested';
+row.setAttribute('data-status','pause-requested');
+actions.innerHTML='<span style="font-size:11px;color:#F9A250;font-weight:600;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> Pending Admin Approval</span>';
+showToast('Pause request sent for "'+name+'". Admin will review shortly.')
 }else if(action==='resume'){
-badge.className='badge badge-green';badge.textContent='Active';
-row.setAttribute('data-status','active');
-actions.innerHTML='<button class="action-btn" onclick="couponAction(this,\'pause\')">Pause</button><button class="action-btn" onclick="couponAction(this,\'edit\')">Edit</button>';
-showToast(name+' resumed')
+if(!confirm('Request to resume "'+name+'"?\n\nThis will be sent to the B-ticket admin for approval. Your coupon will remain paused until approved.')){return}
+badge.className='badge badge-yellow';badge.textContent='Resume Requested';
+row.setAttribute('data-status','resume-requested');
+actions.innerHTML='<span style="font-size:11px;color:#c4960a;font-weight:600;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> Pending Admin Approval</span>';
+showToast('Resume request sent for "'+name+'". Admin will review shortly.')
 }else if(action==='edit'){
 switchScreen('createcoupon')
 }else if(action==='delete'){
