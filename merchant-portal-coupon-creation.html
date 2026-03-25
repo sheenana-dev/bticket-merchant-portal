@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+1<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -554,16 +554,72 @@
           <div class="form-row">
             <div class="form-group">
               <div class="form-label">Discount Type <span class="required">*</span></div>
-              <select class="form-select">
-                <option selected>Percentage Off (e.g., 50% off)</option>
-                <option>Fixed Amount Off (e.g., ₱200 off)</option>
-                <option>Buy 1 Get 1 Free</option>
-                <option>Free Item</option>
+              <select class="form-select" id="discountType" onchange="toggleDiscountFields()">
+                <option value="percentage" selected>Percentage Off (e.g., 50% off)</option>
+                <option value="fixed">Fixed Amount Off (e.g., ₱200 off)</option>
+                <option value="bundle">Buy X Get Y</option>
+                <option value="free_item">Free Item</option>
               </select>
             </div>
-            <div class="form-group">
+            <div class="form-group" id="discountValueGroup">
               <div class="form-label">Discount Value <span class="required">*</span></div>
               <input type="text" class="form-input filled" value="50%">
+            </div>
+          </div>
+
+          <!-- Buy X Get Y Configuration (hidden by default, shown when "Bundle Deal" is selected) -->
+          <div class="form-row" id="bundleDealConfig" style="display:none;">
+            <div style="width:100%; background:#f8f9fa; border:1.5px solid #e0e0e0; border-radius:10px; padding:16px 18px;">
+              <div style="display:flex; align-items:center; gap:8px; margin-bottom:14px;">
+                <span style="font-size:14px; font-weight:600; color:#221F1F;">Buy X Get Y Configuration</span>
+              </div>
+              <div style="display:flex; gap:12px; align-items:end; flex-wrap:wrap;">
+                <div style="flex:1; min-width:100px;">
+                  <div class="form-label" style="font-size:12px;">Buy Quantity <span class="required">*</span></div>
+                  <select class="form-select" id="buyQty" onchange="updateBundlePreview()">
+                    <option value="1" selected>1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                  </select>
+                </div>
+                <div style="flex:1; min-width:100px;">
+                  <div class="form-label" style="font-size:12px;">Get Quantity <span class="required">*</span></div>
+                  <select class="form-select" id="getQty" onchange="updateBundlePreview()">
+                    <option value="1" selected>1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                  </select>
+                </div>
+                <div style="flex:1; min-width:140px;">
+                  <div class="form-label" style="font-size:12px;">Bonus Item Discount <span class="required">*</span></div>
+                  <select class="form-select" id="getDiscount" onchange="updateBundlePreview()">
+                    <option value="100" selected>Free (100% off)</option>
+                    <option value="50">50% off</option>
+                    <option value="25">25% off</option>
+                    <option value="custom">Custom %</option>
+                  </select>
+                </div>
+                <div style="flex:1; min-width:100px; display:none;" id="customDiscountGroup">
+                  <div class="form-label" style="font-size:12px;">Custom % <span class="required">*</span></div>
+                  <input type="number" class="form-input" placeholder="e.g., 30" min="1" max="100" id="customDiscount" onchange="updateBundlePreview()">
+                </div>
+              </div>
+              <div id="bundlePreview" style="margin-top:14px; padding:10px 14px; background:#e8f2ee; border-radius:8px; display:flex; align-items:center; gap:8px;">
+                <span style="font-size:14px;">✨</span>
+                <span style="font-size:13px; font-weight:600; color:#205C50;" id="bundlePreviewText">Buy 1, Get 1 Free</span>
+              </div>
+              <div style="font-size:11px; color:#999; margin-top:8px;">This is how the deal will appear to consumers on the app.</div>
+            </div>
+          </div>
+
+          <!-- Free Item Description (hidden by default, shown when "Free Item" is selected) -->
+          <div class="form-row" id="freeItemGroup" style="display:none;">
+            <div class="form-group" style="width:100%;">
+              <div class="form-label">Free Item Description <span class="required">*</span></div>
+              <input type="text" class="form-input" placeholder="e.g., Free Iced Latte, Free Dessert, Free Trial Class">
+              <div class="form-hint">Describe what the customer will receive for free.</div>
             </div>
           </div>
 
@@ -1167,6 +1223,74 @@
     </div>
   </div>
 </div>
+
+<script>
+function toggleDiscountFields() {
+  var type = document.getElementById('discountType').value;
+  var bundleConfig = document.getElementById('bundleDealConfig');
+  var discountValueGroup = document.getElementById('discountValueGroup');
+  var freeItemGroup = document.getElementById('freeItemGroup');
+  var inp = discountValueGroup.querySelector('input');
+
+  if (type === 'bundle') {
+    bundleConfig.style.display = 'block';
+    discountValueGroup.style.display = 'none';
+    freeItemGroup.style.display = 'none';
+  } else if (type === 'free_item') {
+    bundleConfig.style.display = 'none';
+    discountValueGroup.style.display = 'none';
+    freeItemGroup.style.display = 'block';
+  } else {
+    bundleConfig.style.display = 'none';
+    discountValueGroup.style.display = 'block';
+    freeItemGroup.style.display = 'none';
+    if (type === 'fixed') {
+      inp.value = '';
+      inp.placeholder = '₱200';
+      discountValueGroup.querySelector('.form-label').innerHTML = 'Discount Amount <span class="required">*</span>';
+    } else {
+      inp.value = '50%';
+      inp.placeholder = '50%';
+      discountValueGroup.querySelector('.form-label').innerHTML = 'Discount Value <span class="required">*</span>';
+    }
+  }
+}
+
+function updateBundlePreview() {
+  var buyQty = parseInt(document.getElementById('buyQty').value);
+  var getQty = parseInt(document.getElementById('getQty').value);
+  var discountSelect = document.getElementById('getDiscount');
+  var discount = discountSelect.value;
+  var customGroup = document.getElementById('customDiscountGroup');
+
+  if (discount === 'custom') {
+    customGroup.style.display = 'block';
+    discount = document.getElementById('customDiscount').value || '0';
+  } else {
+    customGroup.style.display = 'none';
+  }
+
+  var discountNum = parseInt(discount);
+  var label = '';
+
+  if (discountNum === 100) {
+    label = 'Buy ' + buyQty + ', Get ' + getQty + ' Free';
+  } else if (getQty === 1) {
+    var ordinal = getOrdinal(buyQty + 1);
+    label = 'Buy ' + buyQty + ', Get ' + ordinal + ' at ' + discountNum + '% Off';
+  } else {
+    label = 'Buy ' + buyQty + ', Get ' + getQty + ' at ' + discountNum + '% Off';
+  }
+
+  document.getElementById('bundlePreviewText').textContent = label;
+}
+
+function getOrdinal(n) {
+  var s = ['th', 'st', 'nd', 'rd'];
+  var v = n % 100;
+  return n + (s[(v - 20) % 10] || s[v] || s[0]);
+}
+</script>
 
 </body>
 </html>
