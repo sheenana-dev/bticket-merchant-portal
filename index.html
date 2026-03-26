@@ -855,46 +855,19 @@ body{font-family:'Poppins',sans-serif;background:#f7f8fa;color:#3a3a3c;min-heigh
 <div class="form-card-title" style="font-size:14px">Business Hours</div>
 <div style="margin-top:10px;margin-bottom:14px;display:flex;gap:12px;flex-wrap:wrap"><button onclick="applyHoursToAll()" style="background:rgba(32,92,80,.06);border:1px solid rgba(32,92,80,.15);color:#205C50;font-weight:600;font-size:11px;padding:7px 16px;border-radius:24px;cursor:pointer;font-family:inherit;transition:all .15s">Apply Mon hours to all days</button><button onclick="applyHoursWeekdays()" style="background:rgba(32,92,80,.06);border:1px solid rgba(32,92,80,.15);color:#205C50;font-weight:600;font-size:11px;padding:7px 16px;border-radius:24px;cursor:pointer;font-family:inherit;transition:all .15s">Same hours Mon-Fri, different weekends</button></div>
 <div style="margin-top:12px"><div class="hours-table"><div class="hours-row"><span class="hours-day">Monday</span><div class="toggle-row"><div class="toggle-switch on"></div></div><div class="hours-times"><input type="text" class="form-input" value="7:00 AM"><span class="hours-sep">to</span><input type="text" class="form-input" value="9:00 PM"></div><span class="hours-status open">Open</span></div><div class="hours-row"><span class="hours-day">Tuesday</span><div class="toggle-row"><div class="toggle-switch on"></div></div><div class="hours-times"><input type="text" class="form-input" value="7:00 AM"><span class="hours-sep">to</span><input type="text" class="form-input" value="9:00 PM"></div><span class="hours-status open">Open</span></div><div class="hours-row"><span class="hours-day">Wednesday</span><div class="toggle-row"><div class="toggle-switch on"></div></div><div class="hours-times"><input type="text" class="form-input" value="7:00 AM"><span class="hours-sep">to</span><input type="text" class="form-input" value="9:00 PM"></div><span class="hours-status open">Open</span></div><div class="hours-row"><span class="hours-day">Thursday</span><div class="toggle-row"><div class="toggle-switch on"></div></div><div class="hours-times"><input type="text" class="form-input" value="7:00 AM"><span class="hours-sep">to</span><input type="text" class="form-input" value="9:00 PM"></div><span class="hours-status open">Open</span></div><div class="hours-row"><span class="hours-day">Friday</span><div class="toggle-row"><div class="toggle-switch on"></div></div><div class="hours-times"><input type="text" class="form-input" value="7:00 AM"><span class="hours-sep">to</span><input type="text" class="form-input" value="10:00 PM"></div><span class="hours-status open">Open</span></div><div class="hours-row"><span class="hours-day">Saturday</span><div class="toggle-row"><div class="toggle-switch on"></div></div><div class="hours-times"><input type="text" class="form-input" value="8:00 AM"><span class="hours-sep">to</span><input type="text" class="form-input" value="10:00 PM"></div><span class="hours-status open">Open</span></div><div class="hours-row"><span class="hours-day">Sunday</span><div class="toggle-row"><div class="toggle-switch"></div></div><div class="hours-times" style="opacity:.4"><input type="text" class="form-input" value="--:-- --" disabled><span class="hours-sep">to</span><input type="text" class="form-input" value="--:-- --" disabled></div><span class="hours-status closed">Closed</span></div></div></div>
-</div>
-
-<!-- Branch 2 (Additional) -->
-<div class="form-card" id="branch-2-card" style="border:2px dashed #84BEA1;background:#f9fdfb">
-<div style="display:flex;justify-content:space-between;align-items:center">
-<div><div class="form-card-title">Branch 2</div>
-<div class="form-card-subtitle">Additional branch location.</div></div>
-<button onclick="document.getElementById('branch-2-card').style.display='none'" style="background:none;border:none;color:#999;cursor:pointer;font-size:18px">&times;</button>
-</div>
-<div class="form-row"><div class="form-group"><label class="form-label">Branch Name <span class="req">*</span></label><input type="text" class="form-input has-value" value="Kape ni Juan &#8212; BGC"></div></div>
-<div class="form-row"><div class="form-group" style="flex:2"><label class="form-label">Street Address <span class="req">*</span></label><input type="text" class="form-input has-value" value="Unit 8, High Street South Block, BGC"></div></div>
-<div class="form-row"><div class="form-group"><label class="form-label">Barangay</label><input type="text" class="form-input has-value" value="Fort Bonifacio"></div><div class="form-group"><label class="form-label">City</label><select class="form-select"><option>Makati City</option><option selected>Taguig City</option><option>Quezon City</option></select></div><div class="form-group"><label class="form-label">Province</label><select class="form-select"><option selected>Metro Manila</option></select></div></div>
-<div style="margin-top:8px"><label class="form-label">Pin your location on the map</label><div class="map-placeholder" style="height:100px"><svg width="30" height="30" viewBox="0 0 24 24" fill="#205C50" stroke="#fff" stroke-width="1" style="position:relative;z-index:1"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3" fill="#fff"/></svg><div class="map-label">Click to set pin &middot; Taguig City</div></div></div>
-<div class="form-row" style="margin-top:12px"><div class="form-group"><label class="form-label">Branch Phone</label><div class="input-prefix"><span class="prefix">+63</span><input type="tel" class="form-input" placeholder="917 XXX XXXX"></div></div></div>
-<div style="margin-top:8px"><label style="font-size:12px;color:#205C50;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px"><input type="checkbox" checked> Use same business hours as Main Branch</label></div>
-</div>
-
-<!-- Add Branch Button -->
-<div id="add-branch-container" style="text-align:center;padding:20px">
-<button onclick="addBranch()" style="background:none;border:2px dashed #84BEA1;color:#205C50;font-weight:600;font-size:13px;padding:16px 28px;border-radius:14px;cursor:pointer;font-family:inherit;width:100%;transition:all .15s">+ Add Another Branch</button>
-<span class="form-hint" style="display:block;margin-top:10px">You can add more branches anytime from your dashboard after approval.</span>
-</div>
-
-<!-- Online Presence & Pricing -->
-<div class="form-card">
-<div class="form-card-title">Online Presence</div>
-<div class="form-card-subtitle">Help customers find you on the web and social media.</div>
+<div class="divider"></div>
+<div class="form-card-title" style="font-size:14px">Online Presence</div>
+<div class="form-card-subtitle">Help customers find this branch on the web and social media.</div>
 <div class="form-row"><div class="form-group"><label class="form-label">Website URL <span style="font-weight:400;color:#999">(optional)</span></label><input type="url" class="form-input" placeholder="https://www.yourbusiness.com"></div></div>
 <div class="form-row"><div class="form-group"><label class="form-label">Facebook Page</label><div class="input-prefix"><span class="prefix" style="font-size:11px">fb.com/</span><input type="text" class="form-input has-value" value="kapenijuancoffee"></div></div><div class="form-group"><label class="form-label">Instagram</label><div class="input-prefix"><span class="prefix">@</span><input type="text" class="form-input has-value" value="kapenijuan"></div></div></div>
 <div class="form-row"><div class="form-group"><label class="form-label">TikTok</label><div class="input-prefix"><span class="prefix">@</span><input type="text" class="form-input has-value" value="kapenijuan"></div></div><div class="form-group"></div></div>
 <div class="divider"></div>
 <div class="form-card-title" style="font-size:14px">Pricing</div>
-<div class="form-card-subtitle">Average price per person at your business.</div>
+<div class="form-card-subtitle">Average price per person at this branch.</div>
 <div class="form-row" style="align-items:center"><div class="form-group" style="flex:0 0 auto"><label class="form-label">Min Price</label><div class="input-prefix"><span class="prefix">&#8369;</span><input type="text" class="form-input has-value" value="150" style="width:80px"></div></div><div style="padding-top:20px;color:#999">to</div><div class="form-group" style="flex:0 0 auto"><label class="form-label">Max Price</label><div class="input-prefix"><span class="prefix">&#8369;</span><input type="text" class="form-input has-value" value="500" style="width:80px"></div></div></div>
-</div>
-
-<!-- Amenities / Facilities -->
-<div class="form-card">
-<div class="form-card-title">Amenities &amp; Facilities</div>
-<div class="form-card-subtitle">Select all amenities available at your business. This helps customers find you through filters.</div>
+<div class="divider"></div>
+<div class="form-card-title" style="font-size:14px">Amenities &amp; Facilities</div>
+<div class="form-card-subtitle">Select all amenities available at this branch.</div>
 <div style="padding:12px 16px;background:rgba(32,92,80,.04);border:1px dashed rgba(32,92,80,.2);border-radius:10px;margin-bottom:16px;font-size:12px;color:#666;display:flex;align-items:center;gap:8px;">
 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#205C50" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
 To request an additional filter option, please contact our support team via the chat icon or by Telegram.
@@ -921,12 +894,9 @@ To request an additional filter option, please contact our support team via the 
 <label class="filter-chip"><input type="checkbox"><span>Wheelchair Accessible</span></label>
 <label class="filter-chip"><input type="checkbox"><span>Delivery</span></label>
 </div>
-</div>
-
-<!-- Accepted Payment Methods -->
-<div class="form-card">
-<div class="form-card-title">Accepted Payment Methods</div>
-<div class="form-card-subtitle">Select all payment methods your business accepts.</div>
+<div class="divider"></div>
+<div class="form-card-title" style="font-size:14px">Accepted Payment Methods</div>
+<div class="form-card-subtitle">Select all payment methods accepted at this branch.</div>
 <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:10px;">
 <label class="filter-chip"><input type="checkbox" checked><span>Cash</span></label>
 <label class="filter-chip"><input type="checkbox" checked><span>GCash</span></label>
@@ -935,6 +905,40 @@ To request an additional filter option, please contact our support team via the 
 <label class="filter-chip"><input type="checkbox"><span>Debit Card</span></label>
 <label class="filter-chip"><input type="checkbox"><span>Bank Transfer</span></label>
 </div>
+</div>
+
+<!-- Branch 2 (Additional) -->
+<div class="form-card" id="branch-2-card" style="border:2px dashed #84BEA1;background:#f9fdfb">
+<div style="display:flex;justify-content:space-between;align-items:center">
+<div><div class="form-card-title">Branch 2</div>
+<div class="form-card-subtitle">Additional branch location.</div></div>
+<button onclick="document.getElementById('branch-2-card').style.display='none'" style="background:none;border:none;color:#999;cursor:pointer;font-size:18px">&times;</button>
+</div>
+<div class="form-row"><div class="form-group"><label class="form-label">Branch Name <span class="req">*</span></label><input type="text" class="form-input has-value" value="Kape ni Juan &#8212; BGC"></div></div>
+<div class="form-row"><div class="form-group" style="flex:2"><label class="form-label">Street Address <span class="req">*</span></label><input type="text" class="form-input has-value" value="Unit 8, High Street South Block, BGC"></div></div>
+<div class="form-row"><div class="form-group"><label class="form-label">Barangay</label><input type="text" class="form-input has-value" value="Fort Bonifacio"></div><div class="form-group"><label class="form-label">City</label><select class="form-select"><option>Makati City</option><option selected>Taguig City</option><option>Quezon City</option></select></div><div class="form-group"><label class="form-label">Province</label><select class="form-select"><option selected>Metro Manila</option></select></div></div>
+<div style="margin-top:8px"><label class="form-label">Pin your location on the map</label><div class="map-placeholder" style="height:100px"><svg width="30" height="30" viewBox="0 0 24 24" fill="#205C50" stroke="#fff" stroke-width="1" style="position:relative;z-index:1"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3" fill="#fff"/></svg><div class="map-label">Click to set pin &middot; Taguig City</div></div></div>
+<div class="form-row" style="margin-top:12px"><div class="form-group"><label class="form-label">Branch Phone</label><div class="input-prefix"><span class="prefix">+63</span><input type="tel" class="form-input" placeholder="917 XXX XXXX"></div></div></div>
+<div style="margin-top:8px"><label style="font-size:12px;color:#205C50;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px"><input type="checkbox" checked> Use same business hours as Main Branch</label></div>
+<div class="divider"></div>
+<div class="form-card-title" style="font-size:14px">Online Presence</div>
+<div class="form-card-subtitle">Help customers find this branch on the web and social media.</div>
+<div style="margin-top:8px"><label style="font-size:12px;color:#205C50;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px"><input type="checkbox" checked> Use same as Main Branch</label></div>
+<div class="divider"></div>
+<div class="form-card-title" style="font-size:14px">Pricing</div>
+<div style="margin-top:8px"><label style="font-size:12px;color:#205C50;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px"><input type="checkbox" checked> Use same as Main Branch</label></div>
+<div class="divider"></div>
+<div class="form-card-title" style="font-size:14px">Amenities &amp; Facilities</div>
+<div style="margin-top:8px"><label style="font-size:12px;color:#205C50;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px"><input type="checkbox" checked> Use same as Main Branch</label></div>
+<div class="divider"></div>
+<div class="form-card-title" style="font-size:14px">Accepted Payment Methods</div>
+<div style="margin-top:8px"><label style="font-size:12px;color:#205C50;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px"><input type="checkbox" checked> Use same as Main Branch</label></div>
+</div>
+
+<!-- Add Branch Button -->
+<div id="add-branch-container" style="text-align:center;padding:20px">
+<button onclick="addBranch()" style="background:none;border:2px dashed #84BEA1;color:#205C50;font-weight:600;font-size:13px;padding:16px 28px;border-radius:14px;cursor:pointer;font-family:inherit;width:100%;transition:all .15s">+ Add Another Branch</button>
+<span class="form-hint" style="display:block;margin-top:10px">You can add more branches anytime from your dashboard after approval.</span>
 </div>
 
 </div></div>
