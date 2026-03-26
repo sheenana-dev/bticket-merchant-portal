@@ -919,20 +919,65 @@ To request an additional filter option, please contact our support team via the 
 <div class="form-row"><div class="form-group"><label class="form-label">Barangay</label><input type="text" class="form-input has-value" value="Fort Bonifacio"></div><div class="form-group"><label class="form-label">City</label><select class="form-select"><option>Makati City</option><option selected>Taguig City</option><option>Quezon City</option></select></div><div class="form-group"><label class="form-label">Province</label><select class="form-select"><option selected>Metro Manila</option></select></div></div>
 <div style="margin-top:8px"><label class="form-label">Pin your location on the map</label><div class="map-placeholder" style="height:100px"><svg width="30" height="30" viewBox="0 0 24 24" fill="#205C50" stroke="#fff" stroke-width="1" style="position:relative;z-index:1"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3" fill="#fff"/></svg><div class="map-label">Click to set pin &middot; Taguig City</div></div></div>
 <div class="form-row" style="margin-top:12px"><div class="form-group"><label class="form-label">Branch Phone</label><div class="input-prefix"><span class="prefix">+63</span><input type="tel" class="form-input" placeholder="917 XXX XXXX"></div></div></div>
-<div style="margin-top:8px"><label style="font-size:12px;color:#205C50;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px"><input type="checkbox" checked> Use same business hours as Main Branch</label></div>
+<div style="margin-top:8px"><label style="font-size:12px;color:#205C50;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px"><input type="checkbox" checked onchange="toggleBranchSection('b2-hours',this)"> Use same business hours as Main Branch</label></div>
+<div id="b2-hours" style="display:none;margin-top:12px">
+<div class="form-hint" style="margin-bottom:8px">Set custom hours for this branch:</div>
+<input type="text" class="form-input" placeholder="e.g. Mon-Sat 10:00 AM - 9:00 PM, Sun Closed">
+</div>
 <div class="divider"></div>
 <div class="form-card-title" style="font-size:14px">Online Presence</div>
-<div class="form-card-subtitle">Help customers find this branch on the web and social media.</div>
-<div style="margin-top:8px"><label style="font-size:12px;color:#205C50;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px"><input type="checkbox" checked> Use same as Main Branch</label></div>
+<div style="margin-top:8px"><label style="font-size:12px;color:#205C50;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px"><input type="checkbox" checked onchange="toggleBranchSection('b2-online',this)"> Use same as Main Branch</label></div>
+<div id="b2-online" style="display:none;margin-top:12px">
+<div class="form-row"><div class="form-group"><label class="form-label">Website URL <span style="font-weight:400;color:#999">(optional)</span></label><input type="url" class="form-input" placeholder="https://www.yourbusiness.com"></div></div>
+<div class="form-row"><div class="form-group"><label class="form-label">Facebook Page</label><div class="input-prefix"><span class="prefix" style="font-size:11px">fb.com/</span><input type="text" class="form-input" placeholder="businesspage"></div></div><div class="form-group"><label class="form-label">Instagram</label><div class="input-prefix"><span class="prefix">@</span><input type="text" class="form-input" placeholder="username"></div></div></div>
+<div class="form-row"><div class="form-group"><label class="form-label">TikTok</label><div class="input-prefix"><span class="prefix">@</span><input type="text" class="form-input" placeholder="username"></div></div><div class="form-group"></div></div>
+</div>
 <div class="divider"></div>
 <div class="form-card-title" style="font-size:14px">Pricing</div>
-<div style="margin-top:8px"><label style="font-size:12px;color:#205C50;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px"><input type="checkbox" checked> Use same as Main Branch</label></div>
+<div style="margin-top:8px"><label style="font-size:12px;color:#205C50;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px"><input type="checkbox" checked onchange="toggleBranchSection('b2-pricing',this)"> Use same as Main Branch</label></div>
+<div id="b2-pricing" style="display:none;margin-top:12px">
+<div class="form-row" style="align-items:center"><div class="form-group" style="flex:0 0 auto"><label class="form-label">Min Price</label><div class="input-prefix"><span class="prefix">&#8369;</span><input type="text" class="form-input" placeholder="150" style="width:80px"></div></div><div style="padding-top:20px;color:#999">to</div><div class="form-group" style="flex:0 0 auto"><label class="form-label">Max Price</label><div class="input-prefix"><span class="prefix">&#8369;</span><input type="text" class="form-input" placeholder="500" style="width:80px"></div></div></div>
+</div>
 <div class="divider"></div>
 <div class="form-card-title" style="font-size:14px">Amenities &amp; Facilities</div>
-<div style="margin-top:8px"><label style="font-size:12px;color:#205C50;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px"><input type="checkbox" checked> Use same as Main Branch</label></div>
+<div style="margin-top:8px"><label style="font-size:12px;color:#205C50;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px"><input type="checkbox" checked onchange="toggleBranchSection('b2-amenities',this)"> Use same as Main Branch</label></div>
+<div id="b2-amenities" style="display:none;margin-top:12px">
+<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;">
+<label class="filter-chip"><input type="checkbox"><span>Outdoor Seating</span></label>
+<label class="filter-chip"><input type="checkbox"><span>Fast Service</span></label>
+<label class="filter-chip"><input type="checkbox"><span>Drive-Thru Service</span></label>
+<label class="filter-chip"><input type="checkbox"><span>Free Wi-Fi</span></label>
+<label class="filter-chip"><input type="checkbox"><span>Smoking Rooms</span></label>
+<label class="filter-chip"><input type="checkbox"><span>Pet Friendly</span></label>
+<label class="filter-chip"><input type="checkbox"><span>Parking</span></label>
+<label class="filter-chip"><input type="checkbox"><span>VIP Rooms</span></label>
+<label class="filter-chip"><input type="checkbox"><span>Event Space</span></label>
+<label class="filter-chip"><input type="checkbox"><span>Family Friendly</span></label>
+<label class="filter-chip"><input type="checkbox"><span>Age Restriction</span></label>
+<label class="filter-chip"><input type="checkbox"><span>Reservation Required</span></label>
+<label class="filter-chip"><input type="checkbox"><span>Full Course</span></label>
+<label class="filter-chip"><input type="checkbox"><span>Course Only</span></label>
+<label class="filter-chip"><input type="checkbox"><span>Drink All You Can</span></label>
+<label class="filter-chip"><input type="checkbox"><span>Eat All You Can</span></label>
+<label class="filter-chip"><input type="checkbox"><span>Multi Course Meal</span></label>
+<label class="filter-chip"><input type="checkbox"><span>Celebrations</span></label>
+<label class="filter-chip"><input type="checkbox"><span>Wheelchair Accessible</span></label>
+<label class="filter-chip"><input type="checkbox"><span>Delivery</span></label>
+</div>
+</div>
 <div class="divider"></div>
 <div class="form-card-title" style="font-size:14px">Accepted Payment Methods</div>
-<div style="margin-top:8px"><label style="font-size:12px;color:#205C50;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px"><input type="checkbox" checked> Use same as Main Branch</label></div>
+<div style="margin-top:8px"><label style="font-size:12px;color:#205C50;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px"><input type="checkbox" checked onchange="toggleBranchSection('b2-payments',this)"> Use same as Main Branch</label></div>
+<div id="b2-payments" style="display:none;margin-top:12px">
+<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;">
+<label class="filter-chip"><input type="checkbox"><span>Cash</span></label>
+<label class="filter-chip"><input type="checkbox"><span>GCash</span></label>
+<label class="filter-chip"><input type="checkbox"><span>Maya</span></label>
+<label class="filter-chip"><input type="checkbox"><span>Credit Card</span></label>
+<label class="filter-chip"><input type="checkbox"><span>Debit Card</span></label>
+<label class="filter-chip"><input type="checkbox"><span>Bank Transfer</span></label>
+</div>
+</div>
 </div>
 
 <!-- Add Branch Button -->
@@ -1452,6 +1497,7 @@ function regNext(){if(regStep<5){regStep++;updateRegStepper()}else{document.quer
 function regBack(){if(regStep>1){regStep--;updateRegStepper()}}
 function showPortal(){document.getElementById('registration-phase').style.display='none';document.getElementById('portal-phase').style.display='flex'}
 var branchCount=2;
+function toggleBranchSection(id,cb){var el=document.getElementById(id);if(el)el.style.display=cb.checked?'none':'block'}
 function addBranch(){branchCount++;var card=document.createElement('div');card.className='form-card';card.id='branch-'+branchCount+'-card';card.style.border='2px dashed #84BEA1';card.style.background='#f9fdfb';card.innerHTML='<div style="display:flex;justify-content:space-between;align-items:center"><div><div class="form-card-title">Branch '+branchCount+'</div><div class="form-card-subtitle">Additional branch location.</div></div><button onclick="this.closest(\'.form-card\').remove()" style="background:none;border:none;color:#999;cursor:pointer;font-size:18px">&times;</button></div><div class="form-row"><div class="form-group"><label class="form-label">Branch Name <span class="req">*</span></label><input type="text" class="form-input" placeholder="e.g. Kape ni Juan â SM Megamall"></div></div><div class="form-row"><div class="form-group" style="flex:2"><label class="form-label">Street Address <span class="req">*</span></label><input type="text" class="form-input" placeholder="Street, Unit/Floor, Building"></div></div><div class="form-row"><div class="form-group"><label class="form-label">Barangay</label><input type="text" class="form-input" placeholder="Barangay"></div><div class="form-group"><label class="form-label">City</label><select class="form-select"><option>Select city</option><option>Makati City</option><option>Taguig City</option><option>Quezon City</option><option>Pasig City</option><option>Mandaluyong City</option><option>Pasay City</option><option>Paranaque City</option><option>Las Pinas City</option><option>Muntinlupa City</option><option>San Juan City</option></select></div><div class="form-group"><label class="form-label">Province</label><select class="form-select"><option selected>Metro Manila</option><option>Cavite</option><option>Laguna</option><option>Rizal</option><option>Bulacan</option></select></div></div><div class="form-row" style="margin-top:8px"><div class="form-group"><label class="form-label">Branch Phone</label><div class="input-prefix"><span class="prefix">+63</span><input type="tel" class="form-input" placeholder="917 XXX XXXX"></div></div></div><div style="margin-top:8px"><label style="font-size:12px;color:#205C50;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px"><input type="checkbox" checked> Use same business hours as Main Branch</label></div>';var addBtn=document.getElementById('add-branch-container');addBtn.parentNode.insertBefore(card,addBtn)}
 function updateSubCategory(){var cat=document.getElementById('reg-category').value;var sub=document.getElementById('reg-subcategory');var opts={'food':['Japanese','Korean','Chinese','Asian','Western','Filipino','CafÃ©s & Dessert','Bars & Nightlife','Fast Food','Catering'],'wellness':['Spas & Massage','Hair & Nail Salons','Lash & Brow Studios','Aesthetics & Skincare','Sauna & Wellness Centers'],'services':['Auto Services','Pet Services','Laundry & Cleaning','Repair & Maintenance','Event Services'],'entertainment':['Karaoke / KTV','Sports & Games','Attractions & Theme Parks','Activity & Event Venues'],'fitness':['Gyms & Training Studios','Yoga & Pilates','Dance & Movement','Sports Clubs'],'hotels':['Hotels & Resorts','Boutique & Lifestyle Hotels','Serviced Apartments','Villas','Hostels','Staycation Packages'],'academy':['Language & Academic Education','Music & Dance','Art & Creative Workshops','Cooking & Lifestyle Classes','Certification & Test Prep','Kids Learning Programs'],'travel':['Tours & Travel Packages','Transport Services','Vehicle Rentals','Adventure & Outdoor Activities','City & Attraction Passes']};sub.innerHTML='';if(!cat||!opts[cat]){sub.innerHTML='<option value="">Select category first</option>';sub.disabled=true;return}sub.disabled=false;opts[cat].forEach(function(o){var opt=document.createElement('option');opt.value=o.toLowerCase().replace(/[^a-z0-9]/g,'-');opt.textContent=o;sub.appendChild(opt)})}
 var adCurrentFormat='',adCurrentSize='',adCurrentPrice='',adCurrentType='';
