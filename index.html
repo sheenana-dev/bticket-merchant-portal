@@ -409,9 +409,9 @@ body{font-family:'Poppins',sans-serif;background:#f7f8fa;color:#3a3a3c;min-heigh
 .bar-chart-x span{font-size:9px;color:#bbb}
 .chart-note{font-size:12px;color:#999}
 .funnel-row{display:flex;align-items:center;gap:14px;margin-bottom:14px}
-.funnel-label{min-width:96px;font-size:12.5px;color:#555;font-weight:600}
+.funnel-label{min-width:140px;width:140px;font-size:12.5px;color:#555;font-weight:600;flex-shrink:0}
 .funnel-bar{height:28px;border-radius:8px;display:flex;align-items:center;padding-left:12px;font-size:11.5px;font-weight:700;color:#fff}
-.funnel-conversion{text-align:center;font-size:12px;color:#205C50;font-weight:600;margin:8px 0}
+.funnel-conversion{font-size:12px;color:#205C50;font-weight:600;margin:8px 0;padding-left:154px}
 .coupon-rank{display:flex;align-items:center;gap:12px;margin-bottom:14px}
 .coupon-rank-num{font-size:13px;font-weight:700;color:#ccc;min-width:20px}
 .coupon-rank-info{flex:1}
@@ -1049,11 +1049,11 @@ To request an additional filter option, please contact our support team via the 
 <div style="font-size:16px;font-weight:700;color:#221F1F;margin:28px 0 20px;letter-spacing:-.2px">My Active Ads</div>
 <div style="display:flex;gap:16px;margin-bottom:20px">
 <div style="flex:1;padding:16px;background:#f0f7f3;border-radius:12px;text-align:center"><div style="font-size:11px;color:#888">This Month Impressions</div><div style="font-size:22px;font-weight:800;color:#205C50">12,450</div></div>
-<div style="flex:1;padding:16px;background:#f0f7f3;border-radius:12px;text-align:center"><div style="font-size:11px;color:#888">Taps</div><div style="font-size:22px;font-weight:800;color:#205C50">342</div></div>
+<div style="flex:1;padding:16px;background:#f0f7f3;border-radius:12px;text-align:center"><div style="font-size:11px;color:#888">Clicks</div><div style="font-size:22px;font-weight:800;color:#205C50">342</div></div>
 <div style="flex:1;padding:16px;background:#f0f7f3;border-radius:12px;text-align:center"><div style="font-size:11px;color:#888">Avg CTR</div><div style="font-size:22px;font-weight:800;color:#56A66F">2.75%</div></div>
 <div style="flex:1;padding:16px;background:rgba(249,162,80,.08);border-radius:12px;text-align:center"><div style="font-size:11px;color:#888">Monthly Spend</div><div style="font-size:22px;font-weight:800;color:#F9A250">&#8369;15,000</div></div>
 </div>
-<div class="ads-table"><table><thead><tr><th>Campaign</th><th>Format</th><th>Status</th><th>Period</th><th>Impressions</th><th>Taps</th><th>CTR</th><th>Amount</th></tr></thead><tbody><tr><td>March Steak Promo</td><td>Hero Banner</td><td><span class="badge badge-green">&#x25CF; Active</span></td><td>Apr 1&ndash;30</td><td>12,450</td><td>342</td><td>2.7%</td><td style="color:#205C50;font-weight:700">&#8369;15,000</td></tr><tr><td>Weekend Pizza Deal</td><td>Top Banner</td><td><span class="badge badge-yellow">&#x25CF; Pending Review</span></td><td>Apr 1&ndash;30</td><td style="color:#ccc">&mdash;</td><td style="color:#ccc">&mdash;</td><td style="color:#ccc">&mdash;</td><td style="color:#205C50;font-weight:700">&#8369;8,000</td></tr><tr><td>Grand Opening</td><td>Full-Screen</td><td><span class="badge badge-red">&#x25CF; Sold Out (Waitlisted)</span></td><td style="color:#ccc">&mdash;</td><td style="color:#ccc">&mdash;</td><td style="color:#ccc">&mdash;</td><td style="color:#ccc">&mdash;</td><td style="color:#205C50;font-weight:700">&#8369;25,000</td></tr></tbody></table></div>
+<div class="ads-table"><table><thead><tr><th>Campaign</th><th>Format</th><th>Status</th><th>Period</th><th>Impressions</th><th>Clicks</th><th>CTR</th><th>Amount</th></tr></thead><tbody><tr><td>March Steak Promo</td><td>Hero Banner</td><td><span class="badge badge-green">&#x25CF; Active</span></td><td>Apr 1&ndash;30</td><td>12,450</td><td>342</td><td>2.7%</td><td style="color:#205C50;font-weight:700">&#8369;15,000</td></tr><tr><td>Weekend Pizza Deal</td><td>Top Banner</td><td><span class="badge badge-yellow">&#x25CF; Pending Review</span></td><td>Apr 1&ndash;30</td><td style="color:#ccc">&mdash;</td><td style="color:#ccc">&mdash;</td><td style="color:#ccc">&mdash;</td><td style="color:#205C50;font-weight:700">&#8369;8,000</td></tr><tr><td>Grand Opening</td><td>Full-Screen</td><td><span class="badge badge-red">&#x25CF; Sold Out (Waitlisted)</span></td><td style="color:#ccc">&mdash;</td><td style="color:#ccc">&mdash;</td><td style="color:#ccc">&mdash;</td><td style="color:#ccc">&mdash;</td><td style="color:#205C50;font-weight:700">&#8369;25,000</td></tr></tbody></table></div>
 </div>
 </div>
 
@@ -1295,7 +1295,7 @@ Image meets size requirements (<span id="ad-upload-size">357 x 96</span> px)
 </div>
 <div class="ad-timeline-step">
 <div class="ad-timeline-dot pending">4</div>
-<div><div class="ad-timeline-title">Monthly performance report delivered</div><div class="ad-timeline-desc">Track impressions, taps, and CTR</div></div>
+<div><div class="ad-timeline-title">Monthly performance report delivered</div><div class="ad-timeline-desc">Track impressions, clicks, and CTR</div></div>
 </div>
 </div>
 </div>
@@ -1331,30 +1331,30 @@ Image meets size requirements (<span id="ad-upload-size">357 x 96</span> px)
 <!-- Row 1: 5 KPI Stat Cards -->
 <div class="stats-row-5">
 <div class="stat-card"><div class="stat-label">Total Impressions</div><div class="stat-value">12,450</div><div class="stat-change">+24% vs prev period</div></div>
-<div class="stat-card"><div class="stat-label">Total Taps</div><div class="stat-value">342</div><div class="stat-change">+18% vs prev period</div></div>
+<div class="stat-card"><div class="stat-label">Total Clicks</div><div class="stat-value">342</div><div class="stat-change">+18% vs prev period</div></div>
 <div class="stat-card"><div class="stat-label">Average CTR</div><div class="stat-value">2.75%</div><div class="stat-change">+0.3pp vs prev period</div></div>
 <div class="stat-card"><div class="stat-label">Total Ad Spend</div><div class="stat-value">&#8369;15,000</div><div class="stat-change">This period</div></div>
-<div class="stat-card"><div class="stat-label">Cost Per Tap</div><div class="stat-value">&#8369;43.86</div><div class="stat-change">-8% vs prev period</div></div>
+<div class="stat-card"><div class="stat-label">Cost Per Click</div><div class="stat-value">&#8369;43.86</div><div class="stat-change">-8% vs prev period</div></div>
 </div>
 
 <!-- Row 2: Charts Grid -->
 <div class="charts-grid">
 <div>
-<!-- Impressions & Taps Over Time -->
+<!-- Impressions & Clicks Over Time -->
 <div class="card" style="padding:24px 28px">
-<div class="card-title">Impressions &amp; Taps Over Time</div>
-<div style="display:flex;gap:16px;margin-bottom:12px"><div style="display:flex;align-items:center;gap:6px;font-size:11px;color:#888"><div style="width:12px;height:12px;border-radius:3px;background:rgba(32,92,80,.2)"></div>Impressions</div><div style="display:flex;align-items:center;gap:6px;font-size:11px;color:#888"><div style="width:12px;height:12px;border-radius:3px;background:#205C50"></div>Taps</div></div>
+<div class="card-title">Impressions &amp; Clicks Over Time</div>
+<div style="display:flex;gap:16px;margin-bottom:12px"><div style="display:flex;align-items:center;gap:6px;font-size:11px;color:#888"><div style="width:12px;height:12px;border-radius:3px;background:rgba(32,92,80,.2)"></div>Impressions</div><div style="display:flex;align-items:center;gap:6px;font-size:11px;color:#888"><div style="width:12px;height:12px;border-radius:3px;background:#205C50"></div>Clicks</div></div>
 <div class="bar-chart"><div class="y-axis"><span>0</span><span>150</span><span>300</span><span>450</span><span>600</span></div><div class="bar" style="height:52%;background:linear-gradient(to top,#205C50 5%,rgba(32,92,80,.2) 5%)"></div><div class="bar" style="height:58%;background:linear-gradient(to top,#205C50 4%,rgba(32,92,80,.2) 4%)"></div><div class="bar" style="height:45%;background:linear-gradient(to top,#205C50 6%,rgba(32,92,80,.2) 6%)"></div><div class="bar" style="height:61%;background:linear-gradient(to top,#205C50 3%,rgba(32,92,80,.2) 3%)"></div><div class="bar" style="height:55%;background:linear-gradient(to top,#205C50 5%,rgba(32,92,80,.2) 5%)"></div><div class="bar" style="height:48%;background:linear-gradient(to top,#205C50 4%,rgba(32,92,80,.2) 4%)"></div><div class="bar" style="height:64%;background:linear-gradient(to top,#205C50 5%,rgba(32,92,80,.2) 5%)"></div><div class="bar" style="height:72%;background:linear-gradient(to top,#205C50 6%,rgba(32,92,80,.2) 6%)"></div><div class="bar" style="height:50%;background:linear-gradient(to top,#205C50 4%,rgba(32,92,80,.2) 4%)"></div><div class="bar" style="height:58%;background:linear-gradient(to top,#205C50 5%,rgba(32,92,80,.2) 5%)"></div><div class="bar" style="height:42%;background:linear-gradient(to top,#205C50 3%,rgba(32,92,80,.2) 3%)"></div><div class="bar" style="height:65%;background:linear-gradient(to top,#205C50 6%,rgba(32,92,80,.2) 6%)"></div><div class="bar" style="height:70%;background:linear-gradient(to top,#205C50 5%,rgba(32,92,80,.2) 5%)"></div><div class="bar" style="height:54%;background:linear-gradient(to top,#205C50 4%,rgba(32,92,80,.2) 4%)"></div><div class="bar peak" style="height:100%;background:linear-gradient(to top,#205C50 5%,rgba(32,92,80,.35) 5%)"></div><div class="bar" style="height:68%;background:linear-gradient(to top,#205C50 5%,rgba(32,92,80,.2) 5%)"></div><div class="bar" style="height:56%;background:linear-gradient(to top,#205C50 4%,rgba(32,92,80,.2) 4%)"></div><div class="bar" style="height:62%;background:linear-gradient(to top,#205C50 6%,rgba(32,92,80,.2) 6%)"></div><div class="bar" style="height:47%;background:linear-gradient(to top,#205C50 3%,rgba(32,92,80,.2) 3%)"></div><div class="bar" style="height:75%;background:linear-gradient(to top,#205C50 5%,rgba(32,92,80,.2) 5%)"></div><div class="bar" style="height:60%;background:linear-gradient(to top,#205C50 6%,rgba(32,92,80,.2) 6%)"></div><div class="bar" style="height:53%;background:linear-gradient(to top,#205C50 4%,rgba(32,92,80,.2) 4%)"></div><div class="bar" style="height:66%;background:linear-gradient(to top,#205C50 5%,rgba(32,92,80,.2) 5%)"></div><div class="bar" style="height:44%;background:linear-gradient(to top,#205C50 3%,rgba(32,92,80,.2) 3%)"></div><div class="bar" style="height:57%;background:linear-gradient(to top,#205C50 5%,rgba(32,92,80,.2) 5%)"></div><div class="bar" style="height:71%;background:linear-gradient(to top,#205C50 4%,rgba(32,92,80,.2) 4%)"></div><div class="bar" style="height:49%;background:linear-gradient(to top,#205C50 6%,rgba(32,92,80,.2) 6%)"></div><div class="bar" style="height:63%;background:linear-gradient(to top,#205C50 5%,rgba(32,92,80,.2) 5%)"></div><div class="bar" style="height:40%;background:linear-gradient(to top,#205C50 4%,rgba(32,92,80,.2) 4%)"></div><div class="bar" style="height:55%;background:linear-gradient(to top,#205C50 3%,rgba(32,92,80,.2) 3%)"></div></div>
 <div class="bar-chart-x"><span>Apr 1</span><span>Apr 5</span><span>Apr 10</span><span>Apr 15</span><span>Apr 20</span><span>Apr 25</span><span>Apr 30</span></div>
-<div class="chart-note">Peak day: April 15 (623 impressions, 21 taps)</div>
+<div class="chart-note">Peak day: April 15 (623 impressions, 21 clicks)</div>
 </div>
 
 <!-- Ad Performance Funnel -->
 <div class="card" style="padding:24px 28px">
 <div class="card-title">Ad Performance Funnel</div>
 <div class="funnel-row"><div class="funnel-label">Impressions</div><div class="funnel-bar" style="width:100%;background:#a8cfb8">12,450</div></div>
-<div class="funnel-conversion">&darr; 2.75% tap rate</div>
-<div class="funnel-row"><div class="funnel-label">Taps</div><div class="funnel-bar" style="width:2.75%;min-width:70px;background:#205C50">342</div></div>
+<div class="funnel-conversion">&darr; 2.75% click rate</div>
+<div class="funnel-row"><div class="funnel-label">Clicks</div><div class="funnel-bar" style="width:2.75%;min-width:70px;background:#205C50">342</div></div>
 <div class="funnel-conversion">&darr; 83.9% landing rate</div>
 <div class="funnel-row"><div class="funnel-label">Profile/Coupon Views</div><div class="funnel-bar" style="width:2.3%;min-width:60px;background:#3d7054">287</div></div>
 <div class="funnel-conversion">&darr; 21.6% redemption rate</div>
@@ -1388,7 +1388,7 @@ Image meets size requirements (<span id="ad-upload-size">357 x 96</span> px)
 <!-- Row 3: Campaign Table -->
 <div class="ads-table" style="margin-top:24px">
 <div style="padding:20px 24px 16px;font-size:15.5px;font-weight:700;color:#221F1F;letter-spacing:-.1px;border-bottom:1px solid #f0f1f3">Campaign Performance Details</div>
-<table><thead><tr><th>Campaign</th><th>Format</th><th>Status</th><th>Period</th><th>Impressions</th><th>Taps</th><th>CTR</th><th>Spend</th><th>Cost/Tap</th></tr></thead>
+<table><thead><tr><th>Campaign</th><th>Format</th><th>Status</th><th>Period</th><th>Impressions</th><th>Clicks</th><th>CTR</th><th>Spend</th><th>Cost/Click</th></tr></thead>
 <tbody>
 <tr><td>March Steak Promo</td><td>Hero Banner</td><td><span class="badge badge-green">&#x25CF; Active</span></td><td>Apr 1&ndash;30</td><td>12,450</td><td>342</td><td>2.75%</td><td style="color:#205C50;font-weight:700">&#8369;15,000</td><td>&#8369;43.86</td></tr>
 <tr><td>Valentine&#39;s Day Special</td><td>Hero Banner</td><td><span class="badge badge-gray">&#x25CF; Completed</span></td><td>Feb 1&ndash;28</td><td>9,800</td><td>206</td><td>2.10%</td><td style="color:#205C50;font-weight:700">&#8369;15,000</td><td>&#8369;72.82</td></tr>
